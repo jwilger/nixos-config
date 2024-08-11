@@ -9,19 +9,19 @@
     ];
 
   boot.initrd.availableKernelModules = [ "xhci_pci" "ahci" "nvme" "usbhid" "usb_storage" "sd_mod" ];
-  boot.initrd.kernelModules = [ ];
+  boot.initrd.kernelModules = [ "raid1" "dm-snapshot" "dm-raid" "dm-cache-default" ];
   boot.kernelModules = [ "kvm-intel" ];
   boot.extraModulePackages = [ ];
 
   fileSystems."/" =
-    { device = "/dev/disk/by-uuid/d97beb8e-a6be-440e-af7b-e4db6c1cb000";
+    { device = "/dev/disk/by-uuid/d022419b-278a-4f98-95d1-4a5852e2fb3a";
       fsType = "ext4";
     };
 
   fileSystems."/boot" =
-    { device = "/dev/disk/by-uuid/024B-A567";
+    { device = "/dev/disk/by-uuid/241E-8B23";
       fsType = "vfat";
-      options = [ "fmask=0022" "dmask=0022" ];
+      options = [ "fmask=0077" "dmask=0077" ];
     };
 
   swapDevices = [ ];
