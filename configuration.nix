@@ -13,7 +13,7 @@
 
   stylix = {
     enable = true;
-    image = ./regreet-wallpaper.png;
+    image = ./wallpaper.png;
     base16Scheme = "${pkgs.base16-schemes}/share/themes/catppuccin-macchiato.yaml";
     polarity = "dark";
   };
@@ -124,25 +124,6 @@
     };
   };
   programs.hyprlock.enable = true;
-  programs.regreet = {
-    enable = true;
-    settings = {
-      background = {
-        path = "${./regreet-wallpaper.png}";
-        fit = "Contain";
-      };
-      GTK = {
-        application_prefer_dark_theme = true;
-        cursor_theme_name = "Bibata-Moderns-Classic";
-        font_name = "JetBrains Mono 16";
-        icon_theme_name = "Papirus-Dark";
-        theme_name = "Catppuccin-Mocha-Standard-Pink-dark";
-      };
-      env = {
-        GTK_USE_PORTAL = "0";
-      };
-    };
-  };
   programs.zsh.enable = true;
 
 
@@ -157,10 +138,6 @@
   services.hypridle.enable = true;
   services.openssh.enable = true;
   services.fail2ban.enable = true;
-  services.greetd = {
-    enable = true;
-    restart = true;
-  };
 
   # Open ports in the firewall.
   # networking.firewall.allowedTCPPorts = [ ... ];
