@@ -122,6 +122,19 @@
     enableSSHSupport = true;
   };
 
+  programs._1password = {
+    enable = true;
+  };
+
+  programs._1password-gui = {
+    enable = true;
+    polkitPolicyOwners = ["jwilger"];
+  };
+
+  programs.firefox = {
+    enable = true;
+  };
+
   programs.hyprland = {
     enable = true;
     xwayland = {
