@@ -2,7 +2,7 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
-{ config, pkgs, ... }:
+{ pkgs, ... }:
 
 {
   imports =
@@ -19,6 +19,12 @@
   };
 
   nix = {
+    settings.auto-optimise-store = true;
+    gc = {
+      automatic = true;
+      dates = "weekly";
+      options = "--delete-older-than 30d";
+    };
     package = pkgs.nixFlakes;
     extraOptions = ''
       experimental-features = nix-command flakes
@@ -63,6 +69,25 @@
     LC_TIME = "en_US.UTF-8";
   };
 
+  xdg = {
+    mime.enable = true;
+    portal = {
+      enable = true;
+      extraPortals = [
+        pkgs.xdg-desktop-portal-gtk
+        pkgs.xdg-desktop-portal-wlr
+        pkgs.xdg-desktop-portal-hyprland
+      ];
+      config = {
+        common = {
+          default = ["hyprland" "wlr" "gtk"];
+        };
+      };
+    };
+  };
+
+  services.fstrim.enable = true;
+
   security.rtkit.enable = true;
   services.pipewire = {
     enable = true;
@@ -85,7 +110,6 @@
     isNormalUser = true;
     description = "John Wilger";
     extraGroups = [ "networkmanager" "wheel" ];
-    packages = with pkgs; [ ];
     shell = pkgs.zsh;
     home = "/home/jwilger";
     group = "jwilger";
