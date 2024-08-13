@@ -79,13 +79,12 @@
     portal = {
       enable = true;
       extraPortals = [
-        pkgs.xdg-desktop-portal-gtk
-        pkgs.xdg-desktop-portal-wlr
         pkgs.xdg-desktop-portal-hyprland
+        pkgs.xdg-desktop-portal-gtk
       ];
       config = {
         common = {
-          default = ["hyprland" "wlr" "gtk"];
+          default = ["hyprland" "gtk"];
         };
       };
     };
@@ -136,6 +135,11 @@
     pipewire
     wireplumber
     xdg-desktop-portal-hyprland
+    xdg-utils
+    grim
+    slurp
+    xwaylandvideobridge
+    solaar
   ];
 
   fonts.packages = with pkgs; [
