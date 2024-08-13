@@ -31,6 +31,11 @@
     '';
   };
 
+  hardware.logitech.wireless = {
+    enable = true;
+    enableGraphical = true;
+  };
+
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
