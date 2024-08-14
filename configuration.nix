@@ -90,7 +90,21 @@
     };
   };
 
+  users.extraGroups.docker.members = ["jwilger"];
+  virtualisation.docker = {
+  enable = true;
+  rootless = {
+    enable = true;
+    setSocketVariable = true;
+  };
+  };
+
   services.fstrim.enable = true;
+
+  services.caddy = {
+    enable = true;
+    configFile = ./Caddyfile;
+  };
 
   security.rtkit.enable = true;
   services.pipewire = {
