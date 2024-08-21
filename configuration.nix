@@ -92,14 +92,16 @@
 
   users.extraGroups.docker.members = ["jwilger"];
   virtualisation.docker = {
-  enable = true;
-  rootless = {
     enable = true;
-    setSocketVariable = true;
-  };
+    rootless = {
+      enable = true;
+      setSocketVariable = true;
+    };
   };
 
   services.fstrim.enable = true;
+
+  services.teamviewer.enable = true;
 
   services.caddy = {
     enable = true;
@@ -169,6 +171,11 @@
     enableSSHSupport = true;
   };
 
+  programs.gamescope = {
+    enable = true;
+    capSysNice = true;
+  };
+
   programs._1password = {
     enable = true;
   };
@@ -205,7 +212,7 @@
   services.fail2ban.enable = true;
 
   # Open ports in the firewall.
-  # networking.firewall.allowedTCPPorts = [ ... ];
+  networking.firewall.allowedTCPPorts = [ 80 443 ];
   # networking.firewall.allowedUDPPorts = [ ... ];
   # Or disable the firewall altogether.
   # networking.firewall.enable = false;
