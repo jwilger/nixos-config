@@ -101,6 +101,11 @@
 
   services.fstrim.enable = true;
 
+  services.printing = {
+    enable = true;
+    drivers = [pkgs.brlaser ];
+  };
+  
   services.teamviewer.enable = true;
 
   services.caddy = {
