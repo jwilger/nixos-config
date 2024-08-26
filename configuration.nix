@@ -161,6 +161,7 @@
     slurp
     xwaylandvideobridge
     solaar
+    firefoxpwa
   ];
 
   fonts.packages = with pkgs; [
@@ -192,6 +193,8 @@
 
   programs.firefox = {
     enable = true;
+    package = pkgs.firefox;
+    nativeMessagingHosts.packages = [pkgs.firefoxpwa];
   };
 
   programs.hyprland = {
