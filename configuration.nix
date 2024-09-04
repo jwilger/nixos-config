@@ -11,6 +11,13 @@
       ./hardware-configuration.nix
     ];
 
+  swapDevices = [
+    {
+      device = "/swapfile";
+      size = 48 * 1024;
+    }
+  ];
+
   stylix = {
     enable = true;
     image = ./wallpaper.png;
