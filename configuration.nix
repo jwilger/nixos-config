@@ -35,6 +35,7 @@
     package = pkgs.nixFlakes;
     extraOptions = ''
       experimental-features = nix-command flakes
+      trusted-users = root jwilger
     '';
   };
 
@@ -126,7 +127,7 @@
     audio.enable = true;
     wireplumber.enable = true;
     alsa.enable = true;
-    alsa.support32Bit = false;
+    alsa.support32Bit = true;
     pulse.enable = true;
     jack.enable = false;
   };
