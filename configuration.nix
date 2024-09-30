@@ -43,26 +43,18 @@
     enable = true;
     enableGraphical = true;
   };
+  boot = {
 
-  # Bootloader.
-  boot.loader.systemd-boot.enable = true;
-  boot.loader.efi.canTouchEfiVariables = true;
-  boot.kernelPackages = pkgs.linuxPackages_zen;
-  boot.initrd.kernelModules = [
-    "dm-snapshot"
-    "dm-raid"
-    "dm-cache-default"
-  ];
-
-  networking.hostName = "gregor"; # Define your hostname.
-  # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
-
-  # Configure network proxy if necessary
-  # networking.proxy.default = "http://user:password@proxy:port/";
-  # networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
-
-  # Enable networking
-  networking.networkmanager.enable = true;
+    # Bootloader.
+    loader.systemd-boot.enable = true;
+    loader.efi.canTouchEfiVariables = true;
+    kernelPackages = pkgs.linuxPackages_zen;
+    initrd.kernelModules = [
+      "dm-snapshot"
+      "dm-raid"
+      "dm-cache-default"
+    ];
+  };
 
   # Set your time zone.
   time.timeZone = "America/Los_Angeles";
@@ -92,13 +84,11 @@
       ];
       config = {
         common = {
-          default = ["hyprland" "gtk"];
+          default = [ "hyprland" "gtk" ];
         };
       };
     };
   };
-
-  users.extraGroups.docker.members = ["jwilger"];
   virtualisation.docker = {
     enable = true;
     rootless = {
@@ -106,50 +96,61 @@
       setSocketVariable = true;
     };
   };
+  services = {
 
-  services.fstrim.enable = true;
+    fstrim.enable = true;
 
-  services.printing = {
-    enable = true;
-    drivers = [pkgs.brlaser ];
-  };
-  
-  services.teamviewer.enable = true;
+    printing = {
+      enable = true;
+      drivers = [ pkgs.brlaser ];
+    };
 
-  services.caddy = {
-    enable = true;
-    configFile = ./Caddyfile;
+    teamviewer.enable = true;
+
+    caddy = {
+      enable = true;
+      configFile = ./Caddyfile;
+    };
+    pipewire = {
+      enable = true;
+      audio.enable = true;
+      wireplumber.enable = true;
+      alsa.enable = true;
+      alsa.support32Bit = true;
+      pulse.enable = true;
+      jack.enable = false;
+    };
+
+    # Configure keymap in X11
+    xserver.xkb = {
+      layout = "us";
+      variant = "";
+    };
+
+    # List services that you want to enable:
+    hypridle.enable = true;
+    openssh.enable = true;
+    fail2ban.enable = true;
   };
 
   security.rtkit.enable = true;
-  services.pipewire = {
-    enable = true;
-    audio.enable = true;
-    wireplumber.enable = true;
-    alsa.enable = true;
-    alsa.support32Bit = true;
-    pulse.enable = true;
-    jack.enable = false;
-  };
+  users = {
 
-  # Configure keymap in X11
-  services.xserver.xkb = {
-    layout = "us";
-    variant = "";
-  };
+    extraGroups.docker.members = [ "jwilger" ];
 
-  # Define a user account. Don't forget to set a password with ‘passwd’.
-  users.users.jwilger = {
-    isNormalUser = true;
-    description = "John Wilger";
-    extraGroups = [ "networkmanager" "wheel" ];
-    shell = pkgs.zsh;
-    home = "/home/jwilger";
-    group = "jwilger";
-    createHome = true;
-  };
+    # Define a user account. Don't forget to set a password with ‘passwd’.
+    users.jwilger = {
+      isNormalUser = true;
+      description = "John Wilger";
+      extraGroups = [ "networkmanager" "wheel" ];
+      shell = pkgs.zsh;
+      home = "/home/jwilger";
+      group = "jwilger";
+      createHome = true;
+    };
 
-  users.groups.jwilger = { };
+    groups.jwilger = { };
+  };
 
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
@@ -176,55 +177,64 @@
     material-design-icons
     nerdfonts
   ];
+  programs = {
 
-  # Some programs need SUID wrappers, can be configured further or are
-  # started in user sessions.
-  programs.mtr.enable = true;
+    # Some programs need SUID wrappers, can be configured further or are
+    # started in user sessions.
+    mtr.enable = true;
 
-  programs.gamescope = {
-    enable = true;
-    capSysNice = true;
-  };
+    gamescope = {
+      enable = true;
+      capSysNice = true;
+    };
 
-  programs._1password = {
-    enable = true;
-  };
-
-  programs._1password-gui = {
-    enable = true;
-    polkitPolicyOwners = ["jwilger"];
-  };
-
-  programs.firefox = {
-    enable = true;
-    package = pkgs.firefox;
-    nativeMessagingHosts.packages = [pkgs.firefoxpwa];
-  };
-
-  programs.hyprland = {
-    enable = true;
-    xwayland = {
+    _1password = {
       enable = true;
     };
+
+    _1password-gui = {
+      enable = true;
+      polkitPolicyOwners = [ "jwilger" ];
+    };
+
+    firefox = {
+      enable = true;
+      package = pkgs.firefox;
+      nativeMessagingHosts.packages = [ pkgs.firefoxpwa ];
+    };
+
+    hyprland = {
+      enable = true;
+      xwayland = {
+        enable = true;
+      };
+    };
+    hyprlock.enable = true;
+    zsh.enable = true;
+
+
+    steam = {
+      enable = true;
+      remotePlay.openFirewall = true;
+      dedicatedServer.openFirewall = true;
+      localNetworkGameTransfers.openFirewall = true;
+    };
   };
-  programs.hyprlock.enable = true;
-  programs.zsh.enable = true;
+  networking = {
 
+    hostName = "gregor"; # Define your hostname.
+    # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
 
-  programs.steam = {
-    enable = true;
-    remotePlay.openFirewall = true;
-    dedicatedServer.openFirewall = true;
-    localNetworkGameTransfers.openFirewall = true;
+    # Configure network proxy if necessary
+    # networking.proxy.default = "http://user:password@proxy:port/";
+    # networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
+
+    # Enable networking
+    networkmanager.enable = true;
+
+    # Open ports in the firewall.
+    firewall.allowedTCPPorts = [ 80 443 ];
   };
-
-  # List services that you want to enable:
-  services.hypridle.enable = true;
-  services.openssh.enable = true;
-  services.fail2ban.enable = true;
-
-  # Open ports in the firewall.
-  networking.firewall.allowedTCPPorts = [ 80 443 ];
   # networking.firewall.allowedUDPPorts = [ ... ];
   # Or disable the firewall altogether.
   # networking.firewall.enable = false;
