@@ -32,7 +32,7 @@
       dates = "weekly";
       options = "--delete-older-than 30d";
     };
-    package = pkgs.nixFlakes;
+    package = pkgs.nixVersions.stable;
     extraOptions = ''
       experimental-features = nix-command flakes
       trusted-users = root jwilger
@@ -74,21 +74,6 @@
     LC_TIME = "en_US.UTF-8";
   };
 
-  xdg = {
-    mime.enable = true;
-    portal = {
-      enable = true;
-      extraPortals = [
-        pkgs.xdg-desktop-portal-hyprland
-        pkgs.xdg-desktop-portal-gtk
-      ];
-      config = {
-        common = {
-          default = [ "hyprland" "gtk" ];
-        };
-      };
-    };
-  };
   virtualisation.docker = {
     enable = true;
     rootless = {
@@ -121,14 +106,11 @@
       jack.enable = false;
     };
 
-    # Configure keymap in X11
-    xserver.xkb = {
-      layout = "us";
-      variant = "";
-    };
+    xserver.enable = true;
+    desktopManager.plasma6.enable = true;
+    displayManager.sddm.enable = true;
 
     # List services that you want to enable:
-    hypridle.enable = true;
     openssh.enable = true;
     fail2ban.enable = true;
   };
@@ -159,13 +141,10 @@
   # $ nix search wget
   environment.systemPackages = with pkgs; [
     catppuccin
-    catppuccin-gtk
     catppuccin-cursors
     neovim
     pipewire
     wireplumber
-    xdg-desktop-portal-hyprland
-    xdg-utils
     grim
     slurp
     xwaylandvideobridge
@@ -203,13 +182,6 @@
       nativeMessagingHosts.packages = [ pkgs.firefoxpwa ];
     };
 
-    hyprland = {
-      enable = true;
-      xwayland = {
-        enable = true;
-      };
-    };
-    hyprlock.enable = true;
     zsh.enable = true;
 
 
