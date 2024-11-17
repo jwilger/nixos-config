@@ -1,3 +1,0 @@
-ticket-bus.jwilger.slipstreamconsulting.net {
-	reverse_proxy localhost:4000
-}
