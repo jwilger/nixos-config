@@ -204,6 +204,8 @@
     # Enable networking
     networkmanager.enable = true;
 
+    nftables.enable = true;
+
     # Open ports in the firewall.
     firewall.allowedTCPPorts = [ 80 443 ];
   };
