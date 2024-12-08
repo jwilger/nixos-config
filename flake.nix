@@ -10,7 +10,11 @@
     };
   };
 
-  outputs = { nixpkgs, stylix, ... }: {
+  outputs = {
+    nixpkgs,
+    stylix,
+    ...
+  }: {
     nixosConfigurations = {
       gregor = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
