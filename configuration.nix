@@ -3,13 +3,6 @@
     ./hardware-configuration.nix
   ];
 
-  swapDevices = [
-    {
-      device = "/swapfile";
-      size = 48 * 1024;
-    }
-  ];
-
   stylix = {
     enable = true;
     image = ./wallpaper.png;
@@ -24,7 +17,7 @@
       dates = "weekly";
       options = "--delete-older-than 30d";
     };
-    package = pkgs.nixVersions.stable;
+    package = pkgs.nixVersions.latest;
     extraOptions = ''
       experimental-features = nix-command flakes
       trusted-users = root jwilger
@@ -41,11 +34,6 @@
     loader.systemd-boot.enable = true;
     loader.efi.canTouchEfiVariables = true;
     kernelPackages = pkgs.linuxPackages_zen;
-    initrd.kernelModules = [
-      "dm-snapshot"
-      "dm-raid"
-      "dm-cache-default"
-    ];
   };
 
   time.timeZone = "America/Los_Angeles";
@@ -82,8 +70,6 @@
       drivers = [pkgs.brlaser];
     };
 
-    teamviewer.enable = true;
-
     pipewire = {
       enable = true;
       audio.enable = true;
@@ -94,9 +80,8 @@
       jack.enable = false;
     };
 
-    xserver.enable = true;
-    desktopManager.plasma6.enable = true;
-    displayManager.sddm.enable = true;
+    desktopManager.cosmic.enable = true;
+    displayManager.cosmic-greeter.enable = true;
 
     # List services that you want to enable:
     openssh.enable = true;
@@ -108,7 +93,7 @@
     users.jwilger = {
       isNormalUser = true;
       description = "John Wilger";
-      extraGroups = ["networkmanager" "wheel" "podman"];
+      extraGroups = ["networkmanager" "wheel" "docker"];
       shell = pkgs.zsh;
       home = "/home/jwilger";
       group = "jwilger";
@@ -130,7 +115,6 @@
     wireplumber
     grim
     slurp
-    xwaylandvideobridge
     solaar
     firefoxpwa
   ];
@@ -151,11 +135,6 @@
 
     mtr.enable = true;
 
-    gamescope = {
-      enable = true;
-      capSysNice = true;
-    };
-
     _1password = {
       enable = true;
     };
@@ -172,13 +151,6 @@
     };
 
     zsh.enable = true;
-
-    steam = {
-      enable = true;
-      remotePlay.openFirewall = true;
-      dedicatedServer.openFirewall = true;
-      localNetworkGameTransfers.openFirewall = true;
-    };
   };
 
   networking = {
@@ -188,5 +160,5 @@
     firewall.allowedTCPPorts = [ 80 443 ];
   };
 
-  system.stateVersion = "24.05"; # Did you read the comment?
+  system.stateVersion = "24.11"; # Did you read the comment?
 }
