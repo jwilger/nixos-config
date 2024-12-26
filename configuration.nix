@@ -1,7 +1,15 @@
-{pkgs, ...}: {
+{inputs, pkgs, ...}: let
+  pkgs-unstable = inputs.hyprland.inputs.nixpkgs.legacyPackages.${pkgs.stdenv.hostPlatform.system};
+in {
   imports = [
     ./hardware-configuration.nix
   ];
+
+  hardware.graphics = {
+    package = pkgs-unstable.mesa.drivers;
+    package32 = pkgs-unstable.pkgsi686Linux.mesa.drivers;
+    enable32Bit = true;
+  };
 
   stylix = {
     enable = true;
@@ -65,6 +73,17 @@
   services = {
     fstrim.enable = true;
 
+    greetd = {
+      enable = true;
+      settings = {
+        default_session = {
+          command = "${pkgs.greetd.tuigreet}/bin/tuigreet --time";
+          user = "greeter";
+        };
+      };
+      restart = true;
+    };
+
     printing = {
       enable = true;
       drivers = [pkgs.brlaser];
@@ -79,9 +98,6 @@
       pulse.enable = true;
       jack.enable = false;
     };
-
-    desktopManager.cosmic.enable = true;
-    displayManager.cosmic-greeter.enable = true;
 
     # List services that you want to enable:
     openssh.enable = true;
@@ -106,6 +122,7 @@
   nixpkgs.config.allowUnfree = true;
 
   environment.systemPackages = with pkgs; [
+    kitty
     home-manager
     docker-client
     catppuccin
@@ -119,6 +136,8 @@
     firefoxpwa
   ];
 
+  environment.sessionVariables.NIXOS_OZONE_WL = "1";
+
   fonts.fontconfig.useEmbeddedBitmaps = true;
   fonts.packages = with pkgs; [
     material-design-icons
@@ -128,7 +147,16 @@
     font-awesome
     nerd-fonts.jetbrains-mono
   ];
+
   programs = {
+    hyprland = {
+      enable = true;
+      package = inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.hyprland;
+      portalPackage = inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.xdg-desktop-portal-hyprland;
+    };
+
+    hyprlock.enable = true;
+    
     nix-ld = {
       enable = true;
     };
