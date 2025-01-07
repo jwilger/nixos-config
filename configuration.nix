@@ -41,7 +41,6 @@ in {
     # Bootloader.
     loader.systemd-boot.enable = true;
     loader.efi.canTouchEfiVariables = true;
-    kernelPackages = pkgs.linuxPackages_zen;
   };
 
   time.timeZone = "America/Los_Angeles";
