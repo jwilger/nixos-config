@@ -88,6 +88,12 @@ in {
     
     fstrim.enable = true;
 
+    gnome = {
+      gnome-keyring = {
+        enable = true;
+      };
+    };
+
     greetd = {
       enable = true;
       settings = {
@@ -119,7 +125,11 @@ in {
     fail2ban.enable = true;
   };
 
-  security.rtkit.enable = true;
+  security = {
+    rtkit.enable = true;
+    pam.services.greetd.enableGnomeKeyring = true;
+  };
+  
   users = {
     users.jwilger = {
       isNormalUser = true;
@@ -152,6 +162,8 @@ in {
   ];
 
   environment.sessionVariables.NIXOS_OZONE_WL = "1";
+
+  environment.variables.XDG_RUNTIME_DIR = "/run/user/$UID";
 
   fonts.fontconfig.useEmbeddedBitmaps = true;
   fonts.packages = with pkgs; [
