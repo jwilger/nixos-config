@@ -150,8 +150,8 @@ in {
     kitty
     home-manager
     docker-client
-    catppuccin
-    catppuccin-cursors
+    # catppuccin
+    # catppuccin-cursors
     neovim
     pipewire
     wireplumber
