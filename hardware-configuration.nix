@@ -8,9 +8,9 @@
     [ (modulesPath + "/installer/scan/not-detected.nix")
     ];
 
-  boot.initrd.availableKernelModules = [ "xhci_pci" "ahci" "nvme" "usbhid" "usb_storage" "sd_mod" "bcache" "bcachefs" ];
-  boot.initrd.kernelModules = [ "bcache" "bcachefs" ];
-  boot.kernelModules = [ "kvm-intel" "bcache" "bcachefs" ];
+  boot.initrd.availableKernelModules = [ "xhci_pci" "ahci" "nvme" "usbhid" "usb_storage" "sd_mod" "bcache" "bcachefs" "amdgpu" ];
+  boot.initrd.kernelModules = [ "bcache" "bcachefs" "amdgpu" ];
+  boot.kernelModules = [ "kvm-intel" "bcache" "bcachefs" "amdgpu" ];
   boot.extraModulePackages = [ ];
   boot.kernelPackages = pkgs.linuxPackages_latest;
   boot.supportedFilesystems = [ "bcachefs" ];

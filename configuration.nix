@@ -1,4 +1,4 @@
-{inputs, pkgs, ...}: let
+{inputs, pkgs, lib, ...}: let
   pkgs-unstable = inputs.hyprland.inputs.nixpkgs.legacyPackages.${pkgs.stdenv.hostPlatform.system};
 in {
   imports = [
@@ -37,10 +37,23 @@ in {
     enableGraphical = true;
   };
   boot = {
+    plymouth = {
+      enable = true;
+      theme = lib.mkForce "rings";
+      themePackages = with pkgs; [
+        (adi1090x-plymouth-themes.override {
+          selected_themes = [ "rings" ];
+        })
+      ];
+    };
+    consoleLogLevel = 0;
+    initrd.verbose = false;
     kernel.sysctl."net.ipv4.ip_unprivileged_port_start" = 0;
     # Bootloader.
     loader.systemd-boot.enable = true;
     loader.efi.canTouchEfiVariables = true;
+    kernelParams = [ "quiet" "splash" "boot.shell_on_fail" "loglevel=3" "rd.systemd.show_status=false" "rd.udev.log_level=3" "udev.log_priority=3" ];
+    loader.timeout = 0;
   };
 
   time.timeZone = "America/Los_Angeles";
@@ -70,6 +83,15 @@ in {
   };
 
   services = {
+    greetd = {
+      enable = true;
+      settings = {
+        default_session = {
+          command = "${pkgs.greetd.tuigreet}/bin/tuigreet --time --cmd 'uwsm start default'";
+          user = "greeter";
+        };
+      };
+    };
     interception-tools =
     let
       itools = pkgs.interception-tools;
@@ -92,17 +114,6 @@ in {
       gnome-keyring = {
         enable = true;
       };
-    };
-
-    greetd = {
-      enable = true;
-      settings = {
-        default_session = {
-          command = "${pkgs.greetd.tuigreet}/bin/tuigreet --time";
-          user = "greeter";
-        };
-      };
-      restart = true;
     };
 
     printing = {
@@ -139,6 +150,7 @@ in {
       home = "/home/jwilger";
       group = "jwilger";
       createHome = true;
+      linger = true;
     };
 
     groups.jwilger = {};
@@ -178,6 +190,10 @@ in {
       enable = true;
       package = inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.hyprland;
       portalPackage = inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.xdg-desktop-portal-hyprland;
+      xwayland = {
+        enable = true;
+      };
+      withUWSM = true;
     };
 
     hyprlock.enable = true;
