@@ -58,7 +58,7 @@
         format = "ssh";
         key = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIGwXlUIgMZDNewfvIyX5Gd1B1dIuLT7lH6N+2+FrSaSU";
         signByDefault = true;
-        signer = "op-ssh-sign";
+        signer = "${pkgs._1password-gui}/bin/op-ssh-sign";
       };
 
       extraConfig = {
