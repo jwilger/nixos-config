@@ -14,9 +14,14 @@
       url = "github:nix-community/home-manager/master";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    # macOS support
+    darwin = {
+      url = "github:lnl7/nix-darwin";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
-  outputs = { nixpkgs, stylix, home-manager, ... } @ inputs: {
+  outputs = { nixpkgs, stylix, home-manager, darwin, ... } @ inputs: {
     # Set global nixpkgs configuration for the flake
     nixpkgs.config = {
       allowUnfree = true;
@@ -49,27 +54,24 @@
           }
         ];
       };
-      
-      # Template for adding a new host in the future:
-      #
-      # new-host = nixpkgs.lib.nixosSystem {
-      #   specialArgs = { inherit inputs; };
-      #   system = "x86_64-linux";  # Change as needed for the architecture
-      #   modules = [
-      #     ./hosts/new-host
-      #     ./common
-      #     # You can conditionally include modules based on the host type
-      #     # ./modules/server    # For server configurations
-      #     # ./modules/desktop   # For desktop configurations
-      #     home-manager.nixosModules.home-manager {
-      #       home-manager.useGlobalPkgs = false;
-      #       home-manager.useUserPackages = true;
-      #       # Configure which users exist on this host
-      #       home-manager.users.jwilger = import ./users/jwilger/server.nix;  # Example of a server-specific config
-      #       # home-manager.users.other-user = import ./users/other-user;
-      #     }
-      #   ];
-      # };
+    };
+    
+    # Darwin (macOS) configurations
+    darwinConfigurations = {
+      sansa = darwin.lib.darwinSystem {
+        system = "aarch64-darwin"; # For Apple Silicon Macs (M1/M2/M3)
+        # If using an Intel Mac, change to "x86_64-darwin"
+        specialArgs = { inherit inputs; };
+        modules = [
+          ./hosts/sansa
+          ./common/darwin.nix
+          home-manager.darwinModules.home-manager {
+            home-manager.useGlobalPkgs = false;
+            home-manager.useUserPackages = true;
+            home-manager.users.jwilger = import ./users/jwilger/darwin.nix; # Use darwin-specific config
+          }
+        ];
+      };
     };
   };
 }
