@@ -17,6 +17,16 @@
   };
 
   outputs = { nixpkgs, stylix, home-manager, ... } @ inputs: {
+    # Set global nixpkgs configuration for the flake
+    nixpkgs.config = {
+      allowUnfree = true;
+    };
+    
+    # Define reusable configurations for all NixOS systems in the flake
+    nixosModules.default = {
+      nixpkgs.config.allowUnfree = true;
+    };
+    
     nixosConfigurations = {
       # Current host configuration
       gregor = nixpkgs.lib.nixosSystem {
