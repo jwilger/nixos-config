@@ -2,9 +2,11 @@
 { pkgs, ... }:
 
 {
+  system.stateVersion = 6;
+
   # Basic Darwin configuration
   nix = {
-    settings.auto-optimise-store = true;
+    optimise.automatic = true;
     gc = {
       automatic = true;
       interval = { Weekday = 0; Hour = 2; Minute = 0; }; # Weekly on Sunday at 2am
@@ -19,12 +21,6 @@
 
   nixpkgs.config.allowUnfree = true;
 
-  # Darwin-specific services
-  services = {
-    nix-daemon.enable = true;
-    activate-system.enable = true;
-  };
-  
   # Time zone settings
   time.timeZone = "America/Los_Angeles";
 
@@ -38,7 +34,6 @@
       git
     ];
     shells = with pkgs; [ zsh bash ];
-    loginShell = pkgs.zsh;
     variables = {
       LANG = "en_US.UTF-8";
       EDITOR = "vim";
@@ -46,13 +41,13 @@
   };
 
   # Font configuration
-  fonts.fonts = with pkgs; [
+  fonts.packages = with pkgs; [
     material-design-icons
     powerline-fonts
     powerline-symbols
     noto-fonts-color-emoji
     font-awesome
-    (nerdfonts.override { fonts = [ "JetBrainsMono" ]; })
+    nerd-fonts.jetbrains-mono
   ];
 
   # Programs

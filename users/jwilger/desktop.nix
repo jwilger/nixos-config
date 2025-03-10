@@ -36,8 +36,6 @@
       wl-clipboard
       libnotify
       slack
-      _1password-gui
-      _1password-cli
     ];
   };
 

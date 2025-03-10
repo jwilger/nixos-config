@@ -19,6 +19,7 @@
 
     # Base packages applicable to macOS
     packages = with pkgs; [
+      dwt1-shell-color-scripts
       gh
       gcc
       devenv
@@ -57,8 +58,8 @@
       signing = {
         format = "ssh";
         key = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIGwXlUIgMZDNewfvIyX5Gd1B1dIuLT7lH6N+2+FrSaSU";
-        signByDefault = true;
-        signer = "${pkgs._1password-gui}/bin/op-ssh-sign";
+        # signByDefault = true;
+        # signer = "${pkgs._1password-gui}/bin/op-ssh-sign";
       };
 
       extraConfig = {

@@ -19,6 +19,7 @@
 
     # Base packages applicable to all hosts
     packages = with pkgs; [
+      dwt1-shell-color-scripts
       gh
       gcc
       devenv
