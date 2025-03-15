@@ -32,6 +32,12 @@
       fzf
       nil
       cargo
+
+      # stuff needed for Goose, an AI assistant
+      goose-cli
+      nodejs
+      python3
+      uv
     ];
   };
 

@@ -20,8 +20,6 @@
   };
 
   home = {
-    pointerCursor.hyprcursor.enable = true;
-
     # Desktop-specific packages
     packages = with pkgs; [
       thunderbird
