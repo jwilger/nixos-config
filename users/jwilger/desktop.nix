@@ -2,8 +2,11 @@
 { pkgs, lib, ... }: 
 
 {
-  # Import the base configuration
-  imports = [ ./base.nix ];
+  # Import the base configuration and 1Password settings
+  imports = [ 
+    ./base.nix
+    ./1password.nix
+  ];
 
   fonts.fontconfig.enable = true;
 
@@ -419,7 +422,6 @@
     settings = {
       exec-once = [
         "uwsm app -- ${pkgs.waybar}/bin/waybar"
-        "uwsm app -- ${pkgs._1password-gui}/bin/1password --silent"
         "uwsm app -- ${pkgs.solaar}/bin/solaar -w hide"
         "uwsm app -- ${pkgs.clockify}/bin/clockify"
       ];

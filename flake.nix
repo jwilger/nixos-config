@@ -47,6 +47,7 @@
           stylix.nixosModules.stylix
           ./hosts/gregor
           ./common
+          ./modules/1password.nix
           home-manager.nixosModules.home-manager {
             home-manager.useGlobalPkgs = false;
             home-manager.useUserPackages = true;
