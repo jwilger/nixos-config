@@ -521,6 +521,10 @@ pkgs,
       withRuby = true;
     };
 
+    vscode = {
+      enable = true;
+    };
+
     lazygit = {
       enable = true;
       settings = {
