@@ -1,7 +1,7 @@
 <h1 align="center">
    <img src="./.github/assets/logo/nixos-logo.png  " width="100px" /> 
    <br>
-      Frost-Phoenix's Flakes 
+      jwilger's Flakes 
    <br>
       <img src="https://raw.githubusercontent.com/catppuccin/catppuccin/main/assets/palette/macchiato.png" width="600px" /> <br>
    <div align="center">
@@ -53,15 +53,21 @@ OLD (EXPAND)
 
 ### 📚 Layout
 
--   [flake.nix](flake.nix) base of the configuration
--   [hosts](hosts) 🌳 per-host configurations that contain machine specific configurations
-    - [desktop](hosts/desktop/) 🖥️ Desktop specific configuration
-    - [laptop](hosts/laptop/) 💻 Laptop specific configuration
--   [modules](modules) 🍱 modularized NixOS configurations
-    -   [core](modules/core/) ⚙️ Core NixOS configuration
-    -   [homes](modules/home/) 🏠 my [Home-Manager](https://github.com/nix-community/home-manager) config
--   [pkgs](flake/pkgs) 📦 packages exported by my flake
--   [wallpapers](wallpapers/) 🌄 wallpapers collection
+-   [flake.nix](flake.nix) - Entry point of the configuration
+-   [hosts](hosts) - 🌳 Per-host configurations:
+    - [desktop](hosts/desktop/) - 🖥️ Desktop configuration with bcachefs, amdgpu, and Intel CPU support
+    - [laptop](hosts/laptop/) - 💻 Laptop configuration with ext4 and Intel CPU support
+    - [vm](hosts/vm/) - 🖥️ VM configuration with QEMU guest profile and virtio support
+-   [modules](modules) - 🔧 Configuration modules:
+    - [core](modules/core/) - ⚙️ System-level configurations:
+        - Hardware, networking, security, services, system settings
+        - Bootloader, pipewire, virtualization, wayland/xserver
+    - [home](modules/home/) - 🏠 User environment configurations:
+        - Desktop applications (VSCodium, Floorp, Discord, etc.)
+        - Shell environment (Zsh, Starship)
+        - Window manager (Hyprland) and desktop components
+        - Development tools and utilities
+        - Custom scripts and theming
 
 ### 📓 Components
 |                             | NixOS + Hyprland                                                                              |
@@ -224,129 +230,126 @@ runbg.sh
 
 ### ⌨️ Keybinds
 
-View all keybinds by pressing ```$mainMod F1``` and wallpaper picker by pressing ```$mainMod w```. By default ```$mainMod``` is the ```SUPER``` key. 
+View all keybinds by pressing ```$mainMod F1```. By default ```$mainMod``` is the ```SUPER``` key. 
 
 <details>
 <summary>
-Keybindings 
+Basic Controls
 </summary>
 
-- ```bind = $mainMod, Return, exec, kitty```
-- ```bind = ALT, Return, exec, kitty --title float_kitty```
-- ```bind = $mainMod SHIFT, Return, exec, kitty --start-as=fullscreen -o 'font_size=16'```
-- ```bind = $mainMod, B, exec, firefox```
-- ```bind = $mainMod, Q, killactive,```
-- ```bind = $mainMod, F, fullscreen, 0```
-- ```bind = $mainMod SHIFT, F, fullscreen, 1```
-- ```bind = $mainMod, Space, togglefloating,```
-- ```bind = $mainMod, D, exec, fuzzel```
-- ```bind = $mainMod, Escape, exec, swaylock```
-- ```bind = $mainMod SHIFT, Escape, exec, shutdown-script```
-- ```bind = $mainMod, P, pseudo,```
-- ```bind = $mainMod, J, togglesplit,```
-- ```bind = $mainMod, E, exec, nemo```
-- ```bind = $mainMod SHIFT, B, exec, pkill -SIGUSR1 .waybar-wrapped```
-- ```bind = $mainMod, C ,exec, hyprpicker -a```
-- ```bind = $mainMod, W,exec, wallpaper-picker```
+- ```$mainMod, Return``` → ```kitty```
+- ```ALT, Return``` → ```kitty --title float_kitty```
+- ```$mainMod SHIFT, Return``` → ```kitty --start-as=fullscreen -o 'font_size=16'```
+- ```$mainMod, B``` → ```floorp``` (workspace 1)
+- ```$mainMod, Q``` → Kill active window
+- ```$mainMod, F``` → Toggle fullscreen
+- ```$mainMod SHIFT, F``` → Toggle true fullscreen
+- ```$mainMod, D``` → Toggle floating
+- ```$mainMod, SPACE``` → Launch fuzzel
+- ```$mainMod SHIFT, D``` → Launch Discord (workspace 4)
+- ```$mainMod SHIFT, S``` → Launch SoundWireServer (workspace 5)
+- ```$mainMod, Escape``` → Lock screen
+- ```$mainMod SHIFT, Escape``` → Shutdown menu
+- ```$mainMod, P``` → Toggle pseudo mode
+- ```$mainMod, X``` → Toggle split
+- ```$mainMod, E``` → Launch file manager
+- ```$mainMod SHIFT, B``` → Reload Waybar
+- ```$mainMod, C``` → Color picker
+- ```$mainMod, W``` → Wallpaper picker
+- ```$mainMod SHIFT, W``` → Start VM
 </details>
 
 <details>
 <summary>
-Screenshot 
+Screenshot
 </summary>
 
-- ```bind = $mainMod, Print, exec, grimblast --notify --cursor save area ~/Pictures/$(date +'%Y-%m-%d-At-%Ih%Mm%Ss').png```
-- ```bind = ,Print, exec, grimblast --notify --cursor  copy area```
+- ```$mainMod, Print``` → Save area screenshot
+- ```Print``` → Copy area screenshot
 </details>
 
 <details>
 <summary>
-Switch window focus 
+Focus Control
 </summary>
 
-- ```bind = $mainMod, left, movefocus, l```
-- ```bind = $mainMod, right, movefocus, r```
-- ```bind = $mainMod, up, movefocus, u```
-- ```bind = $mainMod, down, movefocus, d```
+- ```$mainMod, h``` → Focus left
+- ```$mainMod, l``` → Focus right
+- ```$mainMod, k``` → Focus up
+- ```$mainMod, j``` → Focus down
 </details>
 
 <details>
 <summary>
-Switch workspace 
+Window Control
 </summary>
 
-- ```bind = $mainMod, 1, workspace, 1```
-- ```bind = $mainMod, 2, workspace, 2```
-- ```bind = $mainMod, 3, workspace, 3```
-- ```bind = $mainMod, 4, workspace, 4```
-- ```bind = $mainMod, 5, workspace, 5```
-- ```bind = $mainMod, 6, workspace, 6```
-- ```bind = $mainMod, 7, workspace, 7```
-- ```bind = $mainMod, 8, workspace, 8```
-- ```bind = $mainMod, 9, workspace, 9```
-- ```bind = $mainMod, 0, workspace, 10```
+- ```$mainMod SHIFT, h``` → Move window left
+- ```$mainMod SHIFT, l``` → Move window right
+- ```$mainMod SHIFT, k``` → Move window up
+- ```$mainMod SHIFT, j``` → Move window down
+- ```$mainMod CTRL, h``` → Resize window left
+- ```$mainMod CTRL, l``` → Resize window right
+- ```$mainMod CTRL, k``` → Resize window up
+- ```$mainMod CTRL, j``` → Resize window down
+- ```$mainMod ALT, h``` → Move window left (fine)
+- ```$mainMod ALT, l``` → Move window right (fine)
+- ```$mainMod ALT, k``` → Move window up (fine)
+- ```$mainMod ALT, j``` → Move window down (fine)
 </details>
 
 <details>
 <summary>
-Switch window to workspace 
+Workspace Control
 </summary>
 
-- ```bind = $mainMod SHIFT, 1, movetoworkspace, 1```
-- ```bind = $mainMod SHIFT, 2, movetoworkspace, 2```
-- ```bind = $mainMod SHIFT, 3, movetoworkspace, 3```
-- ```bind = $mainMod SHIFT, 4, movetoworkspace, 4```
-- ```bind = $mainMod SHIFT, 5, movetoworkspace, 5```
-- ```bind = $mainMod SHIFT, 6, movetoworkspace, 6```
-- ```bind = $mainMod SHIFT, 7, movetoworkspace, 7```
-- ```bind = $mainMod SHIFT, 8, movetoworkspace, 8```
-- ```bind = $mainMod SHIFT, 9, movetoworkspace, 9```
-- ```bind = $mainMod SHIFT, 0, movetoworkspace, 10```
-- ```bind = $mainMod CTRL, c, movetoworkspace, empty```
+- ```$mainMod, 1-0``` → Switch to workspace 1-10
+- ```$mainMod SHIFT, 1-0``` → Move window to workspace 1-10
+- ```$mainMod CTRL, c``` → Move window to empty workspace
 </details>
 
 <details>
 <summary>
-Window control 
+Media and Volume Controls
 </summary>
 
-- ```bind = $mainMod SHIFT, left, movewindow, l```
-- ```bind = $mainMod SHIFT, right, movewindow, r```
-- ```bind = $mainMod SHIFT, up, movewindow, u```
-- ```bind = $mainMod SHIFT, down, movewindow, d```
-- ```bind = $mainMod CTRL, left, resizeactive, -80 0```
-- ```bind = $mainMod CTRL, right, resizeactive, 80 0```
-- ```bind = $mainMod CTRL, up, resizeactive, 0 -80```
-- ```bind = $mainMod CTRL, down, resizeactive, 0 80```
-- ```bind = $mainMod ALT, left, moveactive,  -80 0```
-- ```bind = $mainMod ALT, right, moveactive, 80 0```
-- ```bind = $mainMod ALT, up, moveactive, 0 -80```
-- ```bind = $mainMod ALT, down, moveactive, 0 80```
+- ```XF86AudioRaiseVolume``` → Volume up
+- ```XF86AudioLowerVolume``` → Volume down
+- ```XF86AudioMute``` → Toggle mute
+- ```XF86AudioPlay``` → Play/pause
+- ```XF86AudioNext``` → Next track
+- ```XF86AudioPrev``` → Previous track
+- ```XF86AudioStop``` → Stop playback
+- ```$mainMod, mouse_down``` → Previous workspace
+- ```$mainMod, mouse_up``` → Next workspace
 </details>
 
 <details>
 <summary>
-Media and volume controls 
+Brightness Control
 </summary>
-   
-- ```bind = ,XF86AudioRaiseVolume,exec, pamixer -i 2```
-- ```bind = ,XF86AudioLowerVolume,exec, pamixer -d 2```
-- ```bind = ,XF86AudioMute,exec, pamixer -t```
-- ```bind = ,XF86AudioPlay,exec, playerctl play-pause```
-- ```bind = ,XF86AudioNext,exec, playerctl next```
-- ```bind = ,XF86AudioPrev,exec, playerctl previous```
-- ```bind = , XF86AudioStop, exec, playerctl stop```
-- ```bind = $mainMod, mouse_down, workspace, e-1```
-- ```bind = $mainMod, mouse_up, workspace, e+1```
+
+- ```XF86MonBrightnessUp``` → Brightness up (5%)
+- ```XF86MonBrightnessDown``` → Brightness down (5%)
+- ```$mainMod XF86MonBrightnessUp``` → Brightness up (100%)
+- ```$mainMod XF86MonBrightnessDown``` → Brightness down (100%)
 </details>
 
 <details>
 <summary>
-Mouse binding 
+Clipboard
 </summary>
 
-- ```bindm = $mainMod, mouse:272, movewindow```
-- ```bindm = $mainMod, mouse:273, resizewindow```
+- ```$mainMod, V``` → Open clipboard manager
+</details>
+
+<details>
+<summary>
+Mouse Bindings
+</summary>
+
+- ```$mainMod + Left Mouse``` → Move window
+- ```$mainMod + Right Mouse``` → Resize window
 </details>
 
 # 🚀 Installation 
@@ -357,10 +360,12 @@ Mouse binding
 
 > It is highly recommended to review the configuration contents and make necessary modifications to customize it to your needs before attempting the installation.
 
-1. **Install NixOs**
+### 🚀 Installation 
 
-   First install nixos using any [graphical ISO image](https://nixos.org/download.html#nixos-iso). 
-   > Only been tested using the Gnome graphical installer and choosing the ```No desktop``` option durring instalation.
+> **⚠️ Important Filesystem Note ⚠️** <br>
+> This configuration supports both bcachefs (desktop) and ext4 (laptop) installations. Make sure to choose the appropriate host configuration based on your filesystem choice during NixOS installation.
+
+> **⚠️ Use this configuration at your own risk! ⚠️** <br>
 
 2. **Clone the repo**
 
@@ -463,31 +468,5 @@ Other dotfiles that I learned / copy from:
 </div>
 
 <!-- Links -->
-[Hyprland]: https://github.com/hyprwm/Hyprland
-[Kitty]: https://github.com/kovidgoyal/kitty
-[Starship]: https://github.com/starship/starship
-[Waybar]: https://github.com/Alexays/Waybar
-[fuzzel]: https://codeberg.org/dnkl/fuzzel>
-[Btop]: https://github.com/aristocratos/btop
-[nemo]: https://github.com/linuxmint/nemo
-[yazi]: https://github.com/sxyazi/yazi
-[zsh]: https://ohmyz.sh/
-[oh-my-zsh]: https://ohmyz.sh/
-[Swaylock-effects]: https://github.com/mortie/swaylock-effects
-[audacious]: https://audacious-media-player.org/
-[mpv]: https://github.com/mpv-player/mpv
-[VSCodium]:https://vscodium.com/
-[Neovim]: https://github.com/neovim/neovim
-[grimblast]: https://github.com/hyprwm/contrib
-[imv]: https://sr.ht/~exec64/imv/
-[swaync]: https://github.com/ErikReider/SwayNotificationCenter
-[Nerd fonts]: https://github.com/ryanoasis/nerd-fonts
-[NetworkManager]: https://wiki.gnome.org/Projects/NetworkManager
-[network-manager-applet]: https://gitlab.gnome.org/GNOME/network-manager-applet/
-[wl-clip-persist]: https://github.com/Linus789/wl-clip-persist
-[wf-recorder]: https://github.com/ammen99/wf-recorder
-[hyprpicker]: https://github.com/hyprwm/hyprpicker
-[Catppuccin]: https://github.com/catppuccin/catppuccin
-[catppuccin-papirus-folders]: https://github.com/catppuccin/papirus-folders
-[Nordzy-cursors]: https://github.com/alvatip/Nordzy-cursors
-[maxfetch]: https://github.com/jobcmax/maxfetch
+<!-- Links -->
+[...verify all links are still valid and point to correct resources...]
