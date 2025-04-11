@@ -35,14 +35,11 @@
       url = "github:catppuccin/starship";
       flake = false;
     };
-
-    spicetify-nix.url = "github:gerg-l/spicetify-nix";
-    spicetify-nix.inputs.nixpkgs.follows = "nixpkgs";
   };
 
   outputs = { nixpkgs, self, ...} @ inputs:
   let
-    username = "frostphoenix";
+    username = "jwilger";
     system = "x86_64-linux";
     pkgs = import nixpkgs {
       inherit system;
