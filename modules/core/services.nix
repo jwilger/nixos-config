@@ -10,4 +10,12 @@
     # don’t shutdown when power button is short-pressed
     HandlePowerKey=ignore
   '';
+  
+  services.openssh = {
+    enable = true;
+    ports = [22];
+    settings = {
+      PasswordAuthentication = true;
+    };
+  };
 }

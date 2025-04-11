@@ -20,8 +20,8 @@
       ];
 
       input = {
-        kb_layout = "us,fr";
-        kb_options ="grp:alt_caps_toggle"; 
+        kb_layout = "us";
+        kb_options ="ctrl:nocaps"; 
         numlock_by_default = true;
         follow_mouse = 1;
         sensitivity = 0;
@@ -38,12 +38,11 @@
         border_size = 2;
         "col.active_border" = "rgb(cba6f7) rgb(94e2d5) 45deg";
         "col.inactive_border" = "0x00000000";
-        border_part_of_window = false;
         no_border_on_floating = false;
       };
 
       misc = {
-        disable_autoreload = true;
+        disable_autoreload = false;
         disable_hyprland_logo = true;
         always_follow_on_dnd = true;
         layers_hog_keyboard_focus = true;
@@ -53,7 +52,6 @@
       };
 
       dwindle = {
-        no_gaps_when_only = true;
         force_split = 0;
         special_scale_factor = 1.0;
         split_width_multiplier = 1.0;
@@ -65,21 +63,18 @@
       master = {
         new_status = "master";
         special_scale_factor = 1;
-        no_gaps_when_only = false;
       };
 
       decoration = {
-        rounding = 0;
-        # active_opacity = 0.90;
-        # inactive_opacity = 0.90;
-        # fullscreen_opacity = 1.0;
+        rounding = 3;
+        active_opacity = 0.98;
+        inactive_opacity = 0.80;
+        fullscreen_opacity = 1.0;
 
         blur = {
           enabled = true;
-          size = 1;
-          passes = 1;
-          # size = 4;
-          # passes = 2;
+          size = 4;
+          passes = 2;
           brightness = 1;
           contrast = 1.400;
           ignore_opacity = true;
@@ -88,13 +83,13 @@
           xray = true;
         };
 
-        drop_shadow = true;
-
-        shadow_ignore_window = true;
-        shadow_offset = "0 2";
-        shadow_range = 20;
-        shadow_render_power = 3;
-        "col.shadow" = "rgba(00000055)";
+        shadow = {
+          ignore_window = true;
+          offset = "0 2";
+          range = 20;
+          render_power = 3;
+          color = "rgba(00000055)";
+        };
       };
 
       animations = {
@@ -137,15 +132,15 @@
         "$mainMod, Q, killactive,"
         "$mainMod, F, fullscreen, 0"
         "$mainMod SHIFT, F, fullscreen, 1"
-        "$mainMod, Space, togglefloating,"
-        "$mainMod, D, exec, fuzzel"
+        "$mainMod, D, togglefloating,"
+        "$mainMod, SPACE, exec, fuzzel"
         "$mainMod SHIFT, D, exec, hyprctl dispatch exec '[workspace 4 silent] discord --enable-features=UseOzonePlatform --ozone-platform=wayland'"
         "$mainMod SHIFT, S, exec, hyprctl dispatch exec '[workspace 5 silent] SoundWireServer'"
-        "$mainMod, Escape, exec, swaylock"
+        "$mainMod, Escape, exec, pidof hyprlock || hyprlock"
         "$mainMod SHIFT, Escape, exec, shutdown-script"
         "$mainMod, P, pseudo,"
-        "$mainMod, J, togglesplit,"
-        "$mainMod, E, exec, nautilus"
+        "$mainMod, X, togglesplit,"
+        "$mainMod, E, exec, ~/.config/hypr/launch-yazi.sh"
         "$mainMod SHIFT, B, exec, pkill -SIGUSR1 .waybar-wrapped"
         "$mainMod, C ,exec, hyprpicker -a"
         "$mainMod, W,exec, wallpaper-picker"
@@ -156,10 +151,10 @@
         ",Print, exec, grimblast --notify --cursor --freeze copy area"
 
         # switch focus
-        "$mainMod, left, movefocus, l"
-        "$mainMod, right, movefocus, r"
-        "$mainMod, up, movefocus, u"
-        "$mainMod, down, movefocus, d"
+        "$mainMod, h, movefocus, l"
+        "$mainMod, l, movefocus, r"
+        "$mainMod, k, movefocus, u"
+        "$mainMod, j, movefocus, d"
 
         # switch workspace
         "$mainMod, 1, workspace, 1"
@@ -187,18 +182,18 @@
         "$mainMod CTRL, c, movetoworkspace, empty"
 
         # window control
-        "$mainMod SHIFT, left, movewindow, l"
-        "$mainMod SHIFT, right, movewindow, r"
-        "$mainMod SHIFT, up, movewindow, u"
-        "$mainMod SHIFT, down, movewindow, d"
-        "$mainMod CTRL, left, resizeactive, -80 0"
-        "$mainMod CTRL, right, resizeactive, 80 0"
-        "$mainMod CTRL, up, resizeactive, 0 -80"
-        "$mainMod CTRL, down, resizeactive, 0 80"
-        "$mainMod ALT, left, moveactive,  -80 0"
-        "$mainMod ALT, right, moveactive, 80 0"
-        "$mainMod ALT, up, moveactive, 0 -80"
-        "$mainMod ALT, down, moveactive, 0 80"
+        "$mainMod SHIFT, h, movewindow, l"
+        "$mainMod SHIFT, l, movewindow, r"
+        "$mainMod SHIFT, k, movewindow, u"
+        "$mainMod SHIFT, j, movewindow, d"
+        "$mainMod CTRL, h, resizeactive, -80 0"
+        "$mainMod CTRL, l, resizeactive, 80 0"
+        "$mainMod CTRL, k, resizeactive, 0 -80"
+        "$mainMod CTRL, j, resizeactive, 0 80"
+        "$mainMod ALT, h, moveactive,  -80 0"
+        "$mainMod ALT, l, moveactive, 80 0"
+        "$mainMod ALT, k, moveactive, 0 -80"
+        "$mainMod ALT, j, moveactive, 0 80"
 
         # media and volume controls
         ",XF86AudioRaiseVolume,exec, pamixer -i 2"
@@ -229,24 +224,24 @@
 
       # windowrule
       windowrule = [
-        "float,imv"
-        "center,imv"
-        "size 1200 725,imv"
-        "float,mpv"
-        "center,mpv"
-        "tile,Aseprite"
-        "size 1200 725,mpv"
+        "float,class:imv"
+        "center,class:imv"
+        "size 1200 725,class:imv"
+        "float,class:mpv"
+        "center,class:mpv"
+        "tile,class:Aseprite"
+        "size 1200 725,class:mpv"
         "float,title:^(float_kitty)$"
         "center,title:^(float_kitty)$"
         "size 950 600,title:^(float_kitty)$"
-        "float,audacious"
-        "workspace 8 silent, audacious"
+        "float,class:audacious"
+        "workspace 8 silent,class:udacious"
         # "pin,wofi"
         # "float,wofi"
         # "noborder,wofi"
-        "tile, neovide"
-        "idleinhibit focus,mpv"
-        "float,udiskie"
+        "tile,class:neovide"
+        "idleinhibit focus,class:mpv"
+        "float,class:udiskie"
         "float,title:^(Transmission)$"
         "float,title:^(Volume Control)$"
         "float,title:^(Firefox — Sharing Indicator)$"
@@ -294,11 +289,21 @@
     };
 
     extraConfig = "
-      monitor=,preferred,auto,auto
+      monitor=,highres,auto,2
 
       xwayland {
         force_zero_scaling = true
       }
+
+      env=GDK_SCALE,2
+      env=XCURSOR_SIZE,32
     ";
+  };
+
+  xdg.configFile."hypr/launch-yazi.sh" = {
+    text = ''
+      kitty -e zsh -l -c "exec yazi"
+    '';
+    executable = true;
   };
 }
