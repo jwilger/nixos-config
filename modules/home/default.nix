@@ -9,7 +9,7 @@
     ++ [(import ./hyprland)]                      # window manager
     ++ [(import ./kitty.nix)]                     # terminal
     ++ [(import ./swaync/swaync.nix)]             # notification deamon
-    ++ [(import ./nvim.nix)]                      # neovim editor
+    ++ [(import ./nvim)]                      # neovim editor
     ++ [(import ./packages.nix)]                  # other packages
     ++ [(import ./scripts/scripts.nix)]           # personal scripts
     ++ [(import ./starship.nix)]                  # shell prompt
