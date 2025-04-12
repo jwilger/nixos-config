@@ -14,5 +14,6 @@
     ++ [(import ./scripts/scripts.nix)]           # personal scripts
     ++ [(import ./starship.nix)]                  # shell prompt
     ++ [(import ./waybar)]                        # status bar
+    ++ [(import ./yazi)]                      # terminal-based file explorer
     ++ [(import ./zsh.nix)];                      # shell
 }
