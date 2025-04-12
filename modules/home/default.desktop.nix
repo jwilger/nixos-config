@@ -1,6 +1,8 @@
 {inputs, username, host, ...}: {
   imports =
-       [(import ./default.nix)];
-    # ++ [(import ./rider.nix)]                     # C# JetBrain editor
-    # ++ [(import ./steam.nix)] ++ [(import ./unity.nix)];
+    [
+      (import ./default.nix)
+      (import ./firefox.nix)
+      (import ./unity.nix)
+    ];
 }

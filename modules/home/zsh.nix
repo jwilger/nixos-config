@@ -24,13 +24,7 @@
       # record = "wf-recorder --audio=alsa_output.pci-0000_08_00.6.analog-stereo.monitor -f $HOME/Videos/$(date +'%Y%m%d%H%M%S_1.mp4')";
 
       # Utils
-      c = "clear";
-      cd = "z";
-      tt = "gtrash put";
       cat = "bat";
-      nano = "micro";
-      code = "codium";
-      py = "python";
       icat = "kitten icat";
       dsize = "du -hs";
       findw = "grep -rl";
@@ -42,7 +36,6 @@
       tree = "eza --icons --tree --group-directories-first";
 
       # Nixos
-      cdnix = "cd ~/nixos-config && codium ~/nixos-config";
       ns = "nix-shell --run zsh";
       nix-shell = "nix-shell --run zsh";
       nix-switch = "sudo nixos-rebuild switch --flake ~/nixos-config#${host}";
@@ -51,28 +44,15 @@
       nix-clean = "sudo nix-collect-garbage && sudo nix-collect-garbage -d && sudo rm /nix/var/nix/gcroots/auto/* && nix-collect-garbage && nix-collect-garbage -d";
 
       # Git
+      g    = "git";
       ga   = "git add";
       gaa  = "git add --all";
-      gs   = "git status";
-      gb   = "git branch";
-      gm   = "git merge";
+      gst  = "git status";
+      gbr  = "git branch";
       gpl  = "git pull";
-      gplo = "git pull origin";
       gps  = "git push";
-      gpst = "git push --follow-tags";
-      gpso = "git push origin";
-      gc   = "git commit";
-      gcm  = "git commit -m";
-      gcma = "git add --all && git commit -m";
-      gtag = "git tag -ma";
-      gch  = "git checkout";
-      gchb = "git checkout -b";
-      gcoe = "git config user.email";
-      gcon = "git config user.name";
-
-      # python
-      piv = "python -m venv .venv";
-      psv = "source .venv/bin/activate";
+      gci  = "git commit";
+      gco  = "git checkout";
     };
   };
 

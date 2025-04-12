@@ -49,14 +49,14 @@
   in
   {
     nixosConfigurations = {
-      desktop = nixpkgs.lib.nixosSystem {
+      gregor = nixpkgs.lib.nixosSystem {
         inherit system;
-        modules = [ (import ./hosts/desktop) ];
-        specialArgs = { host="desktop"; inherit self inputs username ; };
+        modules = [ (import ./hosts/gregor) ];
+        specialArgs = { host="gregor"; inherit self inputs username ; };
       };
       laptop = nixpkgs.lib.nixosSystem {
         inherit system;
-        modules = [ (import ./hosts/laptop) ];
+        modules = [ (import ./hosts/_laptop) ];
         specialArgs = { host="laptop"; inherit self inputs username ; };
       };
        vm = nixpkgs.lib.nixosSystem {

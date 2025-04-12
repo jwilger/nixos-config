@@ -5,18 +5,20 @@
       
       # autostart
       exec-once = [
-        "systemctl --user import-environment &"
-        "hash dbus-update-activation-environment 2>/dev/null &"
-        "dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP &"
-        "nm-applet &"
-        "wl-clip-persist --clipboard both"
-        "swaybg -m fill -i $(find ~/Pictures/wallpapers/ -maxdepth 1 -type f) &"
-        "hyprctl setcursor Nordzy-cursors 22 &"
-        "poweralertd &"
-        "waybar &"
-        "swaync &"
-        "wl-paste --watch cliphist store &"
-        "hyprlock"
+        ''
+        systemctl --user import-environment & \
+        hash dbus-update-activation-environment 2>/dev/null & \
+        dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP & \
+        nm-applet & \
+        wl-clip-persist --clipboard both \
+        swaybg -m fill -i ''$(find ~/Pictures/wallpapers/ -maxdepth 1 -type f) & \
+        hyprctl setcursor Nordzy-cursors 22 & \
+        poweralertd & \
+        waybar & \
+        swaync & \
+        wl-paste --watch cliphist store & \
+        hyprlock
+        ''
       ];
 
       input = {
@@ -124,18 +126,19 @@
         # show keybinds list
         "$mainMod, F1, exec, show-keybinds"
 
+        # background noise
+        "$mainMod, F2, exec, lofi"
+
         # keybindings
         "$mainMod, Return, exec, kitty"
         "ALT, Return, exec, kitty --title float_kitty"
         "$mainMod SHIFT, Return, exec, kitty --start-as=fullscreen -o 'font_size=16'"
-        "$mainMod, B, exec, hyprctl dispatch exec '[workspace 1 silent] floorp'"
+        "$mainMod, B, exec, firefox"
         "$mainMod, Q, killactive,"
         "$mainMod, F, fullscreen, 0"
         "$mainMod SHIFT, F, fullscreen, 1"
         "$mainMod, D, togglefloating,"
         "$mainMod, SPACE, exec, fuzzel"
-        "$mainMod SHIFT, D, exec, hyprctl dispatch exec '[workspace 4 silent] discord --enable-features=UseOzonePlatform --ozone-platform=wayland'"
-        "$mainMod SHIFT, S, exec, hyprctl dispatch exec '[workspace 5 silent] SoundWireServer'"
         "$mainMod, Escape, exec, pidof hyprlock || hyprlock"
         "$mainMod SHIFT, Escape, exec, shutdown-script"
         "$mainMod, P, pseudo,"
@@ -147,8 +150,8 @@
         "$mainMod SHIFT, W, exec, vm-start"
 
         # screenshot
-        "$mainMod, Print, exec, grimblast --notify --cursor --freeze save area ~/Pictures/$(date +'%Y-%m-%d-At-%Ih%Mm%Ss').png"
-        ",Print, exec, grimblast --notify --cursor --freeze copy area"
+        "$mainMod, Print, exec, grimblast --notify --freeze save area ~/Pictures/$(date +'%Y-%m-%d-At-%Ih%Mm%Ss').png"
+        ",Print, exec, grimblast --notify --freeze copy area"
 
         # switch focus
         "$mainMod, h, movefocus, l"
@@ -169,16 +172,16 @@
         "$mainMod, 0, workspace, 10"
 
         # same as above, but switch to the workspace
-        "$mainMod SHIFT, 1, movetoworkspacesilent, 1" # movetoworkspacesilent
-        "$mainMod SHIFT, 2, movetoworkspacesilent, 2"
-        "$mainMod SHIFT, 3, movetoworkspacesilent, 3"
-        "$mainMod SHIFT, 4, movetoworkspacesilent, 4"
-        "$mainMod SHIFT, 5, movetoworkspacesilent, 5"
-        "$mainMod SHIFT, 6, movetoworkspacesilent, 6"
-        "$mainMod SHIFT, 7, movetoworkspacesilent, 7"
-        "$mainMod SHIFT, 8, movetoworkspacesilent, 8"
-        "$mainMod SHIFT, 9, movetoworkspacesilent, 9"
-        "$mainMod SHIFT, 0, movetoworkspacesilent, 10"
+        "$mainMod SHIFT, 1, movetoworkspace, 1" # movetoworkspacesilent
+        "$mainMod SHIFT, 2, movetoworkspace, 2"
+        "$mainMod SHIFT, 3, movetoworkspace, 3"
+        "$mainMod SHIFT, 4, movetoworkspace, 4"
+        "$mainMod SHIFT, 5, movetoworkspace, 5"
+        "$mainMod SHIFT, 6, movetoworkspace, 6"
+        "$mainMod SHIFT, 7, movetoworkspace, 7"
+        "$mainMod SHIFT, 8, movetoworkspace, 8"
+        "$mainMod SHIFT, 9, movetoworkspace, 9"
+        "$mainMod SHIFT, 0, movetoworkspace, 10"
         "$mainMod CTRL, c, movetoworkspace, empty"
 
         # window control
@@ -236,9 +239,6 @@
         "size 950 600,title:^(float_kitty)$"
         "float,class:audacious"
         "workspace 8 silent,class:udacious"
-        # "pin,wofi"
-        # "float,wofi"
-        # "noborder,wofi"
         "tile,class:neovide"
         "idleinhibit focus,class:mpv"
         "float,class:udiskie"
