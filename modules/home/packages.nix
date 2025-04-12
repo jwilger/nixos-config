@@ -5,8 +5,6 @@ in
 {
   home.packages = (with pkgs; [
 	  man-pages
-    _1password-cli
-    _1password-gui
     _2048
     audacity
     bitwise                           # cli tool for bit / hex manipulation
