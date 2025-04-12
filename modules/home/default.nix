@@ -16,5 +16,6 @@
     ++ [(import ./starship.nix)]                  # shell prompt
     ++ [(import ./waybar)]                        # status bar
     ++ [(import ./yazi)]                          # terminal-based file explorer
+    ++ [(import ./zellij)]                        # terminal multiplexer
     ++ [(import ./zsh.nix)];                      # shell
 }
