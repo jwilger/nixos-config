@@ -21,7 +21,7 @@
   users.users.jwilger = {
     isNormalUser = true;
     description = "jwilger";
-    extraGroups = [ "networkmanager" "wheel" ];
+    extraGroups = [ "networkmanager" "wheel" "docker" ];
     shell = pkgs.zsh;
   };
   nix.settings.allowed-users = [ "jwilger" ];
