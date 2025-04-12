@@ -38,32 +38,22 @@
   };
 
   outputs = { nixpkgs, self, ...} @ inputs:
-  let
-    username = "jwilger";
-    system = "x86_64-linux";
-    pkgs = import nixpkgs {
-      inherit system;
-      config.allowUnfree = true;
-    };
-    lib = nixpkgs.lib;
-  in
   {
     nixosConfigurations = {
       gregor = nixpkgs.lib.nixosSystem {
-        inherit system;
         modules = [ (import ./hosts/gregor) ];
-        specialArgs = { host="gregor"; inherit self inputs username ; };
+        specialArgs = { host="gregor"; system="x86_64-linux"; username="jwilger"; inherit self inputs; };
       };
-      laptop = nixpkgs.lib.nixosSystem {
-        inherit system;
-        modules = [ (import ./hosts/_laptop) ];
-        specialArgs = { host="laptop"; inherit self inputs username ; };
-      };
-       vm = nixpkgs.lib.nixosSystem {
-        inherit system;
-        modules = [ (import ./hosts/vm) ];
-        specialArgs = { host="vm"; inherit self inputs username ; };
-      };
+      # laptop = nixpkgs.lib.nixosSystem {
+      #   inherit system;
+      #   modules = [ (import ./hosts/_laptop) ];
+      #   specialArgs = { host="laptop"; inherit self inputs username ; };
+      # };
+      #  vm = nixpkgs.lib.nixosSystem {
+      #   inherit system;
+      #   modules = [ (import ./hosts/vm) ];
+      #   specialArgs = { host="vm"; inherit self inputs username ; };
+      # };
     };
   };
 }

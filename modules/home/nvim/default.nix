@@ -1,4 +1,4 @@
-{ username, ... }:
+{ config, ... }:
 {
   programs.neovim = {
     enable = true;
@@ -12,6 +12,6 @@
   };
 
   systemd.user.tmpfiles.rules = [
-    "L /home/${username}/.config/nvim - - - - /home/${username}/nixos-config/modules/home/nvim/nvim"
+    "L ${config.home.homeDirectory}/.config/nvim - - - - /etc/nixos/modules/home/nvim/nvim"
   ];
 }
