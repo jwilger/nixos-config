@@ -6,23 +6,23 @@
     useGlobalPkgs = true;
     extraSpecialArgs = { inherit inputs username host; };
     
-    users.jwilger = {
+    users.${username} = {
       imports = 
         if (host == "gregor") then 
           [ ./../home/default.desktop.nix ] 
         else [ ./../home ];
-      home.username = "jwilger";
-      home.homeDirectory = "/home/jwilger";
+      home.username = "${username}";
+      home.homeDirectory = "/home/${username}";
       home.stateVersion = "24.11";
       programs.home-manager.enable = true;
     };
   };
 
-  users.users.jwilger = {
+  users.users.${username} = {
     isNormalUser = true;
-    description = "jwilger";
-    extraGroups = [ "networkmanager" "wheel" "docker" ];
+    description = "${username}";
+    extraGroups = [ "networkmanager" "wheel" ];
     shell = pkgs.zsh;
   };
-  nix.settings.allowed-users = [ "jwilger" ];
+  nix.settings.allowed-users = [ "${username}" ];
 }

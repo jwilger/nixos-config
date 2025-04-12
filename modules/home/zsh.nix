@@ -1,4 +1,4 @@
-{ hostname, config, pkgs, host, ...}: 
+{ host, config, ...}: 
 {
   programs.zsh = {
     enable = true;
@@ -16,7 +16,7 @@
     
     envExtra = ''
       if [[ -z "$SSH_AUTH_SOCK" ]]; then
-        export SSH_AUTH_SOCK="/home/jwilger/.1password/agent.sock"
+        export SSH_AUTH_SOCK="/${config.home.homeDirectory}/.1password/agent.sock"
       fi
     '';
     
@@ -38,9 +38,9 @@
       # Nixos
       ns = "nix-shell --run zsh";
       nix-shell = "nix-shell --run zsh";
-      nix-switch = "sudo nixos-rebuild switch --flake ~/nixos-config#${host}";
-      nix-switchu = "sudo nixos-rebuild switch --upgrade --flake ~/nixos-config#${host}";
-      nix-flake-update = "sudo nix flake update ~/nixos-config#";
+      nix-switch = "sudo nixos-rebuild switch --flake /etc/nixos#${host}";
+      nix-switchu = "sudo nixos-rebuild switch --upgrade --flake /etc/nixos#${host}";
+      nix-flake-update = "sudo nix flake update /etc/nixos#";
       nix-clean = "sudo nix-collect-garbage && sudo nix-collect-garbage -d && sudo rm /nix/var/nix/gcroots/auto/* && nix-collect-garbage && nix-collect-garbage -d";
 
       # Git
