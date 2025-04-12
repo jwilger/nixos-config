@@ -1,4 +1,4 @@
-{ config, pkgs, username, ... }:
+{ pkgs, ... }:
 {
   # Add user to libvirtd group
   users.users.jwilger.extraGroups = [ "libvirtd" ];
@@ -16,6 +16,13 @@
 
   # Manage the virtualisation services
   virtualisation = {
+    docker = {
+      enable = true;
+      rootless = {
+        enable = true;
+        setSocketVariable = true;
+      };
+    };
     libvirtd = {
       enable = true;
       qemu = {
