@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ ... }:
 {
   programs.neovim = {
     enable = true;
@@ -10,4 +10,8 @@
     withPython3 = true;
     withRuby = true;
   };
+
+  systemd.user.tmpfiles.rules = [
+    "L /home/jwilger/.config/nvim - - - - /home/jwilger/nixos-config/modules/home/nvim/nvim"
+  ];
 }
