@@ -12,9 +12,10 @@
       home.stateVersion = "24.11";
       programs.home-manager.enable = true;
       imports = 
-        if (host == "gregor") then 
+        [inputs.catppuccin.homeModules.catppuccin] ++
+        (if (host == "gregor") then 
           [ ./../home/default.desktop.nix ] 
-        else [ ./../home ];
+        else [ ./../home ]);
     };
   };
 

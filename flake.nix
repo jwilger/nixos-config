@@ -35,13 +35,19 @@
       url = "github:catppuccin/starship";
       flake = false;
     };
+    catppuccin = {
+      url = "github:catppuccin/nix";
+    };
   };
 
-  outputs = { nixpkgs, self, ...} @ inputs:
+  outputs = { catppuccin, nixpkgs, self, ...} @ inputs:
   {
     nixosConfigurations = {
       gregor = nixpkgs.lib.nixosSystem {
-        modules = [ (import ./hosts/gregor) ];
+        modules = [
+            catppuccin.nixosModules.catppuccin
+            (import ./hosts/gregor)
+          ];
         specialArgs = { host="gregor"; system="x86_64-linux"; username="jwilger"; inherit self inputs; };
       };
       # laptop = nixpkgs.lib.nixosSystem {

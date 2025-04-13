@@ -1,4 +1,4 @@
-{ inputs, pkgs, ... }:
+{ pkgs, username, ... }:
 {
   programs.hyprland.enable = true;
   xdg.portal = {
@@ -10,8 +10,14 @@
       pkgs.xdg-desktop-portal-gtk
     ];
   };
-
-  environment.systemPackages = with pkgs; [
-    # xwaylandvideobridge
-  ];
+  services.greetd = {
+    enable = true;
+    settings = rec {
+      initial_session = {
+        command = "${pkgs.hyprland}/bin/hyprland";
+        user = "${username}";
+      };
+      default_session = initial_session;
+    };
+  };
 }
