@@ -1,4 +1,5 @@
 session_serialization false
+theme "catppuccin-mocha"
 default_layout "compact"
 mouse_mode true
 mirror_session true
