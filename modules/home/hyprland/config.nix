@@ -1,4 +1,4 @@
-{ ... }: 
+{ config, ... }: 
 {
   wayland.windowManager.hyprland = {
     settings = {
@@ -17,6 +17,7 @@
         waybar & \
         swaync & \
         wl-paste --watch cliphist store & \
+        1password --silent & \
         hyprlock
         ''
       ];
@@ -139,7 +140,7 @@
         "$mainMod SHIFT, F, fullscreen, 1"
         "$mainMod, D, togglefloating,"
         "$mainMod, SPACE, exec, fuzzel"
-        "$mainMod, Escape, exec, pidof hyprlock || hyprlock"
+        "$mainMod, Escape, exec, 1password --lock & pidof hyprlock || hyprlock"
         "$mainMod SHIFT, Escape, exec, shutdown-script"
         "$mainMod, P, pseudo,"
         "$mainMod, X, togglesplit,"
