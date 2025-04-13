@@ -1,4 +1,4 @@
-{ config, ... }: 
+{ ... }: 
 {
   wayland.windowManager.hyprland = {
     settings = {
@@ -11,7 +11,6 @@
         dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP & \
         nm-applet & \
         wl-clip-persist --clipboard both \
-        wall-change ~/Pictures/wallpapers/others/cat-leaves.png & \
         hyprctl setcursor Nordzy-cursors 22 & \
         poweralertd & \
         waybar & \
@@ -147,7 +146,6 @@
         "$mainMod, E, exec, ~/.config/hypr/launch-yazi.sh"
         "$mainMod SHIFT, B, exec, pkill -SIGUSR1 .waybar-wrapped"
         "$mainMod, C ,exec, hyprpicker -a"
-        "$mainMod, W,exec, wallpaper-picker"
         "$mainMod SHIFT, W, exec, vm-start"
 
         # screenshot
