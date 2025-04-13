@@ -5,20 +5,16 @@
       
       # autostart
       exec-once = [
-        ''
-        systemctl --user import-environment & \
-        hash dbus-update-activation-environment 2>/dev/null & \
-        dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP & \
-        nm-applet & \
-        wl-clip-persist --clipboard both \
-        hyprctl setcursor Nordzy-cursors 22 & \
-        poweralertd & \
-        waybar & \
-        swaync & \
-        wl-paste --watch cliphist store & \
-        1password --silent & \
-        hyprlock
-        ''
+        "dbus-update-activation-environment --systemd --all WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"
+        "nm-applet"
+        "wl-clip-persist --clipboard both"
+        "hyprctl setcursor Nordzy-cursors 22"
+        "poweralertd"
+        "waybar"
+        "swaync"
+        "wl-paste --watch cliphist store"
+        "1password --silent"
+        "hyprlock"
       ];
 
       input = {
