@@ -2,13 +2,19 @@
 {
   wayland.windowManager.hyprland = {
     settings = {
+      env = [
+        "HYPRCURSOR_THEME,catppuccin-mocha-lavender-cursors"
+        "HYPRCURSOR_SIZE,24"
+        "XCURSOR_THEME,catppuccin-mocha-lavender-cursors"
+        "XCURSOR_SIZE,24"
+      ];
       
       # autostart
       exec-once = [
+        "hyprctl setcursor catppuccin-mocha-lavender-cursors 24"
         "dbus-update-activation-environment --systemd --all WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"
         "nm-applet"
         "wl-clip-persist --clipboard both"
-        "hyprctl setcursor Nordzy-cursors 22"
         "poweralertd"
         "waybar"
         "swaync"
@@ -136,7 +142,7 @@
         "$mainMod, D, togglefloating,"
         "$mainMod, SPACE, exec, fuzzel"
         "$mainMod, Escape, exec, 1password --lock & pidof hyprlock || hyprlock"
-        "$mainMod SHIFT, Escape, exec, shutdown-script"
+        "$mainMod SHIFT, Escape, exec, wlogout"
         "$mainMod, P, pseudo,"
         "$mainMod, X, togglesplit,"
         "$mainMod, E, exec, ~/.config/hypr/launch-yazi.sh"
@@ -282,17 +288,6 @@
       ];
 
     };
-
-    extraConfig = "
-      monitor=,highres,auto,2
-
-      xwayland {
-        force_zero_scaling = true
-      }
-
-      env=GDK_SCALE,2
-      env=XCURSOR_SIZE,32
-    ";
   };
 
   xdg.configFile."hypr/launch-yazi.sh" = {

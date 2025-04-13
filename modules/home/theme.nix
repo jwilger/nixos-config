@@ -1,52 +1,49 @@
 { pkgs, ... }:
+let
+  papirus = pkgs.catppuccin-papirus-folders.override {
+    flavor = "mocha";
+    accent = "lavender";
+  };
+in
 {
-  fonts.fontconfig.enable = true;
   home.packages = with pkgs; [
+    hyprcursor
     nerd-fonts.jetbrains-mono
     nerd-fonts.noto
     twemoji-color-font
     noto-fonts-emoji
     catppuccin
+    catppuccin-cursors.mochaLavender
+    papirus
+    nwg-look
   ];
 
+  fonts.fontconfig.enable = true;
+  fonts.fontconfig.defaultFonts.sansSerif = ["JetBrainsMono Nerd Font"];
+  
   catppuccin = {
     enable = true;
     nvim.enable = false;
     flavor = "mocha";
     accent = "lavender";
+    gtk = {
+      enable = true;
+      size = "standard";
+      tweaks = [ "normal" ];
+      flavor = "mocha";
+      accent = "lavender";
+    };
   };
+
+  gtk.enable = true;
 
   home.pointerCursor = {
     enable = true;
-    hyprcursor.enable = true;
-    name = "Catppuccin-Mocha-Lavender";
     package = pkgs.catppuccin-cursors.mochaLavender;
-    size = 22;
-  };
-
-  nixpkgs.config.packageOverrides = pkgs: {
-    colloid-icon-theme = pkgs.colloid-icon-theme.overrice { colorVariants = ["lavender"];};
-    catppuccin-gtk = pkgs.catppuccin-gtk.override {
-      accents = ["lavender"];
-      size = "standard";
-      variant = "mocha";
-    };
-  };
-
-  gtk = {
-    enable = true;
-    font = {
-      name = "JetBrainsMono Nerd Font";
-      size = 11;
-    };
-    iconTheme = {
-      name = "Colloid";
-      package = pkgs.colloid-icon-theme;
-    };
-    cursorTheme = {
-      name = "Catppuccin-Mocha-Lavender";
-      package = pkgs.catppuccin-cursors.mochaLavender;
-      size = 22;
-    };
+    name = "catppuccin-mocha-lavender-cursors";
+    size = 24;
+    gtk.enable = true;
+    x11.enable = true;
+    hyprcursor.enable = true;
   };
 }
