@@ -6,8 +6,6 @@
     nerd-fonts.noto
     twemoji-color-font
     noto-fonts-emoji
-    numix-icon-theme-circle
-    colloid-icon-theme
     catppuccin
   ];
 
@@ -20,10 +18,10 @@
 
   home.pointerCursor = {
     enable = true;
-    gtk.enable = true;
     hyprcursor.enable = true;
     name = "Catppuccin-Mocha-Lavender";
     package = pkgs.catppuccin-cursors.mochaLavender;
+    size = 22;
   };
 
   nixpkgs.config.packageOverrides = pkgs: {
@@ -44,6 +42,11 @@
     iconTheme = {
       name = "Colloid";
       package = pkgs.colloid-icon-theme;
+    };
+    cursorTheme = {
+      name = "Catppuccin-Mocha-Lavender";
+      package = pkgs.catppuccin-cursors.mochaLavender;
+      size = 22;
     };
   };
 }
