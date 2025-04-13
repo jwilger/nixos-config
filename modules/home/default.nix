@@ -2,7 +2,6 @@
   imports =
        [(import ./bat.nix)]                       # better cat command
     ++ [(import ./btop.nix)]                      # resouces monitor 
-    ++ [(import ./cava.nix)]                      # audio visualizer
     ++ [(import ./fuzzel.nix)]                    # launcher
     ++ [(import ./git.nix)]                       # version control
     ++ [(import ./theme.nix)]                     # general theme settings
