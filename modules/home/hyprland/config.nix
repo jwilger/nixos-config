@@ -11,7 +11,7 @@
         dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP & \
         nm-applet & \
         wl-clip-persist --clipboard both \
-        swaybg -m fill -i ''$(find ~/Pictures/wallpapers/ -maxdepth 1 -type f) & \
+        wall-change ~/Pictures/wallpapers/others/cat-leaves.png & \
         hyprctl setcursor Nordzy-cursors 22 & \
         poweralertd & \
         waybar & \
