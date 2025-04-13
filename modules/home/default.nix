@@ -5,7 +5,7 @@
     ++ [(import ./cava.nix)]                      # audio visualizer
     ++ [(import ./fuzzel.nix)]                    # launcher
     ++ [(import ./git.nix)]                       # version control
-    ++ [(import ./gtk.nix)]                       # gtk theme
+    ++ [(import ./theme.nix)]                     # general theme settings
     ++ [(import ./hyprland)]                      # window manager
     ++ [(import ./insync)]                        # google drive client
     ++ [(import ./kitty.nix)]                     # terminal
