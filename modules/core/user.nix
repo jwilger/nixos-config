@@ -7,14 +7,14 @@
     extraSpecialArgs = { inherit inputs username host; };
     
     users.${username} = {
-      imports = 
-        if (host == "gregor") then 
-          [ ./../home/default.desktop.nix ] 
-        else [ ./../home ];
       home.username = "${username}";
       home.homeDirectory = "/home/${username}";
       home.stateVersion = "24.11";
       programs.home-manager.enable = true;
+      imports = 
+        if (host == "gregor") then 
+          [ ./../home/default.desktop.nix ] 
+        else [ ./../home ];
     };
   };
 
