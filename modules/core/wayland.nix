@@ -1,5 +1,21 @@
 { pkgs, username, ... }:
 {
+  environment.systemPackages = with pkgs; [
+    nerd-fonts.jetbrains-mono
+    nerd-fonts.noto
+    twemoji-color-font
+    catppuccin-cursors.mochaLavender
+  ];
+
+  fonts.fontconfig.enable = true;
+  fonts.fontconfig.defaultFonts.sansSerif = ["JetBrainsMono Nerd Font"];
+
+  catppuccin = {
+    enable = true;
+    flavor = "mocha";
+    accent = "lavender";
+  };
+  
   programs.hyprland.enable = true;
   xdg.portal = {
     enable = true;
