@@ -36,4 +36,5 @@
       default_session = initial_session;
     };
   };
+  services.hypridle.enable = true;
 }

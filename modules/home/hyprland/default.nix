@@ -6,5 +6,6 @@
     ++ [ (import ./hyprlock.nix) ]
     ++ [ (import ./variables.nix) ]
     ++ [ (import ./wlogout.nix) ]
+    ++ [ (import ./hypridle.nix) ]
     ++ [ inputs.hyprland.homeManagerModules.default ];
 }
