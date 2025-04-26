@@ -9,9 +9,10 @@
     networkmanager.enable = true;
     firewall = {
       enable = true;
-      allowedTCPPorts = [22 80 443];
     };
   };
+  # Enable systemd-resolved for DNS resolution
+  services.resolved.enable = true;
 
   environment.systemPackages = with pkgs; [
     networkmanagerapplet
