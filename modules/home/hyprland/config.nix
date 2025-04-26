@@ -25,7 +25,7 @@
 
       input = {
         kb_layout = "us";
-        kb_options ="ctrl:nocaps"; 
+        kb_options = "ctrl:nocaps";
         numlock_by_default = true;
         follow_mouse = 1;
         sensitivity = 0;

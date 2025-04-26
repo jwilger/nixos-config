@@ -12,6 +12,10 @@
     win-virtio
     win-spice
     adwaita-icon-theme
+    # KVM support and container tools
+    qemu_kvm
+    docker-compose
+    podman
   ];
 
   # Manage the virtualisation services

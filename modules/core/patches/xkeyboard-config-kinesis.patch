@@ -1,0 +1,60 @@
+diff --git a/symbols/custom b/symbols/custom
+new file mode 100644
+index 0000000..abcdef1
+--- /dev/null
++++ b/symbols/custom
+@@ -0,0 +1,32 @@
+partial hidden alphanumeric_keys
+xkb_symbols "kinesis" {
+    name[Group1] = "Kinesis Advantage2";
+
+    // Special media keys (XF86)
+    key <AE11> { [ XF86RefreshRateToggle ] };
+    key <AE12> { [ XF86DoNotDisturb  ] };
+
+    // Macro keys (replace <MAC1>, <MAC2>, <MAC3> with actual key identifiers after running evtest)
+    key <MAC1> { [ F13 ] };
+    key <MAC2> { [ F14 ] };
+    key <MAC3> { [ F15 ] };
+
+    // Consumer control (media) keys
+    key <VOLD> { [ XF86AudioLowerVolume ] };
+    key <VOLU> { [ XF86AudioRaiseVolume ] };
+    key <MUTE> { [ XF86AudioMute ] };
+    key <PLAY> { [ XF86AudioPlay ] };
+    key <NEXT> { [ XF86AudioNext ] };
+    key <PREV> { [ XF86AudioPrev ] };
+
+    // System control keys
+    key <POWR> { [ XF86PowerOff ] };
+    key <SLEP> { [ XF86Sleep ] };
+};
+diff --git a/rules/evdev.lst b/rules/evdev.lst
+index 1234567..89abcde 100644
+--- a/rules/evdev.lst
++++ b/rules/evdev.lst
+@@ -300,6 +300,7 @@ basic	Basic
+ ! variant
+   basic	Basic
+   altgr-intl	AltGr International
++  kinesis	Kinesis Advantage2
+diff --git a/rules/evdev.xml b/rules/evdev.xml
+index fedcba9..abcdef0 100644
+--- a/rules/evdev.xml
++++ b/rules/evdev.xml
+@@ -1500,6 +1500,14 @@
+        <variantList>
+          <variant>
+            <configItem>
+@@
+              <name>basic</name>
+              <description>Basic</description>
+            </configItem>
+          </variant>
++        <variant>
++          <configItem>
++            <name>kinesis</name>
++            <description>Kinesis Advantage2</description>
++          </configItem>
++        </variant>
+        </variantList>

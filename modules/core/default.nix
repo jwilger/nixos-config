@@ -1,4 +1,4 @@
-{ inputs, nixpkgs, self, username, host, ...}:
+{ ... }:
 {
   imports =
        [ (import ./1password.nix) ]

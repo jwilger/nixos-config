@@ -23,6 +23,7 @@
     isNormalUser = true;
     description = "${username}";
     extraGroups = [ "networkmanager" "wheel" ];
+    # (Removed) subordinate UID/GID ranges for rootless Docker; not needed
     shell = pkgs.zsh;
   };
   nix.settings.allowed-users = [ "${username}" ];

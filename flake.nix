@@ -10,12 +10,12 @@
   
     alejandra.url = "github:kamadorueda/alejandra/3.0.0";
   
-    nix-gaming.url = "github:fufexan/nix-gaming";
   
     hyprland = {
       type = "git";
       url = "https://github.com/hyprwm/Hyprland";
       submodules = true;
+      inputs.nixpkgs.follows = "nixpkgs";
     };
   
     home-manager = {
@@ -50,16 +50,6 @@
           ];
         specialArgs = { host="gregor"; system="x86_64-linux"; username="jwilger"; inherit self inputs; };
       };
-      # laptop = nixpkgs.lib.nixosSystem {
-      #   inherit system;
-      #   modules = [ (import ./hosts/_laptop) ];
-      #   specialArgs = { host="laptop"; inherit self inputs username ; };
-      # };
-      #  vm = nixpkgs.lib.nixosSystem {
-      #   inherit system;
-      #   modules = [ (import ./hosts/vm) ];
-      #   specialArgs = { host="vm"; inherit self inputs username ; };
-      # };
     };
   };
 }
