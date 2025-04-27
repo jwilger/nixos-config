@@ -1,4 +1,4 @@
-{ pkgs, config, lib, ... }: 
+{ lib, username, ... }: 
 {
   imports = [
     ./hardware-configuration.nix
@@ -18,9 +18,10 @@
     enable = true;
     ports = [22];
     settings = {
-      PasswordAuthentication = true;
-      AllowUsers = null;
-      PermitRootLogin = "yes";
+      PasswordAuthentication = lib.mkForce true;
     };
   };
+
+  users.users."${username}".initialPassword = "test";
+  virtualisation.vmVariant.services.timesyncd.enable = lib.mkForce true;
 }
