@@ -7,6 +7,7 @@
   # Kernel parameters: reduce verbosity and enable user xattr for overlayfs
   boot.kernelParams = [
     "quiet"
+    "splash"
     "udev.log_level=3"
     "userxattr"
   ];

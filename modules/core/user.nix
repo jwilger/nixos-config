@@ -11,11 +11,10 @@
       home.homeDirectory = "/home/${username}";
       home.stateVersion = "24.11";
       programs.home-manager.enable = true;
-      imports = 
-        [inputs.catppuccin.homeModules.catppuccin] ++
-        (if (host == "gregor") then 
-          [ ./../home/default.desktop.nix ] 
-        else [ ./../home ]);
+      imports = [
+        inputs.catppuccin.homeModules.catppuccin
+        ./../home
+      ];
     };
   };
 
@@ -23,7 +22,6 @@
     isNormalUser = true;
     description = "${username}";
     extraGroups = [ "networkmanager" "wheel" ];
-    # (Removed) subordinate UID/GID ranges for rootless Docker; not needed
     shell = pkgs.zsh;
   };
   nix.settings.allowed-users = [ "${username}" ];
