@@ -50,6 +50,13 @@
           ];
         specialArgs = { host="gregor"; system="x86_64-linux"; username="jwilger"; inherit self inputs; };
       };
+      vm = nixpkgs.lib.nixosSystem {
+        modules = [
+            catppuccin.nixosModules.catppuccin
+            (import ./hosts/vm)
+          ];
+        specialArgs = { host="vm"; system="x86_64-linux"; username="jwilger"; inherit self inputs; };
+      };
     };
   };
 }
