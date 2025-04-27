@@ -10,14 +10,14 @@
   ];
 
   fonts.fontconfig.enable = true;
-  fonts.fontconfig.defaultFonts.sansSerif = ["JetBrainsMono Nerd Font"];
+  fonts.fontconfig.defaultFonts.sansSerif = [ "JetBrainsMono Nerd Font" ];
 
   catppuccin = {
     enable = true;
     flavor = "mocha";
     accent = "lavender";
   };
-  
+
   programs.hyprland.enable = true;
   xdg.portal = {
     enable = true;
@@ -39,7 +39,7 @@
     };
   };
   services.hypridle.enable = true;
-  
+
   nix = {
     settings = {
       substituters = [
@@ -50,7 +50,7 @@
       ];
     };
   };
-  
+
   services = {
     xserver = {
       enable = true;
@@ -66,4 +66,12 @@
   };
   # To prevent getting stuck at shutdown
   systemd.extraConfig = "DefaultTimeoutStopSec=10s";
+
+  programs._1password.enable = true;
+  # Ensure the 1Password CLI binary is installed for the agent
+  programs._1password.package = pkgs._1password-cli;
+  programs._1password-gui = {
+    enable = true;
+    polkitPolicyOwners = [ "${username}" ];
+  };
 }
