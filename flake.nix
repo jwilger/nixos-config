@@ -3,13 +3,9 @@
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
-    nur.url = "github:nix-community/NUR";
   
     hypr-contrib.url = "github:hyprwm/contrib";
     hyprpicker.url = "github:hyprwm/hyprpicker";
-  
-    alejandra.url = "github:kamadorueda/alejandra/3.0.0";
-  
   
     hyprland = {
       type = "git";
@@ -25,10 +21,6 @@
 
     catppuccin-bat = {
       url = "github:catppuccin/bat";
-      flake = false;
-    };
-    catppuccin-cava = {
-      url = "github:catppuccin/cava";
       flake = false;
     };
     catppuccin-starship = {
