@@ -9,5 +9,7 @@
     pavucontrol                       # pulseaudio volume controle (GUI)
     playerctl                         # controller for media players
     qalculate-gtk                     # calculator
+    nixfmt-rfc-style
+    vscode-fhs
   ]);
 }
