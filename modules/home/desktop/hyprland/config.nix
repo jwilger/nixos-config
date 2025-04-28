@@ -1,18 +1,18 @@
-{ ... }: 
+{ ... }:
 {
   wayland.windowManager.hyprland = {
     settings = {
-      env = [
-        "HYPRCURSOR_THEME,catppuccin-mocha-lavender-cursors"
-        "HYPRCURSOR_SIZE,24"
-        "XCURSOR_THEME,catppuccin-mocha-lavender-cursors"
-        "XCURSOR_SIZE,24"
+      monitor = [
+        "DP-3,5120x2880@60,0x0,2"
       ];
-      
+
+      xwayland.force_zero_scaling = true;
+
       # autostart
       exec-once = [
-        "hyprctl setcursor catppuccin-mocha-lavender-cursors 24"
-        "dbus-update-activation-environment --systemd --all WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"
+        "xrdb -merge ~/.Xresources"
+        "hyprctl setcursor catppuccin-mocha-lavender-cursors 48"
+        "dbus-update-activation-environment --systemd --all"
         "nm-applet"
         "wl-clip-persist --clipboard both"
         "poweralertd"
@@ -288,6 +288,11 @@
       ];
 
     };
+    extraConfig = ''
+      xwayland {
+        force_zero_scaling = true
+      }
+    '';
   };
 
   xdg.configFile."hypr/launch-yazi.sh" = {
@@ -295,5 +300,11 @@
       kitty -e zsh -l -c "exec yazi"
     '';
     executable = true;
+  };
+
+  xresources = {
+    properties = {
+      "Xft.dpi" = "192";
+    };
   };
 }
