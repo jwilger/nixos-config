@@ -8,11 +8,17 @@
 
       xwayland.force_zero_scaling = true;
 
+      # Set cursor theme
+      env = [
+        "XCURSOR_THEME,Vanilla-DMZ"
+        "XCURSOR_SIZE,24"
+      ];
+
       # autostart
       exec-once = [
         "xrdb -merge ~/.Xresources"
-        "hyprctl setcursor catppuccin-mocha-lavender-cursors 48"
         "dbus-update-activation-environment --systemd --all"
+        "hyprctl setcursor Vanilla-DMZ 24"
         "nm-applet"
         "wl-clip-persist --clipboard both"
         "poweralertd"
