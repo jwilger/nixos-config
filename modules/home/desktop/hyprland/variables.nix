@@ -17,8 +17,10 @@
     ELECTRON_ENABLE_WAYLAND = "1";
     NIXOS_OZONE_WL = "1"; # (NixOS-specific hint for electron apps)
 
-    # Cursor theme and size (for HiDPI, size 24 gets doubled to 48px)
-    XCURSOR_THEME = "Catppuccin-Mocha-Lavender-Cursors";
-    XCURSOR_SIZE = "48";
+    GTK_THEME = "Dracula:dark";
+
+    # Cursor theme environment variables
+    XCURSOR_THEME = "Vanilla-DMZ";
+    XCURSOR_SIZE = "24";
   };
 }

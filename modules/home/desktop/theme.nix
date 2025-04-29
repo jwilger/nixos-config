@@ -7,14 +7,14 @@ let
 in
 {
   home.packages = with pkgs; [
-    hyprcursor
     nerd-fonts.jetbrains-mono
     nerd-fonts.noto
     twemoji-color-font
     noto-fonts-emoji
-    catppuccin-cursors.mochaLavender
     papirus
     nwg-look
+    vanilla-dmz
+    libsForQt5.qtstyleplugin-kvantum
   ];
 
   fonts.fontconfig.enable = true;
@@ -26,15 +26,6 @@ in
     };
   };
 
-  home.pointerCursor = {
-    enable = true;
-    package = pkgs.catppuccin-cursors.mochaLavender;
-    name = "catppuccin-mocha-lavender-cursors";
-    size = 48;
-    gtk.enable = true;
-    x11.enable = true;
-    hyprcursor.enable = true;
-  };
   gtk = {
     enable = true;
     font = {
@@ -53,17 +44,48 @@ in
       package = pkgs.dracula-theme;
     };
     cursorTheme = {
-      name = "catppuccin-mocha-lavender-cursors";
-      package = pkgs.catppuccin-cursors.mochaLavender;
+      name = "Vanilla-DMZ";
+      package = pkgs.vanilla-dmz;
       size = 24;
     };
-    # gtk3.extraConfig = {
-    #   "gtk-xft-dpi" = "196608";
-    #   "Gdk/WindowScalingFactor" = 2;
-    # };
-    # gtk4.extraConfig = {
-    #   "gtk-xft-dpi" = "196608";
-    #   "Gdk/WindowScalingFactor" = 2;
-    # };
+  };
+
+  # Qt platform theme for cursor consistency
+  qt = {
+    enable = true;
+    platformTheme.name = "kvantum";
+    style = {
+      name = "kvantum";
+    };
+  };
+
+  home.pointerCursor = {
+    gtk.enable = true;
+    x11.enable = true;
+    name = "Vanilla-DMZ";
+    package = pkgs.vanilla-dmz;
+    size = 24;
+  };
+
+  xresources.properties = {
+    "Xcursor.theme" = "Vanilla-DMZ";
+    "Xcursor.size" = 24;
+  };
+
+  # Additional XDG configuration
+  xdg.configFile = {
+    # For applications reading standard icons.theme file
+    "icons/default/index.theme".text = ''
+      [Icon Theme]
+      Inherits=Vanilla-DMZ
+      Name=Default
+      Comment=Default Cursor Theme
+    '';
+
+    # Kvantum configuration to respect cursor theme
+    "Kvantum/kvantum.kvconfig".text = ''
+      [General]
+      theme=Catppuccin-Mocha
+    '';
   };
 }

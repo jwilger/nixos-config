@@ -4,13 +4,26 @@
     nerd-fonts.jetbrains-mono
     nerd-fonts.noto
     twemoji-color-font
-    catppuccin-cursors.mochaLavender
     networkmanagerapplet
     adwaita-icon-theme
+    vanilla-dmz # DMZ cursor theme
   ];
 
   fonts.fontconfig.enable = true;
   fonts.fontconfig.defaultFonts.sansSerif = [ "JetBrainsMono Nerd Font" ];
+
+  # System-wide cursor theme setting
+  environment.etc."X11/Xresources".text = ''
+    Xcursor.theme: Vanilla-DMZ
+    Xcursor.size: 24
+  '';
+
+  # System-level cursor configuration
+  environment.etc."gtk-3.0/settings.ini".text = ''
+    [Settings]
+    gtk-cursor-theme-name=Vanilla-DMZ
+    gtk-cursor-theme-size=24
+  '';
 
   catppuccin = {
     enable = true;
@@ -55,6 +68,11 @@
     xserver = {
       enable = true;
       xkb.layout = "us";
+
+      # X11 cursor theme config
+      displayManager.sessionCommands = ''
+        ${pkgs.xorg.xsetroot}/bin/xsetroot -xcf ${pkgs.vanilla-dmz}/share/icons/Vanilla-DMZ/cursors/left_ptr 24
+      '';
     };
 
     libinput = {
