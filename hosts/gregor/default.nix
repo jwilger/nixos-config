@@ -1,4 +1,4 @@
-{ pkgs, username, ... }: 
+{ pkgs, username, ... }:
 {
   imports = [
     ./hardware-configuration.nix
@@ -11,28 +11,32 @@
   networking = {
     hostName = "gregor";
     firewall = {
-      allowedTCPPorts = [ 22 80 443 ];
+      allowedTCPPorts = [
+        22
+        80
+        443
+      ];
       # allow DNS over UDP
       allowedUDPPorts = [ 53 ];
     };
   };
   # Ensure filesystem checks (fsck) occur at boot for root
   fileSystems."/".noCheck = false;
-  
+
   hardware = {
     graphics = {
       enable = true;
     };
   };
-  
+
   # Blacklist noisy, unused sensor driver
   boot.blacklistedKernelModules = [ "hid_sensor_rotation" ];
 
   # Enable AMD redistributable firmware
   hardware.enableRedistributableFirmware = true;
-  
+
   boot.kernel.sysctl."net.ipv4.ip_unprivileged_port_start" = 0;
-  
+
   services.pipewire = {
     enable = true;
     alsa.enable = true;
@@ -42,13 +46,17 @@
   };
 
   services.pulseaudio.enable = false;
-  
+
   # BcacheFS scrub service & timer
   systemd.services.bcachefs-scrub = {
     description = "Scrub BcacheFS filesystems";
     serviceConfig = {
       Type = "oneshot";
-      ExecStart = [ "${pkgs.bcachefs-tools}/bin/bcachefs" "scrub" "/" ];
+      ExecStart = [
+        "${pkgs.bcachefs-tools}/bin/bcachefs"
+        "scrub"
+        "/"
+      ];
     };
     wantedBy = [ "multi-user.target" ];
   };
@@ -65,14 +73,16 @@
     fuse-overlayfs
     linux-firmware
     docker-compose
+    libimobiledevice
+    ifuse
   ];
-  
+
   time.timeZone = "America/Los_Angeles";
-  
-  boot.initrd.luks.devices = {};
-  
+
+  boot.initrd.luks.devices = { };
+
   home-manager.users.${username}.imports = [ ./../../modules/home/desktop ];
-  
+
   # Add user to libvirtd group
   users.users.${username}.extraGroups = [ "docker" ];
 
@@ -86,4 +96,6 @@
       };
     };
   };
+
+  services.usbmuxd.enable = true;
 }

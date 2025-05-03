@@ -3,7 +3,7 @@
   wayland.windowManager.hyprland = {
     settings = {
       monitor = [
-        "DP-3,5120x2880@60,0x0,2"
+        ",preferred,auto,2" # Apply preferred settings and auto position to any monitor
       ];
 
       xwayland.force_zero_scaling = true;
@@ -224,6 +224,9 @@
 
         # clipboard manager
         "$mainMod, V, exec, cliphist list | fuzzel --dmenu | cliphist decode | wl-copy"
+
+        # Explicitly turn DPMS on when a monitor is connected
+        ",monitoradded,exec,hyprctl dispatch dpms on"
       ];
 
       # mouse binding
