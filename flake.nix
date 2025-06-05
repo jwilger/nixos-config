@@ -2,18 +2,18 @@
   description = "FrostPhoenix's nixos configuration";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
-  
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.05";
+
     hypr-contrib.url = "github:hyprwm/contrib";
     hyprpicker.url = "github:hyprwm/hyprpicker";
-  
+
     hyprland = {
       type = "git";
       url = "https://github.com/hyprwm/Hyprland";
       submodules = true;
       inputs.nixpkgs.follows = "nixpkgs";
     };
-  
+
     home-manager = {
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -32,23 +32,39 @@
     };
   };
 
-  outputs = { catppuccin, nixpkgs, self, ...} @ inputs:
-  {
-    nixosConfigurations = {
-      gregor = nixpkgs.lib.nixosSystem {
-        modules = [
+  outputs =
+    {
+      catppuccin,
+      nixpkgs,
+      self,
+      ...
+    }@inputs:
+    {
+      nixosConfigurations = {
+        gregor = nixpkgs.lib.nixosSystem {
+          modules = [
             catppuccin.nixosModules.catppuccin
             (import ./hosts/gregor)
           ];
-        specialArgs = { host="gregor"; system="x86_64-linux"; username="jwilger"; inherit self inputs; };
-      };
-      vm = nixpkgs.lib.nixosSystem {
-        modules = [
+          specialArgs = {
+            host = "gregor";
+            system = "x86_64-linux";
+            username = "jwilger";
+            inherit self inputs;
+          };
+        };
+        vm = nixpkgs.lib.nixosSystem {
+          modules = [
             catppuccin.nixosModules.catppuccin
             (import ./hosts/vm)
           ];
-        specialArgs = { host="vm"; system="x86_64-linux"; username="jwilger"; inherit self inputs; };
+          specialArgs = {
+            host = "vm";
+            system = "x86_64-linux";
+            username = "jwilger";
+            inherit self inputs;
+          };
+        };
       };
     };
-  };
 }
