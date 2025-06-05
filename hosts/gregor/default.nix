@@ -90,9 +90,11 @@
   virtualisation = {
     docker = {
       enable = true;
+      daemon.settings = {
+        storage-driver = "vfs";
+      };
       rootless = {
-        enable = true;
-        setSocketVariable = true;
+        enable = false;
       };
     };
   };
