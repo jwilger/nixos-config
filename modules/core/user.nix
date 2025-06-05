@@ -18,9 +18,15 @@
     };
   };
 
+  users.groups.${username} = {
+    gid = 1000;
+  };
+
   users.users.${username} = {
     isNormalUser = true;
     description = "${username}";
+    uid = 1000;
+    group = "${username}";
     extraGroups = [ "networkmanager" "wheel" ];
     shell = pkgs.zsh;
   };
