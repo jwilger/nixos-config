@@ -26,11 +26,11 @@
   "script-fail-notify": true,
   "scripts": {
     "sound-normal": {
-      "exec": "pw-play /run/current-system/sw/share/sounds/freedesktop/stereo/message.oga",
+      "exec": "pw-play /run/current-system/sw/share/sounds/freedesktop/stereo/message-new-instant.oga",
       "urgency": "Normal"
     },
     "sound-critical": {
-      "exec": "pw-play /run/current-system/sw/share/sounds/freedesktop/stereo/alarm-clock-elapsed.oga",
+      "exec": "pw-play /run/current-system/sw/share/sounds/freedesktop/stereo/complete.oga",
       "urgency": "Critical"
     }
   },
