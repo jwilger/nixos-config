@@ -24,6 +24,16 @@
   "hide-on-clear": false,
   "hide-on-action": true,
   "script-fail-notify": true,
+  "scripts": {
+    "sound-normal": {
+      "exec": "pw-play /run/current-system/sw/share/sounds/freedesktop/stereo/message.oga",
+      "urgency": "Normal"
+    },
+    "sound-critical": {
+      "exec": "pw-play /run/current-system/sw/share/sounds/freedesktop/stereo/alarm-clock-elapsed.oga",
+      "urgency": "Critical"
+    }
+  },
   "widgets": [
     "title",
     "menubar#desktop",
