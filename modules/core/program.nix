@@ -13,6 +13,22 @@ let
         # Create directory if it doesn't exist
         mkdir -p "$STABLE_SOCK_DIR"
         
+        # Skip if SSH_AUTH_SOCK is already the stable socket
+        if [[ "$SSH_AUTH_SOCK" == "$STABLE_SOCK" ]]; then
+            # Check if the stable socket is valid
+            if [[ -S "$STABLE_SOCK" ]] && [[ "$(readlink -f "$STABLE_SOCK" 2>/dev/null)" != "$STABLE_SOCK" ]]; then
+                echo "# SSH agent already stabilized"
+                return 0
+            else
+                # Remove broken stable socket
+                rm -f "$STABLE_SOCK"
+                echo "# Removed broken stable socket" >&2
+                # Don't set SSH_AUTH_SOCK if we don't have a valid alternative
+                unset SSH_AUTH_SOCK
+                return 1
+            fi
+        fi
+        
         # If we have an SSH_AUTH_SOCK (either forwarded or local)
         if [[ -n "$SSH_AUTH_SOCK" && -S "$SSH_AUTH_SOCK" ]]; then
             # Remove old stable socket if it exists

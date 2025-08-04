@@ -18,14 +18,15 @@
     '';
 
     envExtra = ''
-      # Set up stable SSH agent socket on login
-      if command -v ssh-agent-manager >/dev/null 2>&1; then
-        eval "$(ssh-agent-manager setup 2>/dev/null)"
-      fi
-      
-      # Verify SSH_AUTH_SOCK is valid, fallback to 1Password agent if not
-      if [[ -z "$SSH_AUTH_SOCK" || ! -S "$SSH_AUTH_SOCK" ]]; then
-        export SSH_AUTH_SOCK="/${config.home.homeDirectory}/.1password/agent.sock"
+      # Check if we're in an SSH session with agent forwarding
+      if [[ -n "$SSH_CLIENT" || -n "$SSH_TTY" || -n "$SSH_CONNECTION" ]]; then
+        # In SSH session - do nothing, preserve the forwarded agent
+        :
+      else
+        # Local session - use 1Password agent if no other agent is available
+        if [[ -z "$SSH_AUTH_SOCK" || ! -S "$SSH_AUTH_SOCK" ]]; then
+          export SSH_AUTH_SOCK="/${config.home.homeDirectory}/.1password/agent.sock"
+        fi
       fi
       
       # Set up GUI askpass for sudo
