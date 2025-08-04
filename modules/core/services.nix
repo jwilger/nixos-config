@@ -18,6 +18,8 @@
     settings = {
       PasswordAuthentication = false;
       PermitRootLogin = "no";
+      AllowAgentForwarding = true;
+      X11Forwarding = false;
     };
   };
   
