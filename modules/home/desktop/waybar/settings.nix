@@ -19,7 +19,9 @@
       "tray"
       "cpu"
       "memory"
-      "disk"
+      "disk#root"
+      "disk#home"
+      "disk#archive"
       "pulseaudio"
       "battery"
       "network"
@@ -74,9 +76,19 @@
       format-alt = "  {avg_frequency} GHz";
       interval = 2;
     };
-    disk = {
-      # path = "/";
-      format = "󰋊 {percentage_used}%";
+    "disk#root" = {
+      path = "/";
+      format = "󰋊 / {percentage_used}%";
+      interval = 60;
+    };
+    "disk#home" = {
+      path = "/home";
+      format = "󰋊 /home {percentage_used}%";
+      interval = 60;
+    };
+    "disk#archive" = {
+      path = "/archive";
+      format = "󰋊 /archive {percentage_used}%";
       interval = 60;
     };
     network = {
