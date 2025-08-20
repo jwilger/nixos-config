@@ -1,7 +1,5 @@
 {
   host,
-  config,
-  pkgs,
   ...
 }:
 {
@@ -17,7 +15,8 @@
         "fzf"
       ];
     };
-    initExtra = ''
+
+    initContent = ''
       DISABLE_MAGIC_FUNCTIONS=true
     '';
 
