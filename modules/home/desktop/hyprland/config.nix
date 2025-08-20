@@ -138,9 +138,9 @@
         "$mainMod, F2, exec, lofi"
 
         # keybindings
-        "$mainMod, Return, exec, kitty"
-        "ALT, Return, exec, kitty --title float_kitty"
-        "$mainMod SHIFT, Return, exec, kitty --start-as=fullscreen -o 'font_size=16'"
+        "$mainMod, Return, exec, wezterm"
+        "ALT, Return, exec, wezterm start --class float_wezterm"
+        "$mainMod SHIFT, Return, exec, wezterm"
         "$mainMod, B, exec, firefox"
         "$mainMod, Q, killactive,"
         "$mainMod, F, fullscreen, 0"
@@ -247,6 +247,9 @@
         "float,title:^(float_kitty)$"
         "center,title:^(float_kitty)$"
         "size 950 600,title:^(float_kitty)$"
+        "float,class:^(float_wezterm)$"
+        "center,class:^(float_wezterm)$"
+        "size 950 600,class:^(float_wezterm)$"
         "float,class:audacious"
         "workspace 8 silent,class:udacious"
         "tile,class:neovide"
@@ -306,7 +309,7 @@
 
   xdg.configFile."hypr/launch-yazi.sh" = {
     text = ''
-      kitty -e zsh -l -c "exec yazi"
+      wezterm start -- zsh -l -c "exec yazi"
     '';
     executable = true;
   };
