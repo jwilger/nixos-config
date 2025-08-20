@@ -1,4 +1,9 @@
-{ host, config, pkgs, ... }:
+{
+  host,
+  config,
+  pkgs,
+  ...
+}:
 {
   programs.zsh = {
     enable = true;
@@ -12,30 +17,11 @@
         "fzf"
       ];
     };
-    initContent = ''
+    initExtra = ''
       DISABLE_MAGIC_FUNCTIONS=true
-      export "MICRO_TRUECOLOR=1"
-    '';
-
-    envExtra = ''
-      # Check if we're in an SSH session with agent forwarding
-      if [[ -n "$SSH_CLIENT" || -n "$SSH_TTY" || -n "$SSH_CONNECTION" ]]; then
-        # In SSH session - do nothing, preserve the forwarded agent
-        :
-      else
-        # Local session - use 1Password agent if no other agent is available
-        if [[ -z "$SSH_AUTH_SOCK" || ! -S "$SSH_AUTH_SOCK" ]]; then
-          export SSH_AUTH_SOCK="/${config.home.homeDirectory}/.1password/agent.sock"
-        fi
-      fi
-      
-      # Set up GUI askpass for sudo
-      export SUDO_ASKPASS="${pkgs.zenity}/bin/zenity --password --title='Sudo Password'"
     '';
 
     shellAliases = {
-      claude = "~/.claude/local/claude";
-
       # Utils
       cat = "bat";
       icat = "kitten icat";
@@ -66,6 +52,9 @@
       gps = "git push";
       gci = "git commit";
       gco = "git checkout";
+
+      # AI
+      claude = "claude --dangerously-skip-permissions";
     };
   };
 
