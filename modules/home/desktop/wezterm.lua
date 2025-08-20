@@ -16,7 +16,7 @@ config.leader = {
 -- Font and UI configuration - cross-platform compatible
 config.font = wezterm.font_with_fallback({
 	"JetBrainsMono Nerd Font", -- macOS naming
-	"JetBrainsMono Nerd Font Mono", -- Linux/NixOS naming  
+	"JetBrainsMono Nerd Font Mono", -- Linux/NixOS naming
 	"JetBrainsMonoNL Nerd Font", -- Alternative Linux naming
 	"JetBrains Mono", -- Fallback without Nerd Font
 	"Menlo", -- macOS fallback
