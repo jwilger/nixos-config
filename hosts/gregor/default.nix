@@ -15,9 +15,14 @@
         22
         80
         443
+        4070  # Spotify Connect TCP port
       ];
-      # allow DNS over UDP
-      allowedUDPPorts = [ 53 ];
+      # allow DNS over UDP and Spotify Connect discovery
+      allowedUDPPorts = [ 
+        53    # DNS
+        5353  # mDNS (multicast DNS) - required for Spotify Connect discovery
+        57621 # Spotify Connect
+      ];
     };
   };
   # Ensure filesystem checks (fsck) occur at boot for root

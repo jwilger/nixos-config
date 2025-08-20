@@ -82,8 +82,6 @@
       # };
     };
   };
-  # To prevent getting stuck at shutdown
-  systemd.extraConfig = "DefaultTimeoutStopSec=10s";
 
   programs._1password.enable = true;
   # Ensure the 1Password CLI binary is installed for the agent
