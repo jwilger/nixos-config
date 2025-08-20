@@ -20,24 +20,11 @@ in
   fonts.fontconfig.enable = true;
   fonts.fontconfig.defaultFonts.sansSerif = [ "JetBrainsMono Nerd Font" ];
 
-  catppuccin = {
-    gtk = {
-      enable = false;
-    };
-  };
-
   gtk = {
     enable = true;
     font = {
       name = "JetBrainsMono Nerd Font";
       size = 11;
-    };
-    iconTheme = {
-      name = "Papirus-Dark";
-      package = pkgs.catppuccin-papirus-folders.override {
-        flavor = "mocha";
-        accent = "lavender";
-      };
     };
     theme = {
       name = "Dracula";
