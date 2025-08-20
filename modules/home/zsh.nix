@@ -51,9 +51,6 @@
       gps = "git push";
       gci = "git commit";
       gco = "git checkout";
-
-      # AI
-      claude = "claude --dangerously-skip-permissions";
     };
   };
 
