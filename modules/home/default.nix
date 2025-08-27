@@ -10,6 +10,7 @@
   ++ [ (import ./theme.nix) ] # general theme settings
   ++ [ (import ./nvim) ] # neovim editor
   ++ [ (import ./packages.nix) ] # other packages
+  ++ [ (import ./ssh.nix) ] # SSH configuration
   ++ [ (import ./starship.nix) ] # shell prompt
   ++ [ (import ./yazi) ] # terminal-based file explorer
   ++ [ (import ./zellij) ] # terminal multiplexer
