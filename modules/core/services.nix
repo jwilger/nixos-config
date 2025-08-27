@@ -24,15 +24,15 @@
       StreamLocalBindUnlink = true;
     };
     extraConfig = ''
-           # Accept environment variables from clients (needed for WezTerm and other modern terminals)
-           # WezTerm-specific variables (based on GitHub issues #1015, #5378)
-           AcceptEnv WEZTERM_PANE WEZTERM_REMOTE_PANE TERM_PROGRAM TERM_PROGRAM_VERSION
-           # Standard locale and terminal variables
-           AcceptEnv LANG LC_* TERM COLORTERM
-           # Additional terminal capability variables
-           AcceptEnv TERMINFO TERMCAP
-           # Color output control
-           AcceptEnv NO_COLOR FORCE_COLOR CLICOLOR CLICOLOR_FORCE
+      # Accept environment variables from clients (needed for WezTerm and other modern terminals)
+      # WezTerm-specific variables (based on GitHub issues #1015, #5378)
+      AcceptEnv WEZTERM_PANE WEZTERM_REMOTE_PANE TERM_PROGRAM TERM_PROGRAM_VERSION
+      # Standard locale and terminal variables
+      AcceptEnv LANG LC_* TERM COLORTERM
+      # Additional terminal capability variables
+      AcceptEnv TERMINFO TERMCAP
+      # Color output control
+      AcceptEnv NO_COLOR FORCE_COLOR CLICOLOR CLICOLOR_FORCE
     '';
   };
 
