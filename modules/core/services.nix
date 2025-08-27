@@ -40,4 +40,14 @@
   services.timesyncd.enable = true;
   services.upower.enable = true;
   services.logrotate.enable = true;
+  services.qdrant = {
+    enable = true;
+    settings = {
+      service = {
+        host = "127.0.0.1";
+        http_port = 6333;
+        grpc_port = 6334;
+      };
+    };
+  };
 }
