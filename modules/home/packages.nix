@@ -9,6 +9,7 @@
       cbonsai # terminal screensaver
       cliphist # clipboard manager
       cmatrix
+      delta
       dwt1-shell-color-scripts
       entr # perform action when file change
       eza # ls replacement
