@@ -34,11 +34,20 @@ config.unix_domains = {
 	},
 }
 
+-- SSH Domains configuration
+-- Note: This config works on both macOS (laptop) and Linux (gregor)
 config.ssh_domains = {
 	{
 		name = "gregor",
 		remote_address = "gregor",
 		username = "jwilger",
+		-- Use SSH config file for authentication settings
+		-- This respects your ~/.ssh/config on the laptop
+		ssh_option = {
+			forwardagent = "yes",
+		},
+		-- Timeout for connection
+		timeout = 10.0,
 	},
 }
 

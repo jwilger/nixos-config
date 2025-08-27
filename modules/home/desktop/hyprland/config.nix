@@ -138,9 +138,9 @@
         "$mainMod, F2, exec, lofi"
 
         # keybindings
-        "$mainMod, Return, exec, wezterm"
-        "ALT, Return, exec, wezterm start --class float_wezterm"
-        "$mainMod SHIFT, Return, exec, wezterm"
+        "$mainMod, Return, exec, wezterm start --domain main"
+        "ALT, Return, exec, wezterm start --domain main --class float_wezterm"
+        "$mainMod SHIFT, Return, exec, wezterm start --domain main"
         "$mainMod, B, exec, firefox"
         "$mainMod, Q, killactive,"
         "$mainMod, F, fullscreen, 0"
