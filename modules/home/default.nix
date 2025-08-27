@@ -7,6 +7,7 @@
   ++ [ (import ./btop.nix) ] # resouces monitor
   ++ [ (import ./environment.nix) ] # global environment variables
   ++ [ (import ./git.nix) ] # version control
+  ++ [ (import ./lazygit.nix) ] # git terminal UI
   ++ [ (import ./theme.nix) ] # general theme settings
   ++ [ (import ./nvim) ] # neovim editor
   ++ [ (import ./packages.nix) ] # other packages

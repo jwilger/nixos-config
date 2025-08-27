@@ -23,7 +23,6 @@
       goose-cli
       gparted # partition manager
       gtrash # rm replacement, put deleted files in system trash
-      lazygit
       libnotify
       ncdu # disk space
       nil
