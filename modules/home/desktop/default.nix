@@ -9,7 +9,7 @@
     (import ./waybar)
     (import ./fuzzel.nix)
     (import ./kitty.nix)
-    (import ./wezterm.nix)
+    # (import ./wezterm.nix)  # Disabled - using kitty instead
     (import ./spotify.nix)
     (import ./packages.nix)
     (import ./theme.nix)
