@@ -31,10 +31,11 @@
         return 1
       }
       
-      # Function to find the best available SSH agent
+      # Function to find the best available SSH agent (returns real socket, not symlinks)
       find_ssh_agent() {
         # 1. Check if we're in an SSH session with forwarded agent
-        if [ -n "$SSH_CONNECTION" ] && [ -n "$SSH_AUTH_SOCK" ]; then
+        # Skip our stable symlink to avoid circular references
+        if [ -n "$SSH_CONNECTION" ] && [ -n "$SSH_AUTH_SOCK" ] && [ "$SSH_AUTH_SOCK" != "$HOME/.ssh/ssh_auth_sock" ]; then
           if test_ssh_agent "$SSH_AUTH_SOCK"; then
             echo "$SSH_AUTH_SOCK"
             return
@@ -44,47 +45,45 @@
         # 2. Check for saved forwarded agent from SSH rc
         if [ -f ~/.ssh/last_forwarded_sock ]; then
           local saved_sock=$(cat ~/.ssh/last_forwarded_sock)
-          if test_ssh_agent "$saved_sock"; then
+          # Make sure it's not our symlink
+          if [ "$saved_sock" != "$HOME/.ssh/ssh_auth_sock" ] && test_ssh_agent "$saved_sock"; then
             echo "$saved_sock"
             return
           fi
         fi
         
-        # 3. Check for agent-forwarded.sock symlink (created by SSH rc)
-        if test_ssh_agent ~/.ssh/agent-forwarded.sock 2>/dev/null; then
-          echo ~/.ssh/agent-forwarded.sock
-          return
-        fi
-        
-        # 4. Check for forwarded agents in standard locations
-        for sock in /tmp/ssh-*/agent.* /run/user/"$(id -u)"/ssh-agent.* ; do
+        # 3. Check for forwarded agents in standard locations
+        # Use find to avoid glob expansion errors
+        for sock in $(find /tmp -maxdepth 2 -type s -path '*/ssh-*' -name 'agent.*' 2>/dev/null) \
+                    $(find /run/user/"$(id -u)" -maxdepth 2 -type s -name 'ssh-agent.*' 2>/dev/null); do
           if test_ssh_agent "$sock" 2>/dev/null; then
             echo "$sock"
             return
           fi
         done
         
-        # 5. Fall back to local 1Password agent
+        # 4. Fall back to local 1Password agent
         echo "$HOME/.1password/agent.sock"
       }
       
-      # Set SSH_AUTH_SOCK to the best available agent
-      export SSH_AUTH_SOCK=$(find_ssh_agent)
-      
-      # Create a stable symlink for the current agent (helps with multiplexer sessions)
-      if [ -n "$SSH_AUTH_SOCK" ] && [ -S "$SSH_AUTH_SOCK" ]; then
+      # Find the best available agent and create a stable symlink
+      _real_socket=$(find_ssh_agent)
+      if [ -n "$_real_socket" ] && [ -S "$_real_socket" ]; then
         mkdir -p ~/.ssh
-        ln -sf "$SSH_AUTH_SOCK" ~/.ssh/current_agent.sock
+        ln -sf "$_real_socket" ~/.ssh/ssh_auth_sock
+        # ALWAYS use the symlink as SSH_AUTH_SOCK, not the real socket
+        export SSH_AUTH_SOCK="$HOME/.ssh/ssh_auth_sock"
       fi
       
-      # Helper function to refresh SSH agent (can be called manually if needed)
+      # Helper function to refresh SSH agent (updates the symlink target only)
       refresh-ssh-agent() {
-        export SSH_AUTH_SOCK=$(find_ssh_agent)
-        echo "SSH_AUTH_SOCK updated to: $SSH_AUTH_SOCK"
-        if [ -S "$SSH_AUTH_SOCK" ]; then
+        local _real_socket=$(find_ssh_agent)
+        if [ -n "$_real_socket" ] && [ -S "$_real_socket" ]; then
+          ln -sf "$_real_socket" ~/.ssh/ssh_auth_sock
+          echo "SSH agent symlink updated to point to: $_real_socket"
           ssh-add -l | head -3
         else
-          echo "Warning: Socket not found or invalid"
+          echo "Warning: No valid socket found"
         fi
       }
     '';
