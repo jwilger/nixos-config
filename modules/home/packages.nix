@@ -33,7 +33,6 @@
       openssl
       pamixer # command-line audio mixer
       poweralertd
-      powerline
       python3
       ripgrep
       tdf # cli pdf viewer
@@ -42,7 +41,6 @@
       wl-clipboard # clipboard utils for wayland (wl-copy, wl-paste)
       wlogout
       xdg-utils
-      zellij
     ]
   );
 }
