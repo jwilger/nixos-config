@@ -4,9 +4,13 @@ default_layout "compact-with-datetime"
 mouse_mode true
 mirror_session true
 pane_frames true
+disable_status_bar false
+welcome_screen false
+show_startup_tips false
 ui {
   pane_frames {
     rounded_corners true
+    hide_session_name false
   }
 }
 keybinds {

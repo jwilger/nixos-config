@@ -33,40 +33,40 @@ in
             pane size=1 borderless=true {
                 plugin location="file://${zjstatus}/zjstatus.wasm" {
                     // Main status bar configuration
-                    format_left   "{mode} #[fg=#89B4FA,bg=#181825,bold]{session} {tabs}"
+                    format_left   "{mode} #[fg=#B4BEFE,bg=#1E1E2E,bold]  {session} #[fg=#313244,bg=#1E1E2E]  {tabs}"
                     format_center ""
                     format_right  "{datetime}"
 
-                    // Mode colors - Catppuccin Mocha theme
-                    mode_normal          "#[bg=#89B4FA] "
-                    mode_locked          "#[bg=#F9E2AF] "
-                    mode_resize          "#[bg=#F38BA8] "
-                    mode_pane            "#[bg=#A6E3A1] "
-                    mode_tab             "#[bg=#CBA6F7] "
-                    mode_scroll          "#[bg=#94E2D5] "
-                    mode_enter_search    "#[bg=#F5C2E7] "
-                    mode_search          "#[bg=#F5C2E7] "
-                    mode_rename_tab      "#[bg=#FAB387] "
-                    mode_rename_pane     "#[bg=#FAB387] "
-                    mode_session         "#[bg=#74C7EC] "
-                    mode_move            "#[bg=#F2CDCD] "
-                    mode_prompt          "#[bg=#CDD6F4] "
-                    mode_tmux            "#[bg=#F38BA8] "
+                    // Mode colors - Catppuccin Mocha theme with icons
+                    mode_normal          "#[bg=#89B4FA,fg=#1E1E2E,bold]  "
+                    mode_locked          "#[bg=#F9E2AF,fg=#1E1E2E,bold]  "
+                    mode_resize          "#[bg=#F38BA8,fg=#1E1E2E,bold]  "
+                    mode_pane            "#[bg=#A6E3A1,fg=#1E1E2E,bold]  "
+                    mode_tab             "#[bg=#CBA6F7,fg=#1E1E2E,bold]  "
+                    mode_scroll          "#[bg=#94E2D5,fg=#1E1E2E,bold]  "
+                    mode_enter_search    "#[bg=#F5C2E7,fg=#1E1E2E,bold]  "
+                    mode_search          "#[bg=#F5C2E7,fg=#1E1E2E,bold]  "
+                    mode_rename_tab      "#[bg=#FAB387,fg=#1E1E2E,bold]  "
+                    mode_rename_pane     "#[bg=#FAB387,fg=#1E1E2E,bold]  "
+                    mode_session         "#[bg=#74C7EC,fg=#1E1E2E,bold]  "
+                    mode_move            "#[bg=#F2CDCD,fg=#1E1E2E,bold]  "
+                    mode_prompt          "#[bg=#CDD6F4,fg=#1E1E2E,bold]  "
+                    mode_tmux            "#[bg=#F38BA8,fg=#1E1E2E,bold]  "
 
-                    // Tab styles
-                    tab_normal              "#[fg=#6C7086,bg=#181825] {name} "
-                    tab_active              "#[fg=#181825,bg=#89B4FA,bold] {name} "
-                    tab_fullscreen_indicator       "□ "
-                    tab_sync_indicator              "S "
-                    tab_floating_indicator          "F "
+                    // Tab styles - Powerline-inspired with rounded edges
+                    tab_normal              "#[fg=#313244,bg=#1E1E2E]#[fg=#6C7086,bg=#313244] {index} #[fg=#585B70]#[fg=#9399B2] {name} #[fg=#313244,bg=#1E1E2E]"
+                    tab_active              "#[fg=#45475A,bg=#1E1E2E,bold]#[fg=#89B4FA,bg=#45475A] {index} #[fg=#CDD6F4]#[fg=#F5E8E4,bold] {name} #[fg=#45475A,bg=#1E1E2E,bold]"
+                    tab_fullscreen_indicator       " "
+                    tab_sync_indicator              " "
+                    tab_floating_indicator          " "
 
                     // DateTime configuration
-                    datetime          "#[fg=#6C7086,bg=#181825] {format} "
-                    datetime_format   "%a %d %b %H:%M"
+                    datetime          "#[fg=#313244,bg=#1E1E2E]#[fg=#9399B2,bg=#313244]  {format} #[fg=#313244,bg=#1E1E2E]"
+                    datetime_format   "%a %d %b  %H:%M"
                     datetime_timezone "America/Los_Angeles"
 
                     // Other settings
-                    hide_frame_for_single_pane "false"
+                    hide_frame_for_single_pane "true"
                     border_enabled "false"
                 }
             }
