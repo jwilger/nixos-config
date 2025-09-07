@@ -18,10 +18,10 @@
 
     initContent = ''
       DISABLE_MAGIC_FUNCTIONS=true
-      
+
       # SSH Agent Detection for proper forwarding support
       # This handles both local 1Password agent and forwarded agents from laptop
-      
+
       # Function to test if an SSH agent socket is valid
       test_ssh_agent() {
         if [ -S "$1" ]; then
@@ -30,7 +30,7 @@
         fi
         return 1
       }
-      
+
       # Function to find the best available SSH agent (returns real socket, not symlinks)
       find_ssh_agent() {
         # 1. Check if we're in an SSH session with forwarded agent
@@ -65,7 +65,7 @@
         # 4. Fall back to local 1Password agent
         echo "$HOME/.1password/agent.sock"
       }
-      
+
       # Find the best available agent and create a stable symlink
       _real_socket=$(find_ssh_agent)
       if [ -n "$_real_socket" ] && [ -S "$_real_socket" ]; then
@@ -74,7 +74,7 @@
         # ALWAYS use the symlink as SSH_AUTH_SOCK, not the real socket
         export SSH_AUTH_SOCK="$HOME/.ssh/ssh_auth_sock"
       fi
-      
+
       # Helper function to refresh SSH agent (updates the symlink target only)
       refresh-ssh-agent() {
         local _real_socket=$(find_ssh_agent)
@@ -119,6 +119,9 @@
       gps = "git push";
       gci = "git commit";
       gco = "git checkout";
+
+      # AI Stuff
+      cc = "claude --append-system-prompt \"$(cat ~/.claude/system-prompt.md)\"";
     };
   };
 
