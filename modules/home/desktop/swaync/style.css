@@ -247,6 +247,15 @@ label {
 
 /* Window behind control center and on all other monitors */
 .blank-window {
+    background: alpha(black, 0.0);
+}
+
+/* Additional transparency fixes */
+.floating-notifications {
+    background: transparent;
+}
+
+.notification-group {
     background: transparent;
 }
 
@@ -458,7 +467,7 @@ carouselindicatordots {
 
 .notification-group > box.vertical {
   /* border: solid 5px red; */
-  margin-top: 3px
+  margin-top: 3px;
 }
 
 /* Backlight and volume widgets */

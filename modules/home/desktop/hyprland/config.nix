@@ -298,6 +298,15 @@
         "maxsize 1 1,class:^(xwaylandvideobridge)$"
         "noblur,class:^(xwaylandvideobridge)$"
       ];
+      
+      # Layer rules for SwayNC to prevent grey background overlay
+      layerrule = [
+        "blur, swaync-control-center"
+        "blur, swaync-notification-window"
+        "ignorezero, swaync-control-center"
+        "ignorezero, swaync-notification-window"
+        "ignorealpha 0.5, swaync-control-center"
+      ];
 
     };
     extraConfig = ''
