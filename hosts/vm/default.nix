@@ -24,4 +24,6 @@
 
   users.users."${username}".initialPassword = "test";
   virtualisation.vmVariant.services.timesyncd.enable = lib.mkForce true;
+
+  home-manager.users.${username}.imports = [ ./../../modules/home ];
 }

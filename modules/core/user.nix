@@ -5,7 +5,7 @@
     useUserPackages = true;
     useGlobalPkgs = true;
     extraSpecialArgs = { inherit inputs username host; };
-    
+
     users.${username} = {
       home.username = "${username}";
       home.homeDirectory = "/home/${username}";
@@ -13,7 +13,6 @@
       programs.home-manager.enable = true;
       imports = [
         inputs.catppuccin.homeModules.catppuccin
-        ./../home
       ];
     };
   };
