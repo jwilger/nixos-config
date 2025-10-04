@@ -5,9 +5,8 @@ return {
     terminal_cmd = 'claude --append-system-prompt "$(cat ~/.claude/system-prompt.md)"',
     focus_after_send = true,
     diff_opts = {
-      auto_close_on_accept = true,
-      vertical_split = false,
-      open_in_current_tab = false,
+      layout = "vertical",
+      open_in_new_tab = true,
       keep_terminal_focus = true,
     },
   },

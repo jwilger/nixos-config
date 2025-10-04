@@ -1,7 +1,8 @@
-{ config, ... }:
+{ config, pkgs, inputs, ... }:
 {
   programs.neovim = {
     enable = true;
+    package = inputs.neovim-nightly.packages.${pkgs.system}.default;
     defaultEditor = false;
     vimAlias = true;
     viAlias = true;
