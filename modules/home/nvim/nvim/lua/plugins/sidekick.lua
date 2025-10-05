@@ -2,21 +2,24 @@ return {
   "folke/sidekick.nvim",
   dependencies = { "coder/claudecode.nvim" },
   opts = {
-    clis = {
-      claude = {
-        cmd = {
-          "sh",
-          "-c",
-          string.format(
-            'CLAUDE_CODE_SSE_PORT="$(cat %s/claudecode_port 2>/dev/null || echo \'\')" ' ..
-            'ENABLE_IDE_INTEGRATION=true FORCE_CODE_TERMINAL=true ' ..
-            'claude --append-system-prompt "$(cat ~/.claude/system-prompt.md)"',
-            vim.fn.stdpath("cache")
-          ),
+    cli = {
+      tools = {
+        claude = {
+          cmd = {
+            "claude",
+            "--append-system-prompt",
+            vim.fn.expand("~/.claude/system-prompt.md"),
+            "--dangerously-skip-permissions",
+          },
+          env = {
+            CLAUDE_CODE_SSE_PORT = vim.fn
+              .system(string.format("cat %s/claudecode_port 2>/dev/null || echo ''", vim.fn.stdpath("cache")))
+              :gsub("%s+$", ""),
+            ENABLE_IDE_INTEGRATION = "true",
+            FORCE_CODE_TERMINAL = "true",
+          },
         },
       },
-    },
-    cli = {
       win = {
         layout = "right",
         split = { width = 80, height = 20 },
