@@ -42,7 +42,7 @@ in
         color: #6c7086;
     }
     #workspaces button.active {
-        color: #b4befe;
+        color: #a6e3a1;
     }
 
     #tray, #pulseaudio, #network, #cpu, #memory, #disk, #clock, #battery, #custom-notification {
