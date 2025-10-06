@@ -40,6 +40,15 @@
       pkgs.xdg-desktop-portal-hyprland
       pkgs.xdg-desktop-portal-gtk
     ];
+    config = {
+      common = {
+        default = [ "hyprland" ];
+        "org.freedesktop.impl.portal.FileChooser" = [ "gtk" ];
+      };
+      hyprland = {
+        default = [ "hyprland" "gtk" ];
+      };
+    };
   };
   services.greetd = {
     enable = true;

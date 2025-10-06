@@ -11,6 +11,7 @@
     (import ./kitty.nix)
     # (import ./wezterm.nix)  # Disabled - using kitty instead
     (import ./spotify.nix)
+    (import ./zoom.nix)
     (import ./packages.nix)
     (import ./theme.nix)
   ];
