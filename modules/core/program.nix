@@ -1,38 +1,4 @@
 { pkgs, ... }:
-let
-  goose-cli = pkgs.rustPlatform.buildRustPackage rec {
-    pname = "goose-cli";
-    version = "1.9.1";
-
-    src = pkgs.fetchFromGitHub {
-      owner = "block";
-      repo = "goose";
-      rev = "v${version}";
-      sha256 = "sha256-XJeuu/k60rnZRxr/7mKOXH3HGKZTeyX0sebhipwtSaY=";
-    };
-
-    cargoHash = "sha256-zqyQXw4V2DYHSrbCquVGfZ69xrEZznpc7TsORtvE47c=";
-
-    nativeBuildInputs = with pkgs; [
-      pkg-config
-    ];
-
-    buildInputs = with pkgs; [
-      xorg.libxcb
-      openssl
-    ];
-
-    # Skip tests - upstream has broken tests
-    doCheck = false;
-
-    meta = with pkgs.lib; {
-      description = "Open-source, extensible AI agent";
-      homepage = "https://github.com/block/goose";
-      license = licenses.asl20;
-      platforms = platforms.linux;
-    };
-  };
-in
 {
   programs.dconf.enable = true;
   programs.zsh.enable = true;
@@ -44,7 +10,6 @@ in
   };
 
   environment.systemPackages = with pkgs; [
-    goose-cli
     (pkgs.writeShellScriptBin "git-ssh-sign" ''
       #!/usr/bin/env bash
       # Git SSH signing wrapper that works with WezTerm's native SSH agent forwarding

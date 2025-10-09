@@ -22,7 +22,6 @@
       git-crypt
       glow
       gnumake
-      goose-cli
       gparted # partition manager
       gtrash # rm replacement, put deleted files in system trash
       jq # JSON processor
