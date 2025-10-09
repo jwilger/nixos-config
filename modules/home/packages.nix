@@ -20,6 +20,7 @@
       gcc
       gh
       git-crypt
+      glow
       gnumake
       goose-cli
       gparted # partition manager
