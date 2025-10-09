@@ -8,6 +8,7 @@
     (import ./swaync)
     (import ./waybar)
     (import ./fuzzel.nix)
+    (import ./keyring.nix)
     (import ./kitty.nix)
     # (import ./wezterm.nix)  # Disabled - using kitty instead
     (import ./spotify.nix)
