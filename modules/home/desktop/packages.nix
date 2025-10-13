@@ -4,8 +4,9 @@
     with pkgs;
     [
       _1password-gui
-      pavucontrol # pulseaudio volume controle (GUI)
       nixfmt-rfc-style
+      pavucontrol # pulseaudio volume controle (GUI)
+      slack
     ]
   );
 }
