@@ -1,3 +1,6 @@
 result
 .claude/
 node_modules
+
+# Cosmic Desktop user preferences that change frequently
+modules/home/desktop/cosmic/com.system76.CosmicNotifications/v1/do_not_disturb
