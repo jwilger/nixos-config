@@ -22,6 +22,19 @@
     [mgr]
     ratio = [1, 3, 4]
 
+    [opener]
+    glow = [
+      { run = 'glow -p "$@"', block = true, desc = "View with Glow" },
+    ]
+    edit = [
+      { run = '$EDITOR "$@"', block = true, desc = "Edit" },
+    ]
+
+    [open]
+    prepend_rules = [
+      { name = "*.md", use = ["glow", "edit"] },
+    ]
+
     [plugin]
     prepend_previewers = [
       { name = "*.md", run = "glow" },
