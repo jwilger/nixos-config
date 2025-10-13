@@ -31,65 +31,15 @@
     accent = "lavender";
   };
 
-  programs.hyprland.enable = true;
-  xdg.portal = {
-    enable = true;
-    wlr.enable = true;
-    xdgOpenUsePortal = true;
-    extraPortals = [
-      pkgs.xdg-desktop-portal-hyprland
-      pkgs.xdg-desktop-portal-gtk
-    ];
-    config = {
-      common = {
-        default = [ "hyprland" ];
-        "org.freedesktop.impl.portal.FileChooser" = [ "gtk" ];
-      };
-      hyprland = {
-        default = [ "hyprland" "gtk" ];
-      };
-    };
-  };
-  services.greetd = {
-    enable = true;
-    settings = rec {
-      initial_session = {
-        command = "${pkgs.hyprland}/bin/hyprland";
-        user = "${username}";
-      };
-      default_session = initial_session;
-    };
-  };
-  services.hypridle.enable = true;
-
-  nix = {
-    settings = {
-      substituters = [
-        "https://hyprland.cachix.org"
-      ];
-      trusted-public-keys = [
-        "hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="
-      ];
-    };
-  };
-
   services = {
-    xserver = {
-      enable = true;
-      xkb.layout = "us";
+    displayManager.cosmic-greeter.enable = true;
+    desktopManager.cosmic.enable = true;
+  };
 
-      # X11 cursor theme config
-      displayManager.sessionCommands = ''
-        ${pkgs.xorg.xsetroot}/bin/xsetroot -xcf ${pkgs.vanilla-dmz}/share/icons/Vanilla-DMZ/cursors/left_ptr 24
-      '';
-    };
+  environment.sessionVariables.COSMIC_DATA_CONTROL_ENABLED = 1;
 
-    libinput = {
-      enable = true;
-      # mouse = {
-      #   accelProfile = "flat";
-      # };
-    };
+  programs.firefox.preferences = {
+    "widget.gtk.libadwaita-colors.enabled" = false;
   };
 
   programs._1password.enable = true;

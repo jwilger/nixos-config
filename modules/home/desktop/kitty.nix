@@ -1,10 +1,10 @@
-{ ... }: 
+{ ... }:
 {
   programs.kitty = {
     enable = true;
 
     themeFile = "Catppuccin-Mocha";
-    
+
     font = {
       name = "JetBrainsMono Nerd Font";
       size = 11;
@@ -12,12 +12,15 @@
 
     settings = {
       confirm_os_window_close = 0;
-      background_opacity = "0.80";  # Slightly more opaque for better readability
+      background_opacity = "0.80"; # Slightly more opaque for better readability
       window_padding_width = 10;
       scrollback_lines = 10000;
       enable_audio_bell = false;
       mouse_hide_wait = 60;
-      
+      hide_window_decorations = "yes";
+      window_border_width = 0;
+      draw_minimal_borders = "yes";
+
       ## Tabs
       tab_title_template = "{index}";
       active_tab_font_style = "normal";
@@ -30,7 +33,7 @@
       inactive_tab_background = "#313244";
     };
 
-    keybindings = {  
+    keybindings = {
       ## Tabs
       "alt+1" = "goto_tab 1";
       "alt+2" = "goto_tab 2";
