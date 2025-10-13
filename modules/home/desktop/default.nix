@@ -7,6 +7,7 @@
     (import ./insync)
     (import ./kitty.nix)
     (import ./spotify.nix)
+    (import ./vlc.nix)
     (import ./zoom.nix)
     (import ./packages.nix)
     (import ./obs-studio.nix)
