@@ -29,6 +29,6 @@
 
     [preview]
     tab_size = 2
-    wrap = "true"
+    wrap = "yes"
   '';
 }
