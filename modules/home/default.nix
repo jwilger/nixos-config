@@ -5,7 +5,6 @@
   ]
   ++ [ (import ./bat.nix) ] # better cat command
   ++ [ (import ./btop.nix) ] # resouces monitor
-  ++ [ (import ./claude.nix) ] # claude code CLI tool
   ++ [ (import ./environment.nix) ] # global environment variables
   ++ [ (import ./git.nix) ] # version control
   ++ [ (import ./lazygit.nix) ] # git terminal UI

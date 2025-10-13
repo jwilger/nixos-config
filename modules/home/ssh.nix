@@ -1,20 +1,22 @@
-{ lib, config, ... }:
+{ config, ... }:
 {
   programs.ssh = {
     enable = true;
-    
-    # Enable agent forwarding for connections from this machine
-    forwardAgent = true;
-    
+    enableDefaultConfig = false;
+
     # Match blocks for specific hosts
     matchBlocks = {
+      "*" = {
+        forwardAgent = true;
+      };
+
       "github.com" = {
         hostname = "github.com";
         user = "git";
         identityFile = null; # Use agent instead of specific key file
       };
     };
-    
+
     # Extra configuration
     extraConfig = ''
       # Use the stable socket path if SSH_AUTH_SOCK is not set
@@ -23,16 +25,16 @@
           IdentityAgent ${config.home.homeDirectory}/.ssh/ssh_auth_sock
     '';
   };
-  
+
   # Create an SSH rc file that helps maintain agent forwarding
   # This runs when someone SSHs into this machine
   home.file.".ssh/rc" = {
     text = ''
       #!/bin/sh
-      
+
       # SSH rc script to maintain agent forwarding
       # This script runs when someone SSHs into this machine
-      
+
       if [ -n "$SSH_AUTH_SOCK" ]; then
         # Create a stable symlink to the current SSH agent socket
         # This is the primary socket that should always work
@@ -44,7 +46,7 @@
         # Store timestamp for debugging
         date > ~/.ssh/last_ssh_auth_update
       fi
-      
+
       # Fix permissions on the .ssh directory
       if [ -d ~/.ssh ]; then
         chmod 700 ~/.ssh
@@ -53,15 +55,15 @@
     '';
     executable = true;
   };
-  
+
   # Create a sophisticated helper script to fix SSH agent socket in existing sessions
   home.file.".local/bin/fix-ssh-agent" = {
     text = ''
       #!/usr/bin/env bash
-      
+
       # This script intelligently finds and sets up SSH agent socket
       # It handles switching between SSH forwarded agents and local agents
-      
+
       # Function to test if a socket is valid and working
       test_ssh_socket() {
         local socket="$1"
@@ -75,7 +77,7 @@
         fi
         return 1
       }
-      
+
       # Function to find a valid SSH socket
       find_valid_ssh_socket() {
         local socket
@@ -129,7 +131,7 @@
         
         return 1
       }
-      
+
       # Main script logic
       main() {
         local new_socket
@@ -172,7 +174,7 @@
           return 1
         fi
       }
-      
+
       main "$@"
     '';
     executable = true;
