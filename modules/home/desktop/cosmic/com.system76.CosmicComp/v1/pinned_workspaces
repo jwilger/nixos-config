@@ -1,0 +1,77 @@
+[
+    (
+        output: (
+            name: "DP-3",
+            edid: Some((
+                manufacturer: ('A', 'P', 'P'),
+                product: 44602,
+                serial: Some(1034871563),
+                manufacture_week: 7,
+                manufacture_year: 2022,
+                model_year: None,
+            )),
+        ),
+        tiling_enabled: true,
+        id: Some("1245a56"),
+    ),
+    (
+        output: (
+            name: "DP-3",
+            edid: Some((
+                manufacturer: ('A', 'P', 'P'),
+                product: 44602,
+                serial: Some(1034871563),
+                manufacture_week: 7,
+                manufacture_year: 2022,
+                model_year: None,
+            )),
+        ),
+        tiling_enabled: true,
+        id: Some("1d84d7c"),
+    ),
+    (
+        output: (
+            name: "DP-3",
+            edid: Some((
+                manufacturer: ('A', 'P', 'P'),
+                product: 44602,
+                serial: Some(1034871563),
+                manufacture_week: 7,
+                manufacture_year: 2022,
+                model_year: None,
+            )),
+        ),
+        tiling_enabled: true,
+        id: Some("1cb4179"),
+    ),
+    (
+        output: (
+            name: "DP-3",
+            edid: Some((
+                manufacturer: ('A', 'P', 'P'),
+                product: 44602,
+                serial: Some(1034871563),
+                manufacture_week: 7,
+                manufacture_year: 2022,
+                model_year: None,
+            )),
+        ),
+        tiling_enabled: true,
+        id: Some("196de5"),
+    ),
+    (
+        output: (
+            name: "DP-3",
+            edid: Some((
+                manufacturer: ('A', 'P', 'P'),
+                product: 44602,
+                serial: Some(1034871563),
+                manufacture_week: 7,
+                manufacture_year: 2022,
+                model_year: None,
+            )),
+        ),
+        tiling_enabled: true,
+        id: Some("14ba9a9"),
+    ),
+]
