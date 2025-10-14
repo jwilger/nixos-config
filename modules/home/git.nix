@@ -1,4 +1,9 @@
-{ pkgs, config,... }: 
+{
+  pkgs,
+  config,
+  lib,
+  ...
+}:
 {
   programs.git = {
     enable = true;
@@ -18,7 +23,7 @@
       format = "ssh";
       key = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIGwXlUIgMZDNewfvIyX5Gd1B1dIuLT7lH6N+2+FrSaSU";
       signByDefault = true;
-      signer = "git-ssh-sign";
+      signer = "${lib.getExe' pkgs._1password-gui "op-ssh-sign"}";
     };
 
     extraConfig = {
@@ -28,7 +33,9 @@
       diff.tool = "nvimdiff";
       log.showSignature = true;
       gpg = {
-        ssh.allowedSignersFile = "${config.home.homeDirectory}/${config.xdg.configFile."ssh/allowed_signers".target}";
+        ssh.allowedSignersFile = "${config.home.homeDirectory}/${
+          config.xdg.configFile."ssh/allowed_signers".target
+        }";
       };
       pull = {
         ff = "only";
@@ -36,7 +43,7 @@
       push = {
         default = "current";
       };
-      safe.directory = ".";  # Current directory
+      safe.directory = "."; # Current directory
     };
   };
 
