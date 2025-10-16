@@ -11,12 +11,14 @@
     terminal = false;
     type = "Application";
     categories = [ "Network" "InstantMessaging" "Office" ];
-    startupWMClass = "Slack";
     mimeType = [
       "x-scheme-handler/slack"
       "x-scheme-handler/slack-ssb"
       "x-scheme-handler/slack-calls"
     ];
+    settings = {
+      StartupWMClass = "Slack";
+    };
   };
 
   programs.zsh.shellAliases.slack =

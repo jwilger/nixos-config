@@ -11,6 +11,8 @@
     terminal = false;
     type = "Application";
     categories = [ "Utility" "Security" "Network" ];
-    startupWMClass = "1Password";
+    settings = {
+      StartupWMClass = "1Password";
+    };
   };
 }
