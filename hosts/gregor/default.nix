@@ -80,7 +80,10 @@
     docker-compose
     libimobiledevice
     ifuse
+    lxqt.lxqt-openssh-askpass
   ];
+
+  environment.variables.SUDO_ASKPASS = "${pkgs.lxqt.lxqt-openssh-askpass}/libexec/lxqt-openssh-askpass";
 
   time.timeZone = "America/Los_Angeles";
 
@@ -105,6 +108,18 @@
   };
 
   services.usbmuxd.enable = true;
+
+  programs.zsh.shellAliases = {
+    sudo = "sudo -A";
+  };
+
+  security.sudo = {
+    enable = true;
+    extraConfig = ''
+      Defaults env_keep += "SUDO_ASKPASS"
+      Defaults timestamp_timeout=0
+    '';
+  };
 
   systemd.services.hotplug-monitor = {
     description = "Trigger DRM hotplug and rescan";
