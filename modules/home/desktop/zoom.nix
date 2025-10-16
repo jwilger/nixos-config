@@ -29,6 +29,7 @@
     embeddedBrowserForFacebookLogin=false
     embeddedBrowserForGoogleLogin=false
     embeddedBrowserForSSOLogin=false
+    enableWaylandShare=true
   '';
 
   # Fix the desktop file to use the correct Zoom path instead of /usr/bin/zoom
@@ -38,7 +39,7 @@
     [Desktop Entry]
     Name=Zoom Workplace
     Comment=Zoom Video Conference
-    Exec=${config.home.profileDirectory}/bin/zoom %U
+    Exec=env QT_QPA_PLATFORM=wayland ${config.home.profileDirectory}/bin/zoom %U
     Icon=Zoom
     Terminal=false
     Type=Application
@@ -57,4 +58,7 @@
       "x-scheme-handler/zoomus" = "Zoom.desktop";
     };
   };
+
+  programs.zsh.shellAliases.zoom =
+    "QT_QPA_PLATFORM=wayland ${config.home.profileDirectory}/bin/zoom";
 }
