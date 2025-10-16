@@ -3,27 +3,27 @@
         modifiers: [
             Super,
         ],
+        key: "t",
+    ): Disable,
+    (
+        modifiers: [
+            Super,
+            Ctrl,
+        ],
+        key: "s",
+    ): Spawn("slack"),
+    (
+        modifiers: [
+            Super,
+        ],
         key: "f",
     ): Fullscreen,
     (
         modifiers: [
             Super,
         ],
-        key: "F11",
-    ): Disable,
-    (
-        modifiers: [
-            Super,
-        ],
-        key: "t",
-    ): Disable,
-    (
-        modifiers: [
-            Super,
-            Shift,
-        ],
-        key: "s",
-    ): ToggleSticky,
+        key: "Return",
+    ): System(Terminal),
     (
         modifiers: [
             Super,
@@ -34,6 +34,13 @@
         modifiers: [
             Super,
         ],
-        key: "Return",
-    ): System(Terminal),
+        key: "F11",
+    ): Disable,
+    (
+        modifiers: [
+            Super,
+            Shift,
+        ],
+        key: "s",
+    ): ToggleSticky,
 }
