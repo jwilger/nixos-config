@@ -29,6 +29,7 @@ let
       printf "%s" "$response"
     '';
   };
+  run0Bin = lib.getExe' pkgs.systemd "run0";
 in
 {
   imports = [
@@ -141,7 +142,7 @@ in
   services.usbmuxd.enable = true;
 
   programs.zsh.shellAliases = {
-    sudo = "sudo -A";
+    sudo = run0Bin;
   };
 
   security.sudo = {
