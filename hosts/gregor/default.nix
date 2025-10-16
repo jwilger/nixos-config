@@ -1,4 +1,4 @@
-{ pkgs, username, ... }:
+{ pkgs, username, lib, ... }:
 {
   imports = [
     ./hardware-configuration.nix
@@ -105,4 +105,18 @@
   };
 
   services.usbmuxd.enable = true;
+
+  systemd.services.hotplug-monitor = {
+    description = "Trigger DRM hotplug and rescan";
+    serviceConfig.Type = "oneshot";
+    path = [ pkgs.systemd ];
+    script = ''
+      udevadm trigger --subsystem-match=drm --action=change
+    '';
+  };
+
+  services.udev.extraRules = lib.mkAfter ''
+    ACTION=="change", SUBSYSTEM=="drm", KERNEL=="card0", RUN+="${pkgs.systemd}/bin/systemctl start hotplug-monitor.service"
+    ACTION=="add", SUBSYSTEM=="usb", ATTRS{product}=="Studio Display", RUN+="${pkgs.systemd}/bin/systemctl start hotplug-monitor.service"
+  '';
 }
