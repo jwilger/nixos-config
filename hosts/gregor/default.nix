@@ -1,4 +1,35 @@
 { pkgs, username, lib, ... }:
+let
+  cosmicAskpass = pkgs.writeShellApplication {
+    name = "cosmic-sudo-askpass";
+    runtimeInputs = [ pkgs.yad ];
+    text = ''
+      set -euo pipefail
+
+      response="$(${pkgs.yad}/bin/yad \
+        --entry \
+        --hide-text \
+        --title="Administrator Access Required" \
+        --text="Enter your password to continue." \
+        --image=dialog-password \
+        --button=gtk-cancel:1 \
+        --button=gtk-ok:0 \
+        --center \
+        --on-top \
+        --skip-taskbar \
+        --borders=16 \
+        --geometry=360x160 \
+        --window-icon=dialog-password \
+      )"
+      status=$?
+      if [ "$status" -ne 0 ]; then
+        exit "$status"
+      fi
+
+      printf "%s" "$response"
+    '';
+  };
+in
 {
   imports = [
     ./hardware-configuration.nix
@@ -80,10 +111,10 @@
     docker-compose
     libimobiledevice
     ifuse
-    lxqt.lxqt-openssh-askpass
+    cosmicAskpass
   ];
 
-  environment.variables.SUDO_ASKPASS = "${pkgs.lxqt.lxqt-openssh-askpass}/libexec/lxqt-openssh-askpass";
+  environment.variables.SUDO_ASKPASS = "${cosmicAskpass}/bin/cosmic-sudo-askpass";
 
   time.timeZone = "America/Los_Angeles";
 
@@ -116,7 +147,7 @@
   security.sudo = {
     enable = true;
     extraConfig = ''
-      Defaults env_keep += "SUDO_ASKPASS"
+      Defaults env_keep += "SUDO_ASKPASS DISPLAY WAYLAND_DISPLAY XAUTHORITY DBUS_SESSION_BUS_ADDRESS"
       Defaults timestamp_timeout=0
     '';
   };
