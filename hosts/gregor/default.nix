@@ -87,6 +87,9 @@ in
     alsa.support32Bit = true;
     pulse.enable = true;
     wireplumber.enable = true;
+    # Disable socket activation - start PipeWire immediately for headless steam user
+    # Required for Steam Remote Play desktop capture in systemd service
+    socketActivation = false;
   };
 
   services.pulseaudio.enable = false;
