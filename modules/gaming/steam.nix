@@ -90,6 +90,7 @@
       Environment = [
         "HOME=/home/steam-library"
         "XDG_RUNTIME_DIR=/run/user/987"
+        "DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/987/bus"
       ];
     };
   };
