@@ -198,7 +198,7 @@
   # Create wrapper script for launching Steam in gamescope
   environment.etc."steam-gamescope-session" = {
     text = ''
-      #!/usr/bin/env bash
+      #!${pkgs.bash}/bin/bash
       # Steam Gamescope Session Launcher (Headless Mode)
       #
       # This script launches Steam in gamescope headless mode for 4K@60Hz streaming
