@@ -203,6 +203,8 @@
         --prefer-vk-device /dev/dri/renderD128 \
         -w "$GAMESCOPE_WIDTH" \
         -h "$GAMESCOPE_HEIGHT" \
+        -W "$GAMESCOPE_WIDTH" \
+        -H "$GAMESCOPE_HEIGHT" \
         -r "$GAMESCOPE_REFRESH" \
         -e \
         --adaptive-sync \
