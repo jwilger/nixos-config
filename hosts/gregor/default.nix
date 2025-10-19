@@ -94,6 +94,13 @@ in
 
   services.pulseaudio.enable = false;
 
+  # Enable WirePlumber to start at boot for steam user
+  # Required for Steam Remote Play desktop capture in headless gamescope session
+  systemd.user.services.wireplumber = {
+    wantedBy = [ "default.target" ];
+    unitConfig.ConditionUser = "steam";
+  };
+
   # BcacheFS scrub service & timer
   systemd.services.bcachefs-scrub = {
     description = "Scrub BcacheFS filesystems";
