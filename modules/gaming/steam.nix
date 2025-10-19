@@ -71,7 +71,8 @@
       Type = "simple";
       User = "steam";
       Group = "steam";
-      ExecStart = "/etc/steam-gamescope-session";
+      # Wrap with dbus-run-session to create session bus
+      ExecStart = "${pkgs.dbus}/bin/dbus-run-session /etc/steam-gamescope-session";
       Restart = "on-failure";
       RestartSec = "10s";
 
@@ -90,7 +91,6 @@
       Environment = [
         "HOME=/home/steam-library"
         "XDG_RUNTIME_DIR=/run/user/987"
-        "DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/987/bus"
       ];
     };
   };
