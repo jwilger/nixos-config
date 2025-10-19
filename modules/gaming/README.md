@@ -1,6 +1,6 @@
 # Steam Multi-Seat Gaming Module
 
-This module provides a headless Steam gaming session that runs concurrently with your COSMIC desktop, enabling game streaming to SteamLink/AppleTV while you continue working.
+This module provides a headless Steam gaming session that runs concurrently with your COSMIC desktop, enabling game streaming to Moonlight/AppleTV while you continue working.
 
 ## Architecture
 
@@ -10,35 +10,28 @@ This module provides a headless Steam gaming session that runs concurrently with
 - **Independent audio**: PipeWire automatically routes audio per session
 - **Game library**: `/home/steam-library` (existing library preserved)
 
-## Initial Setup: SteamLink PIN Pairing
+## Initial Setup: Sunshine Pairing
 
-The first time you connect from SteamLink/AppleTV, Steam will require PIN pairing. Since the gaming session runs headless (no visual output), use this procedure:
+Sunshine streams games from the headless gamescope session. Initial pairing is done via web interface:
 
 ### Pairing Steps
 
-1. **Stop the gaming service:**
-   ```bash
-   sudo systemctl stop steam-gaming.service
-   ```
+1. **Access Sunshine web interface:**
+   - Open browser to `https://gregor:47990`
+   - Default credentials: `admin` / `admin` (change immediately!)
 
-2. **Launch Steam as the steam user in your desktop session:**
-   ```bash
-   sudo -u steam DISPLAY=$DISPLAY steam
-   ```
+2. **Configure Sunshine:**
+   - Set secure password
+   - Configure video codec (H.264/HEVC - HEVC recommended for 4K)
+   - Set bitrate (50 Mbps for 4K recommended)
 
-3. **Complete the pairing:**
-   - Start SteamLink on your AppleTV
-   - Enter the PIN shown on your AppleTV into the Steam interface
-   - Verify connection succeeds
+3. **Pair Moonlight client:**
+   - Install Moonlight app on AppleTV
+   - Moonlight will auto-discover "gregor"
+   - Enter PIN shown in Moonlight into Sunshine web interface
+   - Pairing persists indefinitely
 
-4. **Quit Steam** (close the window)
-
-5. **Restart the gaming service:**
-   ```bash
-   sudo systemctl start steam-gaming.service
-   ```
-
-The pairing persists indefinitely. You only need to do this once (unless you unpair the device or reinstall Steam).
+No need to restart services - Sunshine runs automatically with the gaming session.
 
 ## Operation
 
@@ -58,12 +51,13 @@ sudo systemctl restart steam-gaming.service
 sudo systemctl stop steam-gaming.service
 ```
 
-### Streaming from SteamLink
+### Streaming from Moonlight
 
 Once paired:
-1. Open SteamLink app on AppleTV
-2. Select your computer from the list
-3. Games will stream at 4K@60Hz
+1. Open Moonlight app on AppleTV
+2. Select "gregor" from discovered hosts
+3. Choose "Desktop" or specific game from list
+4. Games stream at up to 4K@60Hz (adapts to network conditions)
 
 Both your COSMIC desktop and the gaming session run simultaneously with independent audio streams.
 
@@ -77,9 +71,9 @@ The gaming session is configured in `/etc/nixos/modules/gaming/steam.nix`:
 
 ## Firewall
 
-Steam Remote Play ports are automatically opened:
-- TCP: 27036, 27037
-- UDP: 27031, 27036
+Sunshine streaming ports are automatically opened:
+- TCP: 47984-47990 (HTTPS web UI, RTSP)
+- UDP: 47998-48000 (Video/Audio streaming)
 
 ## Security
 
@@ -99,11 +93,13 @@ journalctl -u steam-gaming.service -n 50
 ls -la /run/user/987
 ```
 
-### SteamLink can't find computer
+### Moonlight can't find host
 
 1. Verify service is running: `systemctl status steam-gaming.service`
-2. Check firewall allows Remote Play ports
-3. Ensure both devices on same network
+2. Verify Sunshine is running: `systemctl status sunshine`
+3. Check firewall allows Sunshine ports (47984-48000)
+4. Ensure both devices on same network
+5. Try manual connection in Moonlight using IP address
 
 ### Audio routing issues
 
