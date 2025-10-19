@@ -103,7 +103,8 @@
       Type = "simple";
       User = "steam";
       Group = "steam";
-      ExecStart = "${pkgs.wayvnc}/bin/wayvnc --config /etc/wayvnc/config 0.0.0.0 5900";
+      # Use command-line args instead of config file to avoid parsing issues
+      ExecStart = "${pkgs.wayvnc}/bin/wayvnc -o gamescope-0 -k us -r 30 0.0.0.0 5900";
       Restart = "on-failure";
       RestartSec = "5s";
 
@@ -174,25 +175,6 @@
   environment.sessionVariables = {
     # Point Steam to custom library location
     STEAM_EXTRA_COMPAT_TOOLS_PATHS = "/home/steam-library/compatibilitytools.d";
-  };
-
-  # VNC server configuration for Steam session access
-  environment.etc."wayvnc/config" = {
-    text = ''
-      # WayVNC Configuration for Steam Gaming Session
-      # Provides visual access to headless gamescope for PIN pairing
-
-      address=0.0.0.0
-      enable_auth=false
-      # For security: consider enabling auth after testing
-      # username=steam
-      # password=<set a password>
-
-      # Performance settings
-      max_fps=30
-      # Lower FPS is fine for pairing interface
-    '';
-    mode = "0644";
   };
 
   # Create wrapper script for launching Steam in gamescope
