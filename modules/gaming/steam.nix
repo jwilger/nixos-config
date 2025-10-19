@@ -72,7 +72,7 @@
       User = "steam";
       Group = "steam";
       # Wrap with dbus-run-session to create session bus
-      ExecStart = "${pkgs.dbus}/bin/dbus-run-session /etc/steam-gamescope-session";
+      ExecStart = "${pkgs.dbus}/bin/dbus-run-session --dbus-daemon=${pkgs.dbus}/bin/dbus-daemon /etc/steam-gamescope-session";
       Restart = "on-failure";
       RestartSec = "10s";
 
