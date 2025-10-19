@@ -76,19 +76,16 @@
       # Resource limits
       LimitNOFILE = 1048576;
 
+      # Systemd will create /run/user/987 automatically with proper permissions
+      RuntimeDirectory = "user/987";
+      RuntimeDirectoryMode = "0700";
+
       # Environment
       Environment = [
         "HOME=/home/steam-library"
         "XDG_RUNTIME_DIR=/run/user/987"
       ];
     };
-
-    # Ensure XDG_RUNTIME_DIR exists
-    preStart = ''
-      mkdir -p /run/user/987
-      chown steam:steam /run/user/987
-      chmod 700 /run/user/987
-    '';
   };
 
   # VNC service for one-time PIN pairing access
