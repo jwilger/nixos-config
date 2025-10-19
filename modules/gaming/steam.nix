@@ -6,13 +6,19 @@
 # - Dedicated steam user running as systemd service
 # - Gamescope compositor for headless 4K@60Hz rendering
 # - Steam with Remote Play for streaming to SteamLink/AppleTV
-# - VNC server for one-time PIN pairing access
 # - Independent audio/video from primary user session
 # - Home directory: /home/steam-library (Steam stores games in ~/.local/share/Steam/)
 #
 # The gaming session runs concurrently with the primary user's desktop
 # environment via systemd services, allowing true simultaneous operation
 # (workstation + gaming) without TTY login requirements.
+#
+# Initial SteamLink PIN Pairing:
+#   1. sudo systemctl stop steam-gaming.service
+#   2. sudo -u steam DISPLAY=$DISPLAY steam
+#   3. Complete PIN pairing in Steam interface
+#   4. Quit Steam
+#   5. sudo systemctl start steam-gaming.service
 
 {
   # Create dedicated steam user for gaming
@@ -88,32 +94,6 @@
     };
   };
 
-  # VNC service for one-time PIN pairing access
-  # Can be disabled after successful SteamLink pairing
-  systemd.services.steam-vnc = {
-    description = "VNC Server for Steam Gaming Session";
-    wantedBy = [ "multi-user.target" ];
-    after = [ "steam-gaming.service" ];
-    requires = [ "steam-gaming.service" ];
-
-    serviceConfig = {
-      Type = "simple";
-      User = "steam";
-      Group = "steam";
-      # Use command-line args instead of config file to avoid parsing issues
-      ExecStart = "${pkgs.wayvnc}/bin/wayvnc -o gamescope-0 -k us -r 30 0.0.0.0 5900";
-      Restart = "on-failure";
-      RestartSec = "5s";
-
-      # Environment
-      Environment = [
-        "HOME=/home/steam-library"
-        "XDG_RUNTIME_DIR=/run/user/987"
-        "WAYLAND_DISPLAY=gamescope-0"
-      ];
-    };
-  };
-
   # Enable Steam with all necessary features
   programs.steam = {
     enable = true;
@@ -159,9 +139,6 @@
     gamescope
     steam
     steam-run
-
-    # VNC server for one-time pairing access
-    wayvnc
 
     # Additional gaming utilities
     mangohud # Performance overlay
