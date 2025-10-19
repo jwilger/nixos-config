@@ -147,6 +147,12 @@
     openFirewall = true;
   };
 
+  # Enable Sunshine user service for steam user specifically
+  systemd.user.services.sunshine = {
+    wantedBy = [ "default.target" ];
+    unitConfig.ConditionUser = "steam";
+  };
+
   # Gamescope package with args for the steam user's session
   # These will be used by the systemd service
   environment.systemPackages = with pkgs; [
