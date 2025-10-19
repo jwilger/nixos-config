@@ -1,4 +1,9 @@
-{ pkgs, username, lib, ... }:
+{
+  pkgs,
+  username,
+  lib,
+  ...
+}:
 let
   cosmicAskpass = pkgs.writeShellApplication {
     name = "cosmic-sudo-askpass";
@@ -36,6 +41,8 @@ in
     ./hardware-configuration.nix
     ./../../modules/core
     ./../../modules/desktop
+    ./../../modules/hardware/edid-apple-studio-display.nix
+    ./../../modules/gaming
   ];
 
   powerManagement.cpuFreqGovernor = "performance";
@@ -47,12 +54,12 @@ in
         22
         80
         443
-        4070  # Spotify Connect TCP port
+        4070 # Spotify Connect TCP port
       ];
       # allow DNS over UDP and Spotify Connect discovery
-      allowedUDPPorts = [ 
-        53    # DNS
-        5353  # mDNS (multicast DNS) - required for Spotify Connect discovery
+      allowedUDPPorts = [
+        53 # DNS
+        5353 # mDNS (multicast DNS) - required for Spotify Connect discovery
         57621 # Spotify Connect
       ];
     };
