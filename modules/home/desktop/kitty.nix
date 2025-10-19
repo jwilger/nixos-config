@@ -40,6 +40,9 @@
       "alt+3" = "goto_tab 3";
       "alt+4" = "goto_tab 4";
 
+      ## Multi-line prompt
+      "shift+enter" = "send_text all \\n";
+
       ## Unbind
       "ctrl+shift+left" = "no_op";
       "ctrl+shift+right" = "no_op";
