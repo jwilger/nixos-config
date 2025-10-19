@@ -138,6 +138,15 @@
     };
   };
 
+  # Enable Sunshine for game streaming (replaces Steam Remote Play)
+  # Sunshine can capture gamescope headless PipeWire node directly
+  services.sunshine = {
+    enable = true;
+    autoStart = true;
+    capSysAdmin = true; # Required for GPU hardware encoding
+    openFirewall = true;
+  };
+
   # Gamescope package with args for the steam user's session
   # These will be used by the systemd service
   environment.systemPackages = with pkgs; [
