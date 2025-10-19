@@ -3,17 +3,16 @@
 # Steam Multi-Seat Gaming Module
 #
 # This module creates a complete Steam gaming "seat" on the system:
-# - Dedicated steam user with auto-login on tty8 ONLY
+# - Dedicated steam user running as systemd service
 # - Gamescope compositor for headless 4K@60Hz rendering
 # - Steam with Remote Play for streaming to SteamLink/AppleTV
+# - VNC server for one-time PIN pairing access
 # - Independent audio/video from primary user session
 # - Home directory: /home/steam-library (Steam stores games in ~/.local/share/Steam/)
 #
 # The gaming session runs concurrently with the primary user's desktop
-# environment, allowing true simultaneous operation (workstation + gaming).
-#
-# IMPORTANT: Auto-login is scoped ONLY to tty8. The primary desktop
-# (cosmic-greeter on tty1) is unaffected and requires manual login.
+# environment via systemd services, allowing true simultaneous operation
+# (workstation + gaming) without TTY login requirements.
 
 {
   # Create dedicated steam user for gaming
@@ -50,32 +49,72 @@
     hashedPassword = "!";
   };
 
-  # Override getty@tty8 specifically for steam user auto-login
-  # This ONLY affects tty8 - all other ttys (including tty1 with cosmic-greeter) are unaffected
-  systemd.services."getty@tty8" = {
-    wantedBy = [ "multi-user.target" ]; # Enable auto-start on boot
-    overrideStrategy = "asDropin";
+  # Systemd service for Steam gaming session
+  # Runs as steam user, starts automatically on boot
+  systemd.services.steam-gaming = {
+    description = "Steam Gaming Session (Headless Gamescope)";
+    wantedBy = [ "multi-user.target" ];
+    after = [
+      "network.target"
+      "systemd-user-sessions.service"
+      "getty@tty1.service" # Wait for graphics initialization
+    ];
+
+    # Service configuration
     serviceConfig = {
-      # Auto-login the steam user on tty8 only
-      ExecStart = [
-        "" # Clear the default
-        "@${pkgs.util-linux}/sbin/agetty agetty --login-program ${pkgs.shadow}/bin/login --autologin steam --noclear %I $TERM"
+      Type = "simple";
+      User = "steam";
+      Group = "steam";
+      ExecStart = "/etc/steam-gamescope-session";
+      Restart = "on-failure";
+      RestartSec = "10s";
+
+      # Security hardening
+      NoNewPrivileges = true;
+      PrivateTmp = true;
+
+      # Resource limits
+      LimitNOFILE = 1048576;
+
+      # Environment
+      Environment = [
+        "HOME=/home/steam-library"
+        "XDG_RUNTIME_DIR=/run/user/987"
+      ];
+    };
+
+    # Ensure XDG_RUNTIME_DIR exists
+    preStart = ''
+      mkdir -p /run/user/987
+      chown steam:steam /run/user/987
+      chmod 700 /run/user/987
+    '';
+  };
+
+  # VNC service for one-time PIN pairing access
+  # Can be disabled after successful SteamLink pairing
+  systemd.services.steam-vnc = {
+    description = "VNC Server for Steam Gaming Session";
+    wantedBy = [ "multi-user.target" ];
+    after = [ "steam-gaming.service" ];
+    requires = [ "steam-gaming.service" ];
+
+    serviceConfig = {
+      Type = "simple";
+      User = "steam";
+      Group = "steam";
+      ExecStart = "${pkgs.wayvnc}/bin/wayvnc --config /etc/wayvnc/config 0.0.0.0 5900";
+      Restart = "on-failure";
+      RestartSec = "5s";
+
+      # Environment
+      Environment = [
+        "HOME=/home/steam-library"
+        "XDG_RUNTIME_DIR=/run/user/987"
+        "WAYLAND_DISPLAY=gamescope-0"
       ];
     };
   };
-
-  # Auto-start gamescope session when steam user logs in on tty8
-  # Create .bash_profile via activation script (runs as root during rebuild)
-  system.activationScripts.steamBashProfile = ''
-        cat > /home/steam-library/.bash_profile << 'EOF'
-    # Auto-launch Steam in gamescope on tty8
-    if [ -z "$DISPLAY" ] && [ "$(tty)" = "/dev/tty8" ]; then
-      exec /etc/steam-gamescope-session
-    fi
-    EOF
-        chown steam:steam /home/steam-library/.bash_profile
-        chmod 644 /home/steam-library/.bash_profile
-  '';
 
   # Enable Steam with all necessary features
   programs.steam = {
@@ -117,11 +156,14 @@
   };
 
   # Gamescope package with args for the steam user's session
-  # These will be used by the autologin script
+  # These will be used by the systemd service
   environment.systemPackages = with pkgs; [
     gamescope
     steam
     steam-run
+
+    # VNC server for one-time pairing access
+    wayvnc
 
     # Additional gaming utilities
     mangohud # Performance overlay
@@ -132,6 +174,25 @@
   environment.sessionVariables = {
     # Point Steam to custom library location
     STEAM_EXTRA_COMPAT_TOOLS_PATHS = "/home/steam-library/compatibilitytools.d";
+  };
+
+  # VNC server configuration for Steam session access
+  environment.etc."wayvnc/config" = {
+    text = ''
+      # WayVNC Configuration for Steam Gaming Session
+      # Provides visual access to headless gamescope for PIN pairing
+
+      address=0.0.0.0
+      enable_auth=false
+      # For security: consider enabling auth after testing
+      # username=steam
+      # password=<set a password>
+
+      # Performance settings
+      max_fps=30
+      # Lower FPS is fine for pairing interface
+    '';
+    mode = "0644";
   };
 
   # Create wrapper script for launching Steam in gamescope
