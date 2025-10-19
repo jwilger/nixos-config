@@ -23,13 +23,13 @@
 {
   # Create dedicated steam user for gaming
   users.groups.steam = {
-    gid = 1001;
+    gid = 985;
   };
 
   users.users.steam = {
-    isNormalUser = true;
+    isSystemUser = true;
     description = "Steam Gaming User";
-    uid = 1001;
+    uid = 987;
     group = "steam";
 
     # Essential groups for gaming functionality
@@ -87,14 +87,14 @@
       # Resource limits
       LimitNOFILE = 1048576;
 
-      # Systemd will create /run/user/1001 automatically with proper permissions
-      RuntimeDirectory = "user/1001";
+      # Systemd will create /run/user/987 automatically with proper permissions
+      RuntimeDirectory = "user/987";
       RuntimeDirectoryMode = "0700";
 
       # Environment
       Environment = [
         "HOME=/home/steam-library"
-        "XDG_RUNTIME_DIR=/run/user/1001"
+        "XDG_RUNTIME_DIR=/run/user/987"
       ];
     };
   };
