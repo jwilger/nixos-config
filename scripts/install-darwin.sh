@@ -31,9 +31,9 @@ if ! command_exists nix; then
     echo "Nix not found. Installing Nix..."
     echo "This will require sudo permissions."
 
-    # Install Nix using the Determinate Systems installer (recommended for macOS)
-    # This installer handles modern macOS security requirements better
-    curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install
+    # Install Nix using the official installer from nixos.org
+    # Multi-user installation with daemon support
+    sh <(curl --proto '=https' --tlsv1.2 -L https://nixos.org/nix/install)
 
     # Source Nix
     if [ -e '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh' ]; then
