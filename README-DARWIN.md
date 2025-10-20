@@ -19,7 +19,8 @@ These components work identically on both macOS and Linux:
 - **System Preferences**: Declaratively managed Dock, Finder, trackpad, keyboard settings
 - **Homebrew Integration**: Declarative package management for GUI apps
 - **Touch ID**: Enabled for sudo authentication
-- **Window Management**: AeroSpace tiling window manager
+- **Window Management**: AeroSpace tiling window manager (automatically configured with i3-like keybindings)
+- **Terminal**: iTerm2 with Catppuccin Mocha theme and JetBrainsMono Nerd Font (automatically configured)
 - **Applications via Homebrew**:
   - Development: iTerm2, Docker, 1Password
   - Communication: Slack, Zoom
@@ -70,7 +71,7 @@ If you prefer to install manually:
 1. Install Nix:
 
    ```bash
-   curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install
+   sh <(curl --proto '=https' --tlsv1.2 -L https://nixos.org/nix/install)
    ```
 
 2. Build the configuration:
@@ -87,36 +88,15 @@ If you prefer to install manually:
 
 ## Post-Installation
 
-### iTerm2 Configuration
+Most configuration is automated, but you'll need to complete one manual step:
 
-1. Open iTerm2
-2. Go to Preferences → Profiles → Colors
-3. Import the Catppuccin Mocha color scheme if desired
-4. Set JetBrainsMono Nerd Font as the default font
+### 1Password Authentication
 
-### 1Password
-
-1. Open 1Password
+1. Open 1Password application
 2. Sign in to your account
 3. Enable CLI integration in Settings → Developer
 
-### AeroSpace Window Manager
-
-AeroSpace is installed via Homebrew. Configuration file:
-
-```bash
-~/.config/aerospace/aerospace.toml
-```
-
-You may want to customize keybindings to your preference.
-
-### Wallpaper
-
-The wallpaper should be automatically applied. If not:
-
-```bash
-osascript -e 'tell application "System Events" to tell every desktop to set picture to "~/Pictures/wallpaper.png"'
-```
+**Note**: iTerm2, AeroSpace, and system wallpaper are configured automatically through nix-darwin. No manual configuration required!
 
 ## Updating the Configuration
 
