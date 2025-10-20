@@ -40,7 +40,9 @@
     # Essential groups for gaming functionality
     extraGroups = [
       "video" # GPU access
-      "audio" # Audio devices
+      # NOTE: "audio" group intentionally excluded
+      # Prevents direct ALSA hardware access, stopping game audio from playing on desktop speakers
+      # PipeWire still works for Steam Remote Play audio capture
       "input" # Game controllers
       "pipewire" # Modern audio system
       "render" # DRM render nodes
@@ -63,6 +65,31 @@
     # Required for Steam Remote Play desktop capture in headless session
     linger = true;
   };
+
+  # Create WirePlumber user configuration for steam user to disable hardware audio
+  # This prevents game audio from playing on physical desktop speakers
+  # Steam Remote Play will still capture application audio
+  system.activationScripts.steam-wireplumber-config = ''
+        mkdir -p /home/steam-library/.config/wireplumber/wireplumber.conf.d
+        cat > /home/steam-library/.config/wireplumber/wireplumber.conf.d/51-disable-hardware.conf <<'EOF'
+    -- Disable hardware audio devices for steam user only
+    -- Prevents audio from playing on desktop speakers
+    -- Steam Remote Play captures application audio instead
+    rule = {
+      matches = {
+        {
+          { "node.name", "matches", "alsa_output.*" },
+        },
+      },
+      apply_properties = {
+        ["node.disabled"] = true,
+      },
+    }
+
+    table.insert(alsa_monitor.rules, rule)
+    EOF
+        chown -R steam:steam /home/steam-library/.config
+  '';
 
   # Systemd service for Steam gaming session with Sway + VNC
   # Runs as steam user, starts automatically on boot
@@ -268,13 +295,6 @@
   # Enable necessary services
   services.dbus.enable = true;
   security.polkit.enable = true;
-
-  # Enable PipeWire for audio (required for Steam Remote Play)
-  services.pipewire = {
-    enable = true;
-    alsa.enable = true;
-    pulse.enable = true;
-  };
 
   # Explicitly deny power management for steam user (security hardening)
   # Prevents remote gaming session from shutting down the workstation
