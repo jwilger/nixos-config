@@ -27,18 +27,19 @@
       ];
     };
 
-    # SSH Agent Socket Management for Zellij
-    # Ensures SSH agent forwarding works correctly with zellij sessions
-    initExtra = ''
-      # If we're starting a local session (not via SSH), point symlink to local 1Password socket
-      # This ensures the symlink always exists and points to the correct agent
+    # SSH Agent Socket Management
+    # Handles both local 1Password agent and SSH agent forwarding
+    initContent = ''
+      # For local sessions: ensure SSH_AUTH_SOCK points to 1Password agent
+      # This handles both Zellij and non-Zellij terminal sessions
       if [[ -z "$SSH_CONNECTION" ]] && [[ -S "$HOME/.1password/agent.sock" ]]; then
           ln -sf "$HOME/.1password/agent.sock" "$HOME/.ssh/ssh_auth_sock"
+          export SSH_AUTH_SOCK="$HOME/.ssh/ssh_auth_sock"
       fi
 
-      # Always use the stable symlink path when inside a zellij session
-      # This allows seamless switching between local and SSH-forwarded agents
-      if [[ -n "$ZELLIJ" ]] && [[ -S "$HOME/.ssh/ssh_auth_sock" ]]; then
+      # For SSH sessions with Zellij: use the symlink that SSH rc created
+      # This allows agent forwarding to work correctly in multiplexed sessions
+      if [[ -n "$SSH_CONNECTION" ]] && [[ -n "$ZELLIJ" ]] && [[ -S "$HOME/.ssh/ssh_auth_sock" ]]; then
           export SSH_AUTH_SOCK="$HOME/.ssh/ssh_auth_sock"
       fi
     '';
