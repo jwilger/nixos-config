@@ -23,10 +23,25 @@
         "postgres"
         "rust"
         "safe-paste"
-        "ssh"
         "eza"
       ];
     };
+
+    # SSH Agent Socket Management for Zellij
+    # Ensures SSH agent forwarding works correctly with zellij sessions
+    initExtra = ''
+      # If we're starting a local session (not via SSH), point symlink to local 1Password socket
+      # This ensures the symlink always exists and points to the correct agent
+      if [[ -z "$SSH_CONNECTION" ]] && [[ -S "$HOME/.1password/agent.sock" ]]; then
+          ln -sf "$HOME/.1password/agent.sock" "$HOME/.ssh/ssh_auth_sock"
+      fi
+
+      # Always use the stable symlink path when inside a zellij session
+      # This allows seamless switching between local and SSH-forwarded agents
+      if [[ -n "$ZELLIJ" ]] && [[ -S "$HOME/.ssh/ssh_auth_sock" ]]; then
+          export SSH_AUTH_SOCK="$HOME/.ssh/ssh_auth_sock"
+      fi
+    '';
 
     shellAliases = {
       # Utils
@@ -51,8 +66,8 @@
       gci = "git commit";
       gco = "git checkout";
 
-      # AI Stuff
-      cc = "claude --append-system-prompt \"$(cat ~/.claude/system-prompt.md)\"";
+      # AI Stuff - Launch zellij with borderless nvim + claude layout
+      cc = "zellij --layout borderless-left attach -c \"$(basename \"$PWD\")-claude\"";
     };
   };
 

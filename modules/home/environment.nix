@@ -10,8 +10,8 @@ in
   xdg.enable = true;
 
   home.sessionVariables = {
+    SSH_AUTH_SOCK = "~/.1password/agent.sock";
     MICRO_TRUECOLOR = "1";
-    # SSH_AUTH_SOCK is set dynamically in shell init to support agent forwarding
     EDITOR = "nvim";
     VISUAL = "nvim";
     NIXOS_OZONE_WL = "1";
