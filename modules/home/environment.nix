@@ -10,7 +10,7 @@ in
   xdg.enable = true;
 
   home.sessionVariables = {
-    SSH_AUTH_SOCK = "~/.1password/agent.sock";
+    SSH_AUTH_SOCK = "${config.home.homeDirectory}/.1password/agent.sock";
     MICRO_TRUECOLOR = "1";
     EDITOR = "nvim";
     VISUAL = "nvim";
