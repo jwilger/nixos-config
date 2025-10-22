@@ -2,9 +2,11 @@
 {
   services = {
     gvfs.enable = true;
-    gnome.gnome-keyring.enable = true;
     dbus.enable = true;
     fstrim.enable = true;
+
+    # Explicitly disable gnome-keyring to prevent SSH agent interference
+    gnome.gnome-keyring.enable = false;
 
     logind.settings = {
       Login = {
