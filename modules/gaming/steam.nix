@@ -1,4 +1,4 @@
-{ pkgs, lib, ... }:
+{ pkgs, lib, config, ... }:
 
 # Steam Multi-Seat Gaming Module
 #
@@ -91,6 +91,23 @@
         chown -R steam:steam /home/steam-library/.config
   '';
 
+  # Configure shared Steam library with proper group permissions
+  # Allows jwilger and steam users to share the same game installations
+  system.activationScripts.steam-library-permissions = ''
+        # Create Steam library directory structure
+        mkdir -p /home/steam-library/.local/share/Steam/steamapps
+
+        # Set ownership to steam user and steam group
+        chown -R steam:steam /home/steam-library/.local/share/Steam
+
+        # Set directory permissions: owner and group can read/write/execute
+        # The setgid bit (2) ensures new files inherit the steam group
+        find /home/steam-library/.local/share/Steam -type d -exec chmod 2775 {} \;
+
+        # Set file permissions: owner and group can read/write
+        find /home/steam-library/.local/share/Steam -type f -exec chmod 664 {} \;
+  '';
+
   # Systemd service for Steam gaming session with Sway + VNC
   # Runs as steam user, starts automatically on boot
   systemd.services.steam-gaming = {
@@ -123,6 +140,10 @@
       RuntimeDirectory = "user/987";
       RuntimeDirectoryMode = "0700";
 
+      # Set umask to 0002 so new files are group-writable
+      # This ensures jwilger can access files created by steam user
+      UMask = "0002";
+
       # Environment
       Environment = [
         "HOME=/home/steam-library"
@@ -142,11 +163,51 @@
     # Enable dedicated server support
     dedicatedServer.openFirewall = true;
 
+    # Enable Gamescope session for launching Steam Big Picture Mode
+    # This provides a Steam Deck-like experience and can be selected from COSMIC greeter
+    gamescopeSession.enable = true;
+
     # Additional packages for Steam ecosystem
     extraCompatPackages = with pkgs; [
       proton-ge-bin # GE-Proton for better game compatibility
     ];
   };
+
+  # Enable Gamescope system-wide for use with individual games or manual launch
+  # capSysNice allows Gamescope to properly set process priority for better performance
+  programs.gamescope = {
+    enable = true;
+    capSysNice = true;
+  };
+
+  # Override the default gamescope session package to use a wrapper with proper D-Bus initialization
+  # Fixes immediate crash when launching Steam session from greeter
+  # See: https://github.com/nixos/nixpkgs/issues/419121
+  services.displayManager.sessionPackages = let
+    steam-session = pkgs.runCommand "steam-session" {
+      passthru.providedSessions = [ "steam" ];
+    } ''
+      mkdir -p $out/share/wayland-sessions
+      cat > $out/share/wayland-sessions/steam.desktop <<EOF
+      [Desktop Entry]
+      Name=Steam (Gamescope)
+      Comment=Steam Big Picture Mode in Gamescope compositor
+      Exec=${pkgs.writeShellScriptBin "start-steam-gamescope" ''
+        #!${pkgs.bash}/bin/bash
+        set -e
+        export XDG_SESSION_TYPE="wayland"
+        export XDG_CURRENT_DESKTOP="gamescope"
+        if [[ -z "''${DBUS_SESSION_BUS_ADDRESS}" ]]; then
+          exec ${pkgs.dbus}/bin/dbus-run-session -- ${pkgs.gamescope}/bin/gamescope --steam -- ${config.programs.steam.package}/bin/steam -tenfoot -pipewire-dmabuf
+        else
+          exec ${pkgs.gamescope}/bin/gamescope --steam -- ${config.programs.steam.package}/bin/steam -tenfoot -pipewire-dmabuf
+        fi
+      ''}/bin/start-steam-gamescope
+      Type=Application
+      DesktopNames=gamescope
+      EOF
+    '';
+  in lib.mkIf config.programs.steam.gamescopeSession.enable (lib.mkForce [ steam-session ]);
 
   # Sway and utilities for headless gaming session with VNC
   environment.systemPackages = with pkgs; [
@@ -161,10 +222,14 @@
     gamemode # CPU governor optimization
   ];
 
-  # Environment variables for Steam
+  # Environment variables for Steam and Wayland compatibility
   environment.sessionVariables = {
     # Point Steam to custom library location
     STEAM_EXTRA_COMPAT_TOOLS_PATHS = "/home/steam-library/compatibilitytools.d";
+
+    # Enable Wayland support for Electron apps and other applications
+    # Allows apps to run natively on Wayland inside Gamescope
+    NIXOS_OZONE_WL = "1";
   };
 
   # Sway configuration for headless output with VNC
