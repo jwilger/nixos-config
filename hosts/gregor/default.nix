@@ -130,8 +130,11 @@ in
 
   home-manager.users.${username}.imports = [ ./../../modules/home/desktop ];
 
-  # Add user to libvirtd group
-  users.users.${username}.extraGroups = [ "docker" ];
+  # Add user to groups for Docker and shared Steam library access
+  users.users.${username}.extraGroups = [
+    "docker"
+    "steam"
+  ];
 
   # Manage the virtualisation services
   virtualisation = {
