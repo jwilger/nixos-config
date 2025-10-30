@@ -1,0 +1,25 @@
+layout {
+    // Default template for all tabs (including new ones created later)
+    // This adds the tab bar at the bottom
+    default_tab_template {
+        children
+        pane size=1 borderless=true {
+            plugin location="zellij:tab-bar"
+        }
+    }
+
+    // First tab with custom two-pane layout
+    tab name="Main" {
+        pane split_direction="vertical" {
+            // Left pane (1A): 65% width, no border, runs neovim
+            pane size="65%" borderless=true {
+                command "nvim"
+            }
+            // Right pane (1B): 35% width (implicit), with border, runs claude
+            pane {
+                command "sh"
+                args "-c" "claude --append-system-prompt=\"$(cat $HOME/.claude/system-prompt.md)\""
+            }
+        }
+    }
+}
