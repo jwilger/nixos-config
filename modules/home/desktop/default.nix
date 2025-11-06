@@ -6,7 +6,6 @@
     (import ./firefox.nix)
     (import ./insync)
     (import ./kitty.nix)
-    (import ./moonlight.nix)
     (import ./onepassword.nix)
     (import ./spotify.nix)
     (import ./slack.nix)
