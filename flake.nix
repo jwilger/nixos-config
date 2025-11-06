@@ -17,6 +17,11 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    beads = {
+      url = "github:steveyegge/beads";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     catppuccin-bat = {
       url = "github:catppuccin/bat";
       flake = false;
@@ -43,6 +48,7 @@
         gregor = nixpkgs.lib.nixosSystem {
           modules = [
             catppuccin.nixosModules.catppuccin
+            (import ./overlays.nix)
             (import ./hosts/gregor)
           ];
           specialArgs = {
@@ -55,6 +61,7 @@
         vm = nixpkgs.lib.nixosSystem {
           modules = [
             catppuccin.nixosModules.catppuccin
+            (import ./overlays.nix)
             (import ./hosts/vm)
           ];
           specialArgs = {
@@ -70,6 +77,7 @@
         darwin = nix-darwin.lib.darwinSystem {
           modules = [
             catppuccin.nixosModules.catppuccin
+            (import ./overlays.nix)
             (import ./hosts/darwin)
           ];
           specialArgs = {

@@ -1,4 +1,4 @@
-{ pkgs, lib, ... }:
+{ pkgs, lib, inputs, ... }:
 {
   home.packages = (
     with pkgs;
@@ -8,7 +8,9 @@
       man-pages
       cargo
       cbonsai # terminal screensaver
+      claude-code # Anthropic's CLI coding tool (via overlay: 0.55.0)
       cmatrix
+      codex # OpenAI's Rust-based coding agent (via overlay: 2.0.34+)
       delta
       entr # perform action when file change
       eza # ls replacement
@@ -48,5 +50,7 @@
       wlogout
       xdg-utils
     ]
+    # Beads issue tracker (from flake input)
+    ++ [ inputs.beads.packages.${pkgs.system}.default ]
   );
 }
