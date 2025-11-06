@@ -16,8 +16,7 @@
 
         sourceRoot = "${src.name}/codex-rs";
 
-        # Use lib.fakeHash - will fail on first build with correct hash
-        cargoHash = final.lib.fakeHash;
+        cargoHash = "sha256-1Wj6+CY9PwsOQ39dywepnaQvycg0jqq6iYYXnLgH1dw=";
 
         nativeBuildInputs = with final; [ pkg-config ];
         buildInputs = with final; [ openssl ] ++ final.lib.optionals final.stdenv.isDarwin [
