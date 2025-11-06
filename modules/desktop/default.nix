@@ -49,4 +49,8 @@
     enable = true;
     polkitPolicyOwners = [ "${username}" ];
   };
+
+  imports = [
+    (import ./gaming.nix { inherit pkgs; })
+  ];
 }
