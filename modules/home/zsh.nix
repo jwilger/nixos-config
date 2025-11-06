@@ -30,17 +30,30 @@
     # SSH Agent Socket Management
     # Handles both local 1Password agent and SSH agent forwarding
     initContent = ''
-      # For local sessions: ensure SSH_AUTH_SOCK points to 1Password agent
-      # This handles both Zellij and non-Zellij terminal sessions
-      if [[ -z "$SSH_CONNECTION" ]] && [[ -S "$HOME/.1password/agent.sock" ]]; then
-          ln -sf "$HOME/.1password/agent.sock" "$HOME/.ssh/ssh_auth_sock"
-          export SSH_AUTH_SOCK="$HOME/.ssh/ssh_auth_sock"
-      fi
+      if [[ -n "$SSH_CONNECTION" ]]; then
+          # SSH session: Create/update symlink to forwarded agent socket
+          # This allows agent forwarding to persist across Zellij panes
 
-      # For SSH sessions with Zellij: use the symlink that SSH rc created
-      # This allows agent forwarding to work correctly in multiplexed sessions
-      if [[ -n "$SSH_CONNECTION" ]] && [[ -n "$ZELLIJ" ]] && [[ -S "$HOME/.ssh/ssh_auth_sock" ]]; then
-          export SSH_AUTH_SOCK="$HOME/.ssh/ssh_auth_sock"
+          # Remove invalid/circular symlink if it exists
+          if [[ -L "$HOME/.ssh/ssh_auth_sock" ]] && [[ ! -S "$HOME/.ssh/ssh_auth_sock" ]]; then
+              rm -f "$HOME/.ssh/ssh_auth_sock"
+          fi
+
+          # Only update symlink if SSH_AUTH_SOCK points to something OTHER than our symlink
+          # This prevents circular symlink issues
+          if [[ -n "$SSH_AUTH_SOCK" ]] && [[ "$SSH_AUTH_SOCK" != "$HOME/.ssh/ssh_auth_sock" ]] && [[ -S "$SSH_AUTH_SOCK" ]]; then
+              ln -sf "$SSH_AUTH_SOCK" "$HOME/.ssh/ssh_auth_sock"
+              export SSH_AUTH_SOCK="$HOME/.ssh/ssh_auth_sock"
+          elif [[ -S "$HOME/.ssh/ssh_auth_sock" ]]; then
+              # Fallback: use existing symlink (for new Zellij panes)
+              export SSH_AUTH_SOCK="$HOME/.ssh/ssh_auth_sock"
+          fi
+      else
+          # Local session: use 1Password agent
+          if [[ -S "$HOME/.1password/agent.sock" ]]; then
+              ln -sf "$HOME/.1password/agent.sock" "$HOME/.ssh/ssh_auth_sock"
+              export SSH_AUTH_SOCK="$HOME/.ssh/ssh_auth_sock"
+          fi
       fi
     '';
 
