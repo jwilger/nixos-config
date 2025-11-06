@@ -35,8 +35,10 @@
 
     # Claude Code: Update to latest from main branch
     (final: prev: {
-      claude-code = prev.claude-code.overrideAttrs (oldAttrs: rec {
+      claude-code = final.buildNpmPackage rec {
+        pname = "claude-code";
         version = "2.0.34-unstable";
+
         src = final.fetchFromGitHub {
           owner = "anthropics";
           repo = "claude-code";
@@ -46,7 +48,16 @@
 
         # Use lib.fakeHash - will fail on first build with correct hash
         npmDepsHash = final.lib.fakeHash;
-      });
+
+        dontNpmBuild = true;
+
+        meta = with final.lib; {
+          description = "Anthropic's official CLI for Claude";
+          homepage = "https://github.com/anthropics/claude-code";
+          license = licenses.mit;
+          maintainers = [ ];
+        };
+      };
     })
   ];
 }
