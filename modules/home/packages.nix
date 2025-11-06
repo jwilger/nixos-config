@@ -8,9 +8,8 @@
       man-pages
       cargo
       cbonsai # terminal screensaver
-      claude-code # Anthropic's CLI coding tool (via overlay: 0.55.0)
       cmatrix
-      codex # OpenAI's Rust-based coding agent (via overlay: 2.0.34+)
+      codex # OpenAI's Rust-based coding agent (via overlay: 0.55.0)
       delta
       entr # perform action when file change
       eza # ls replacement
@@ -52,5 +51,7 @@
     ]
     # Beads issue tracker (from flake input)
     ++ [ inputs.beads.packages.${pkgs.system}.default ]
+    # Claude Code CLI (from flake input - auto-updates hourly)
+    ++ [ inputs.claude-code-nix.packages.${pkgs.system}.default ]
   );
 }
