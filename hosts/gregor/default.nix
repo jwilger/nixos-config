@@ -42,7 +42,6 @@ in
     ./../../modules/core
     ./../../modules/desktop
     ./../../modules/hardware/edid-apple-studio-display.nix
-    ./../../modules/gaming
   ];
 
   powerManagement.cpuFreqGovernor = "performance";
@@ -133,7 +132,6 @@ in
   # Add user to groups for Docker and shared Steam library access
   users.users.${username}.extraGroups = [
     "docker"
-    "steam"
   ];
 
   # Manage the virtualisation services
