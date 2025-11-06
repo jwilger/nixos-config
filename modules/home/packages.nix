@@ -28,6 +28,7 @@
       openssl
       python3
       ripgrep
+      statix
       tdf # cli pdf viewer
       unzip
       uv
