@@ -48,7 +48,6 @@
 
         subPackages = [ "cmd/bd" ];
         vendorHash = "sha256-eUwVXAe9d/e3OWEav61W8lI0bf/IIQYUol8QUiQiBbo=";
-        ldflags = [ "-X github.com/ncruces/go-sqlite3/driver.driverName=sqlite" ];
 
         doCheck = false;
 
