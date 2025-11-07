@@ -8,13 +8,18 @@
 
 ## Build, Test, and Development Commands
 - `nix flake update` refreshes inputs; run before large upgrades to sync `flake.lock`.
+- `nix flake check` validates all configurations and catches evaluation errors; run before commits.
 - `nixos-rebuild dry-run --flake .#gregor` validates host builds without applying changes; swap host name as needed.
 - `nixos-rebuild switch --flake .#gregor` builds and activates the target system.
 - `nixos-rebuild test --flake .#vm` is preferred for verifying experimental hosts.
 - `home-manager switch --flake .#jwilger@gregor` applies user profiles when developing Home Manager modules.
+- `home-manager build --flake .#jwilger@vm` validates Home Manager changes without activation.
 
 ## Coding Style & Naming Conventions
 - Format Nix files with `nixpkgs-fmt` (2-space indent, trailing commas on multi-line attribute sets, alphabetical option ordering).
+- Function parameters: multi-line with one param per line (`{ pkgs, config, lib, ... }:`), alphabetized when practical.
+- Use `let...in` blocks for complex derivations; prefer `lib.getExe` or `lib.getExe'` over hardcoded paths.
+- String interpolation: `"${pkgs.foo}/bin/bar"` for paths, `${config.home.homeDirectory}` for dynamic values.
 - Name host directories with lowercase hostnames (`gregor`, `vm`) and keep module filenames as `default.nix`; add submodules using hyphenated directories when logical (`modules/home/zellij`).
 - Keep option names descriptive and match upstream NixOS option casing; prefer inline comments sparingly to justify deviations.
 
