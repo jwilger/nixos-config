@@ -34,6 +34,31 @@
         };
       };
     })
+    (final: prev: {
+      beads = final.buildGoModule rec {
+        pname = "beads";
+        version = "0.22.1";
+
+        src = final.fetchFromGitHub {
+          owner = "steveyegge";
+          repo = "beads";
+          rev = "v${version}";
+          hash = "sha256-e8ZhVTt4iLdsHOgfc0WD/cmESgYyGN0Gd3/QI6+gwSY=";
+        };
+
+        subPackages = [ "cmd/bd" ];
+        vendorHash = "sha256-eUwVXAe9d/e3OWEav61W8lI0bf/IIQYUol8QUiQiBbo=";
+
+        doCheck = false;
+
+        meta = with final.lib; {
+          description = "beads (bd) issue tracker for AI-supervised coding workflows";
+          homepage = "https://github.com/steveyegge/beads";
+          license = licenses.mit;
+          mainProgram = "bd";
+        };
+      };
+    })
 
   ];
 }

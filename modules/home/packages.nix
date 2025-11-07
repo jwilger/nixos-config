@@ -49,8 +49,8 @@
       wlogout
       xdg-utils
     ]
-    # Beads issue tracker (from flake input)
-    ++ [ inputs.beads.packages.${pkgs.system}.default ]
+    # Beads issue tracker (from overlay, not flake input)
+    ++ [ pkgs.beads ]
     # Claude Code CLI (from flake input - auto-updates hourly)
     ++ [ inputs.claude-code-nix.packages.${pkgs.system}.default ]
   );
