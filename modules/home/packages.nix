@@ -9,7 +9,7 @@
       cargo
       cbonsai # terminal screensaver
       cmatrix
-      codex # OpenAI's Rust-based coding agent (via overlay: 0.55.0)
+      codex # OpenAI's Rust-based coding agent (via overlay: 0.57.0)
       delta
       entr # perform action when file change
       eza # ls replacement

@@ -1,24 +1,24 @@
 { ... }:
 {
   nixpkgs.overlays = [
-    # Codex: Update to latest stable release (0.55.0)
+    # Codex: Update to latest stable release (0.57.0)
     (final: prev: {
       codex = final.rustPlatform.buildRustPackage rec {
         pname = "codex";
-        version = "0.55.0";
+        version = "0.57.0";
 
         src = final.fetchFromGitHub {
           owner = "openai";
           repo = "codex";
           rev = "rust-v${version}";
-          hash = "sha256-gtYLMqQ3szUJMN1Jdcy2BPrJN8bxvrt0nVShcC2/JAA=";
+          hash = "sha256-Mjn2SesclOTBLiE7hQRtdyI/TpIM5lw2uswYyCMhyGY=";
         };
 
         sourceRoot = "${src.name}/codex-rs";
 
-        cargoHash = "sha256-1Wj6+CY9PwsOQ39dywepnaQvycg0jqq6iYYXnLgH1dw=";
+        cargoHash = "sha256-ijXcYBMP63VzeHqVTEebJ83cYQtQgHU62kWklA1NHEA=";
 
-        # Tests fail in 0.55.0 (user_agent test expects 0.0.0 but gets 0.55.0)
+        # Upstream tests expect user_agent=0.0.0, so disable for release builds.
         doCheck = false;
 
         nativeBuildInputs = with final; [ pkg-config ];
@@ -37,13 +37,13 @@
     (final: prev: {
       beads = final.buildGoModule rec {
         pname = "beads";
-        version = "0.22.1";
+        version = "0.23.1";
 
         src = final.fetchFromGitHub {
           owner = "steveyegge";
           repo = "beads";
           rev = "v${version}";
-          hash = "sha256-e8ZhVTt4iLdsHOgfc0WD/cmESgYyGN0Gd3/QI6+gwSY=";
+          hash = "sha256-ibWPzNGUMk9NueWVR4xNS108ES2w1ulWL2ARB75xEig=";
         };
 
         subPackages = [ "cmd/bd" ];
