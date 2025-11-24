@@ -9,6 +9,7 @@
   ++ [ (import ./git.nix) ] # version control
   ++ [ (import ./lazygit.nix) ] # git terminal UI
   ++ [ (import ./theme.nix) ] # general theme settings
+  ++ [ (import ./helix) ] # helix editor
   ++ [ (import ./nvim) ] # neovim editor
   ++ [ (import ./packages.nix) ] # other packages
   ++ [ (import ./ssh.nix) ] # SSH configuration

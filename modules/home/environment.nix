@@ -10,8 +10,8 @@ in
 
   home.sessionVariables = {
     MICRO_TRUECOLOR = "1";
-    EDITOR = "nvim";
-    VISUAL = "nvim";
+    EDITOR = "hx";
+    VISUAL = "hx";
     NIXOS_OZONE_WL = "1";
     ELECTRON_OZONE_PLATFORM_HINT = "auto";
     NPM_CONFIG_PREFIX = npmPrefix;
