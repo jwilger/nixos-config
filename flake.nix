@@ -31,12 +31,11 @@
   };
 
   outputs =
-    {
-      catppuccin,
-      nix-darwin,
-      nixpkgs,
-      self,
-      ...
+    { catppuccin
+    , nix-darwin
+    , nixpkgs
+    , self
+    , ...
     }@inputs:
     {
       nixosConfigurations = {
@@ -48,7 +47,6 @@
           ];
           specialArgs = {
             host = "gregor";
-            system = "x86_64-linux";
             username = "jwilger";
             inherit self inputs;
           };
@@ -61,7 +59,6 @@
           ];
           specialArgs = {
             host = "vm";
-            system = "x86_64-linux";
             username = "jwilger";
             inherit self inputs;
           };
@@ -77,7 +74,6 @@
           ];
           specialArgs = {
             host = "darwin";
-            system = "aarch64-darwin";
             username = "jwilger";
             inherit self inputs;
           };
