@@ -1,4 +1,4 @@
-{ pkgs, lib, inputs, ... }:
+{ pkgs, lib, ... }:
 {
   home.packages = (
     with pkgs;
@@ -9,7 +9,6 @@
       cargo
       cbonsai # terminal screensaver
       cmatrix
-      codex # OpenAI's Rust-based coding agent (via overlay: 0.57.0)
       delta
       entr # perform action when file change
       eza # ls replacement
@@ -25,9 +24,9 @@
       ncdu # disk space
       nil
       nix-prefetch-github
-      nodejs
+      nodejs_22
       openssl
-      python3
+      python312
       ripgrep
       statix
       tdf # cli pdf viewer
@@ -51,7 +50,5 @@
     ]
     # Beads issue tracker (from overlay, not flake input)
     ++ [ pkgs.beads ]
-    # Claude Code CLI (from flake input - auto-updates hourly)
-    ++ [ inputs.claude-code-nix.packages.${pkgs.system}.default ]
   );
 }

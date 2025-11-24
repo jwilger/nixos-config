@@ -1,6 +1,5 @@
-{
-  config,
-  ...
+{ config
+, ...
 }:
 let
   npmDir = ".local/share/npm";
@@ -17,10 +16,12 @@ in
     ELECTRON_OZONE_PLATFORM_HINT = "auto";
     NPM_CONFIG_PREFIX = npmPrefix;
     NODE_PATH = "${npmPrefix}/lib/node_modules";
+    PYTHONUSERBASE = "${config.home.homeDirectory}/.local";
   };
 
   home.sessionPath = [
     "$HOME/.local/bin"
+    "$HOME/.cargo/bin"
     "${npmPrefix}/bin"
   ];
 
