@@ -1,4 +1,61 @@
 { pkgs, lib, ... }:
+let
+  helixTooling =
+    with pkgs;
+    [
+      awk-language-server
+      bash-language-server
+      basedpyright
+      black
+      clang-tools
+      lldb
+      cmake-format
+      codeql
+      delve
+      docker-compose-language-service
+      dockerfile-language-server
+      elixir
+      elixir-ls
+      erlang-language-platform
+      fourmolu
+      gleam
+      go
+      golangci-lint-langserver
+      gopls
+      graphql-language-service-cli
+      haskell-language-server
+      jq-lsp
+      lua-language-server
+      marksman
+      markdown-oxide
+      neocmakelsp
+      nixfmt-rfc-style
+      nodePackages.prettier
+      nodePackages.sql-formatter
+      nodePackages.typescript
+      prisma-language-server
+      protols
+      ruby
+      rubyPackages.ruby-lsp
+      rubyPackages.syntax_tree
+      rust-analyzer
+      rustfmt
+      shfmt
+      sqls
+      stylua
+      taplo
+      terraform
+      terraform-ls
+      texlab
+      texlivePackages.latexindent
+      typescript-language-server
+      vscode-langservers-extracted
+      vscode-js-debug
+      yaml-language-server
+      yamlfmt
+      zls
+    ];
+in
 {
   home.packages = (
     with pkgs;
@@ -50,5 +107,6 @@
     ]
     # Beads issue tracker (from overlay, not flake input)
     ++ [ pkgs.beads ]
-  );
+  )
+  ++ helixTooling;
 }
