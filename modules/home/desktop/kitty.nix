@@ -6,7 +6,8 @@
     themeFile = "Catppuccin-Mocha";
 
     font = {
-      name = "JetBrainsMono Nerd Font";
+      # Use the mono-patched family name exposed by nerd-fonts.jetbrains-mono
+      name = "JetBrainsMono Nerd Font Mono";
       size = 11;
     };
 
@@ -20,6 +21,8 @@
       hide_window_decorations = "yes";
       window_border_width = 0;
       draw_minimal_borders = "yes";
+      disable_ligatures = "never"; # keep JetBrains Mono ligatures enabled
+      font_features = "JetBrainsMono Nerd Font Mono +liga +calt +dlig";
 
       ## Tabs
       tab_title_template = "{index}";
