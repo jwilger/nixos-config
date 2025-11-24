@@ -1,50 +1,52 @@
-{
-  pkgs,
-  config,
-  lib,
-  ...
+{ pkgs
+, config
+, lib
+, ...
 }:
 {
   programs.git = {
     enable = true;
-    userName = "John Wilger";
-    userEmail = "john@johnwilger.com";
-
+    settings = {
+      user = {
+        name = "John Wilger";
+        email = "john@johnwilger.com";
+      };
+      init.defaultBranch = "main";
+      merge = {
+        conflictstyle = "zdiff3";
+        tool = "nvimdiff";
+      };
+      diff.tool = "nvimdiff";
+      log.showSignature = true;
+      gpg = {
+        format = "ssh";
+        ssh = {
+          # Git requires ssh.* options to live in the [gpg "ssh"] subsection.
+          allowedSignersFile = "${config.xdg.configHome}/ssh/allowed_signers";
+          program = lib.getExe' pkgs._1password-gui "op-ssh-sign";
+        };
+      };
+      pull.ff = "only";
+      push.default = "current";
+      safe.directory = "."; # Current directory
+    };
     ignores = [
       # ignore direv files
       ".envrc"
       ".direnv/"
     ];
-    difftastic = {
-      enable = true;
-    };
 
     signing = {
       format = "ssh";
       key = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIGwXlUIgMZDNewfvIyX5Gd1B1dIuLT7lH6N+2+FrSaSU";
       signByDefault = true;
-      signer = "${lib.getExe' pkgs._1password-gui "op-ssh-sign"}";
     };
 
-    extraConfig = {
-      init.defaultBranch = "main";
-      merge.conflictstyle = "zdiff3";
-      merge.tool = "nvimdiff";
-      diff.tool = "nvimdiff";
-      log.showSignature = true;
-      gpg = {
-        ssh.allowedSignersFile = "${config.home.homeDirectory}/${
-          config.xdg.configFile."ssh/allowed_signers".target
-        }";
-      };
-      pull = {
-        ff = "only";
-      };
-      push = {
-        default = "current";
-      };
-      safe.directory = "."; # Current directory
-    };
+  };
+
+  programs.difftastic = {
+    enable = true;
+    git.enable = true;
   };
 
   xdg.configFile."ssh/allowed_signers".text = ''
