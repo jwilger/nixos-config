@@ -80,8 +80,6 @@
       gci = "git commit";
       gco = "git checkout";
 
-      # AI Stuff - Launch zellij with borderless nvim + claude layout
-      cc = "zellij --layout borderless-left attach -c \"$(basename \"$PWD\")-claude\"";
     };
   };
 
