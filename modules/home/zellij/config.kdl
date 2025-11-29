@@ -1,6 +1,6 @@
 session_serialization false
 theme "catppuccin-mocha"
-default_layout "single-borderless"
+default_layout "default"
 mouse_mode true
 mirror_session true
 pane_frames true
