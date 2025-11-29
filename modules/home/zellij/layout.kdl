@@ -1,0 +1,41 @@
+layout {
+	default_tab_template {
+		children
+		pane size=1 borderless=true {
+			plugin location="https://github.com/dj95/zjstatus/releases/latest/download/zjstatus.wasm" {
+				format_left   "{mode}#[fg=#1e1e2e,bg=#89B4FA,bold]{session}  #[fg=#89B4FA,bg=#1e1e2e]{tabs}"
+	            format_center "{command_pwd}{command_git_branch}"
+	            format_right  "#[fg=#1e1e2e,bg=#89B4FA]{datetime}"
+	            format_space  "#[bg=#1e1e2e]"
+
+	            command_pwd_command       "pwd"
+	            command_pwd_format        "#[fg=#cdd6f4,bg=#1e1e2e] {stdout} "
+	            command_pwd_interval      "1"
+	            command_pwd_rendermode    "static"
+
+	            command_git_branch_command    "bash -c 'git rev-parse --abbrev-ref HEAD 2>/dev/null || true'"
+	            command_git_branch_format     "#[fg=#cba6f7,bg=#1e1e2e] {stdout} "
+	            command_git_branch_interval   "5"
+	            command_git_branch_rendermode "static"
+
+	            hide_frame_for_single_pane "true"
+
+	            mode_normal  "#[fg=#1e1e2e,bg=#89B4FA,bold] "
+
+	            tab_normal              "#[fg=#1e1e2e,bg=#313244] #[fg=#cdd6f4,bg=#313244]{index}  {name} #[fg=#313244,bg=#1e1e2e]"
+	            tab_normal_fullscreen   "#[fg=#cdd6f4,bg=#1e1e2e] {index} {name} [] "
+	            tab_normal_sync         "#[fg=#cdd6f4,bg=#1e1e2e] {index} {name} <> "
+	            tab_active              "#[fg=#1e1e2e,bg=#cba6f7,bold,italic] #[fg=#1e1e2e,bg=#cba6f7,bold,italic]{index}  {name} #[fg=#cba6f7,bg=#1e1e2e]"
+	            tab_active_fullscreen   "#[fg=#1e1e2e,bg=#cba6f7,bold,italic] #[fg=#1e1e2e,bg=#cba6f7,bold,italic]{index} {name} [] #[fg=#cba6f7,bg=#1e1e2e]"
+	            tab_active_sync         "#[fg=#1e1e2e,bg=#cba6f7,bold,italic] #[fg=#1e1e2e,bg=#cba6f7,bold,italic]{index} {name} <> #[fg=#cba6f7,bg=#1e1e2e]"
+
+
+	            datetime          "#[fg=#1e1e2e,bg=#89B4FA,bold] {format} "
+	            datetime_format   "%A, %d %b %Y %H:%M"
+	            datetime_timezone "America/Los_Angeles"
+				border_enabled "false"
+				hide_frame_for_single_pane "true"
+			}
+		}
+	}
+}
