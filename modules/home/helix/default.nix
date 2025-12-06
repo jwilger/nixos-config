@@ -7,6 +7,7 @@
     # Keep defaults, but add language entries to wire formatters/LSPs with correct placeholders.
     settings = {
       editor = {
+        text-width = 80;
         indent-guides = {
           render = true;
           character = "┊";
@@ -18,18 +19,31 @@
       };
       keys = {
         normal = {
-          C-s = ":w";
-          g = { a = "code_action"; };
+          space = {
+            q = {
+              q = ":quit-all";
+              Q = ":write-quit-all";
+            };
+            W = ":reflow";
+            u = {
+              w = ":toggle-option soft-wrap.enable";
+            };
+          };
+          C-s = ":update";
+          g = {
+            a = "code_action";
+          };
           tab = "move_parent_node_end";
           S-tab = "move_parent_node_start";
         };
         insert = {
-          j = { k = "normal_mode"; };
           S-tab = "move_parent_node_start";
+          C-s = [":update" "normal_mode"];
         };
         select = {
           tab = "extend_parent_node_end";
           S-tab = "extend_parent_node_start";
+          C-s = [":update" "normal_mode"];
         };
       };
     };
@@ -38,38 +52,28 @@
       language = [
         {
           name = "markdown";
-          scope = "source.md";
-          file-types = [ "md" "markdown" "mdx" "mkd" "mkdn" "mdwn" "mdown" "markdn" "mdtxt" "mdtext" ];
-          roots = [ ".marksman.toml" ];
           formatter = {
             command = lib.getExe pkgs.nodePackages.prettier;
             args = [
-              "--stdin-filepath"
-              "%{buffer_name}"
               "--parser"
               "markdown"
               "--prose-wrap"
-              "always"
-              "--print-width"
-              "80"
+              "never"
             ];
+            auto-format = true;
           };
         }
         {
           name = "markdown-rustdoc";
-          scope = "source.markdown-rustdoc";
           formatter = {
             command = lib.getExe pkgs.nodePackages.prettier;
             args = [
-              "--stdin-filepath"
-              "%{buffer_name}"
               "--parser"
               "markdown"
               "--prose-wrap"
-              "always"
-              "--print-width"
-              "80"
+              "never"
             ];
+            auto-format = true;
           };
         }
       ];
