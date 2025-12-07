@@ -1,6 +1,12 @@
 { ... }:
 {
+  hardware.bluetooth = {
+    enable = true;
+    powerOnBoot = true;
+  };
+
   services = {
+    blueman.enable = true;
     gvfs.enable = true;
     dbus.enable = true;
     fstrim.enable = true;
