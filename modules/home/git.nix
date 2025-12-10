@@ -23,7 +23,10 @@
         ssh = {
           # Git requires ssh.* options to live in the [gpg "ssh"] subsection.
           allowedSignersFile = "${config.xdg.configHome}/ssh/allowed_signers";
-          program = lib.getExe' pkgs._1password-gui "op-ssh-sign";
+          # Use SSH agent instead of op-ssh-sign for signing
+          # This allows signing via the 1Password SSH agent without requiring
+          # the 1Password GUI to be unlocked for each operation
+          program = "${pkgs.openssh}/bin/ssh-keygen";
         };
       };
       pull.ff = "only";
