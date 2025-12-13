@@ -18,7 +18,7 @@ layout {
 	            command_git_branch_interval   "5"
 	            command_git_branch_rendermode "static"
 
-	            hide_frame_for_single_pane "true"
+	            hide_frame_for_single_pane "false"
 
 	            mode_normal  "#[fg=#1e1e2e,bg=#89B4FA,bold] "
 
@@ -34,7 +34,6 @@ layout {
 	            datetime_format   "%A, %d %b %Y %H:%M"
 	            datetime_timezone "America/Los_Angeles"
 				border_enabled "false"
-				hide_frame_for_single_pane "true"
 			}
 		}
 	}
