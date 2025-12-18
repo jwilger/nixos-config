@@ -1,5 +1,8 @@
 session_serialization false
 theme "catppuccin-mocha"
+env {
+    COLORTERM "truecolor"
+}
 default_layout "default"
 mouse_mode true
 mirror_session true
