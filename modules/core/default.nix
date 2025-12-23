@@ -3,6 +3,7 @@
   imports =
        [ (import ./bootloader.nix) ]
     ++ [ (import ./network.nix) ]
+    ++ [ (import ./printing.nix) ]
     ++ [ (import ./program.nix) ]
     ++ [ (import ./security.nix) ]
     ++ [ (import ./services.nix) ]

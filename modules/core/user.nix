@@ -26,7 +26,7 @@
     description = "${username}";
     uid = 1000;
     group = "${username}";
-    extraGroups = [ "networkmanager" "wheel" ];
+    extraGroups = [ "networkmanager" "wheel" "lp" ];
     shell = pkgs.zsh;
   };
   nix.settings.allowed-users = [ "${username}" ];
