@@ -7,6 +7,7 @@ let
       bash-language-server
       basedpyright
       black
+      bubblewrap
       clang-tools
       lldb
       cmake-format
@@ -41,6 +42,7 @@ let
       rust-analyzer
       rustfmt
       shfmt
+      socat
       sqls
       stylua
       taplo
