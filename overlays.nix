@@ -4,17 +4,17 @@
     (final: prev: {
       beads = final.buildGoModule rec {
         pname = "beads";
-        version = "0.23.1";
+        version = "0.39.1";
 
         src = final.fetchFromGitHub {
           owner = "steveyegge";
           repo = "beads";
           rev = "v${version}";
-          hash = "sha256-ibWPzNGUMk9NueWVR4xNS108ES2w1ulWL2ARB75xEig=";
+          hash = "sha256-C+s4oxmGJGfYwgVe2qV54i/0490N2yhNAavvAMp0fio=";
         };
 
         subPackages = [ "cmd/bd" ];
-        vendorHash = "sha256-eUwVXAe9d/e3OWEav61W8lI0bf/IIQYUol8QUiQiBbo=";
+        vendorHash = "sha256-ovG0EWQFtifHF5leEQTFvTjGvc+yiAjpAaqaV0OklgE=";
 
         doCheck = false;
 
