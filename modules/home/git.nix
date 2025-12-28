@@ -14,9 +14,9 @@
       init.defaultBranch = "main";
       merge = {
         conflictstyle = "zdiff3";
-        tool = "nvimdiff";
+        tool = "helix";
       };
-      diff.tool = "nvimdiff";
+      diff.tool = "helix";
       log.showSignature = true;
       gpg = {
         format = "ssh";
