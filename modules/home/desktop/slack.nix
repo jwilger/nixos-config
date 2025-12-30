@@ -6,7 +6,7 @@
     name = "Slack";
     comment = "Slack Desktop client";
     exec =
-      "env NIXOS_OZONE_WL=1 ${pkgs.slack}/bin/slack %U";
+      "env NIXOS_OZONE_WL=1 ${pkgs.slack}/bin/slack --enable-features=UseOzonePlatform --ozone-platform=wayland %U";
     icon = "slack";
     terminal = false;
     type = "Application";
@@ -22,5 +22,5 @@
   };
 
   programs.zsh.shellAliases.slack =
-    "NIXOS_OZONE_WL=1 ${pkgs.slack}/bin/slack";
+    "NIXOS_OZONE_WL=1 ${pkgs.slack}/bin/slack --enable-features=UseOzonePlatform --ozone-platform=wayland";
 }
