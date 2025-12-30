@@ -1,4 +1,4 @@
 (
-    save_location: Documents,
+    save_location: Clipboard,
     choice: Rectangle,
 )

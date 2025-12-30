@@ -6,6 +6,17 @@
   # udev rules for YubiKey device access
   services.udev.packages = [ pkgs.yubikey-personalization ];
 
+  # Lock all sessions when YubiKey is removed
+  # YubiKey 5 NFC MODEL_ID=0407, Vendor ID=1050 (Yubico)
+  # Use `udevadm monitor --udev --environment` to verify for other models
+  services.udev.extraRules = ''
+    ACTION=="remove", \
+    ENV{ID_BUS}=="usb", \
+    ENV{ID_VENDOR_ID}=="1050", \
+    ENV{ID_MODEL_ID}=="0407", \
+    RUN+="${pkgs.systemd}/bin/loginctl lock-sessions"
+  '';
+
   # System packages for YubiKey management
   environment.systemPackages = with pkgs; [
     yubikey-personalization
@@ -19,6 +30,7 @@
     control = "sufficient"; # OR semantics: YubiKey OR password
     settings = {
       cue = true; # Show "Please touch the device" prompt
+      pinverification = 1; # Use FIDO2 PIN as authentication factor
     };
   };
 
