@@ -46,6 +46,14 @@
     desktopManager.cosmic.enable = true;
   };
 
+  xdg.portal = {
+    enable = true;
+    extraPortals = with pkgs; [
+      xdg-desktop-portal-cosmic
+      xdg-desktop-portal-gtk
+    ];
+  };
+
   # For interception-tools config
   environment.etc."dual-function-keys.yaml".text = ''
   TIMING:
