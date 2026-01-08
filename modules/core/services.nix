@@ -1,4 +1,4 @@
-{ ... }:
+{ lib, ... }:
 {
   hardware.bluetooth = {
     enable = true;
@@ -12,7 +12,8 @@
     fstrim.enable = true;
 
     # Explicitly disable gnome-keyring to prevent SSH agent interference
-    gnome.gnome-keyring.enable = false;
+    # Use mkForce to override niri-flake defaults
+    gnome.gnome-keyring.enable = lib.mkForce false;
 
     logind.settings = {
       Login = {
