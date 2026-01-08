@@ -26,10 +26,22 @@
     catppuccin = {
       url = "github:catppuccin/nix";
     };
+
+    niri = {
+      url = "github:sodiboo/niri-flake";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    noctalia = {
+      url = "github:noctalia-dev/noctalia-shell";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
     { catppuccin
+    , niri
+    , noctalia
     , nix-darwin
     , nixpkgs
     , self
@@ -40,6 +52,7 @@
         gregor = nixpkgs.lib.nixosSystem {
           modules = [
             catppuccin.nixosModules.catppuccin
+            niri.nixosModules.niri
             (import ./overlays.nix)
             (import ./hosts/gregor)
           ];

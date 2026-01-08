@@ -42,7 +42,7 @@
             EV_KEY: [KEY_CAPSLOCK, KEY_RIGHTSHIFT, KEY_LEFTSHIFT]
       '';
     };
-    displayManager.cosmic-greeter.enable = true;
+    # COSMIC desktop manager (provides a session option)
     desktopManager.cosmic.enable = true;
   };
 
@@ -88,5 +88,6 @@
 
   imports = [
     (import ./gaming.nix { inherit pkgs; })
+    (import ./niri.nix)
   ];
 }

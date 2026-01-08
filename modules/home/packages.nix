@@ -107,8 +107,6 @@ in
       wlogout
       xdg-utils
     ]
-    # Beads issue tracker (from overlay, not flake input)
-    ++ [ pkgs.beads ]
   )
   ++ helixTooling;
 }

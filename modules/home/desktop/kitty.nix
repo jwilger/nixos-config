@@ -13,11 +13,7 @@
 
     settings = {
       confirm_os_window_close = 0;
-      # Use wallpaper as background with color overlay instead of transparency
-      # This prevents windows behind from showing through
-      background_image = "${./wallpaper.png}";
-      background_image_layout = "cscaled"; # Scale to cover, maintain aspect ratio
-      background_tint = "0.80"; # 80% background color, 20% wallpaper shows through
+      background_opacity = "0.85";
       window_padding_width = 0;
       scrollback_lines = 10000;
       enable_audio_bell = false;
