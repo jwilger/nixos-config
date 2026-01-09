@@ -42,14 +42,11 @@
             EV_KEY: [KEY_CAPSLOCK, KEY_RIGHTSHIFT, KEY_LEFTSHIFT]
       '';
     };
-    # COSMIC desktop manager (provides a session option)
-    desktopManager.cosmic.enable = true;
   };
 
   xdg.portal = {
     enable = true;
     extraPortals = with pkgs; [
-      xdg-desktop-portal-cosmic
       xdg-desktop-portal-gtk
     ];
   };
@@ -71,8 +68,6 @@
       TAP: KEY_ESC
       HOLD: KEY_LEFTCTRL
   '';
-
-  environment.sessionVariables.COSMIC_DATA_CONTROL_ENABLED = 1;
 
   programs.firefox.preferences = {
     "widget.gtk.libadwaita-colors.enabled" = false;

@@ -5,35 +5,6 @@
   ...
 }:
 let
-  cosmicAskpass = pkgs.writeShellApplication {
-    name = "cosmic-sudo-askpass";
-    runtimeInputs = [ pkgs.yad ];
-    text = ''
-      set -euo pipefail
-
-      response="$(${pkgs.yad}/bin/yad \
-        --entry \
-        --hide-text \
-        --title="Administrator Access Required" \
-        --text="Enter your password to continue." \
-        --image=dialog-password \
-        --button=gtk-cancel:1 \
-        --button=gtk-ok:0 \
-        --center \
-        --on-top \
-        --skip-taskbar \
-        --borders=16 \
-        --geometry=360x160 \
-        --window-icon=dialog-password \
-      )"
-      status=$?
-      if [ "$status" -ne 0 ]; then
-        exit "$status"
-      fi
-
-      printf "%s" "$response"
-    '';
-  };
   run0Bin = lib.getExe' pkgs.systemd "run0";
 in
 {
@@ -118,10 +89,10 @@ in
     docker-compose
     libimobiledevice
     ifuse
-    cosmicAskpass
+    lxqt.lxqt-openssh-askpass  # Qt-based askpass matching lxqt-policykit theme
   ];
 
-  environment.variables.SUDO_ASKPASS = "${cosmicAskpass}/bin/cosmic-sudo-askpass";
+  environment.variables.SUDO_ASKPASS = "${pkgs.lxqt.lxqt-openssh-askpass}/bin/lxqt-openssh-askpass";
 
   time.timeZone = "America/Los_Angeles";
 

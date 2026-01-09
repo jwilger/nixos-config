@@ -2,7 +2,6 @@
 {
   imports = [
     (import ./../default.nix)
-    (import ./cosmic.nix)
     (import ./niri)
     (import ./firefox.nix)
     (import ./insync)
