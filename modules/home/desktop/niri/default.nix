@@ -64,6 +64,7 @@ in
         position = "top";
         showCapsule = false;
         showOutline = false;
+        outerCorners = false;
         widgets = {
           center = [
             {
@@ -132,6 +133,7 @@ in
               showMemoryUsage = true;
               showMemoryAsPercent = true;
               showDiskUsage = true;
+              diskPath = "/home";  # Monitor /home instead of /
               showNetworkStats = true;
               showLoadAverage = true;
               useMonospaceFont = true;
@@ -195,7 +197,7 @@ in
         animationSpeed = 1;
         enableShadows = true;
         lockOnSuspend = true;
-        showScreenCorners = true;
+        showScreenCorners = false;
         dimmerOpacity = 0.2;
       };
 
@@ -223,6 +225,8 @@ in
         normalUrgencyDuration = 10;
         lowUrgencyDuration = 3;
         criticalUrgencyDuration = 30;
+        respectExpireTime = true;
+        storeLowPriority = false;
         sounds = {
           enabled = true;
           excludedApps = "discord,firefox,chrome,chromium,edge,slack";
@@ -240,7 +244,7 @@ in
         directory = "/home/jwilger/Videos";
         frameRate = 60;
         quality = "high";
-        videoCodec = "h264";
+        videoCodec = "hevc";  # h264 max is 4096x4096, but Studio Display is 5120x2880
         audioCodec = "opus";
         audioSource = "both";
         showCursor = true;
@@ -363,6 +367,15 @@ in
           matches = [{ app-id = "^firefox$"; title = "^Picture-in-Picture$"; }];
           open-floating = true;
         }
+        {
+          # Float askpass and polkit dialogs
+          matches = [
+            { app-id = "^lxqt-openssh-askpass$"; }
+            { app-id = "^polkit-gnome-authentication-agent-1$"; }
+            { app-id = "^ksshaskpass$"; }
+          ];
+          open-floating = true;
+        }
       ];
 
       # Keybindings
@@ -371,9 +384,9 @@ in
       in {
         # Application launchers
         "${mod}+Return".action.spawn = "kitty";
-        "${mod}+Space".action.spawn-sh = "qs -c noctalia-shell ipc call launcher toggle";
+        "${mod}+Space".action.spawn-sh = "noctalia-shell ipc call launcher toggle";
         "${mod}+E".action.spawn = "nautilus";
-        "${mod}+Shift+E".action.spawn-sh = "qs -c noctalia-shell ipc call sessionMenu toggle";
+        "${mod}+Shift+E".action.spawn-sh = "noctalia-shell ipc call sessionMenu toggle";
         "${mod}+Shift+Slash".action.show-hotkey-overlay = [];
 
         # Window management
@@ -473,6 +486,9 @@ in
         XDG_CURRENT_DESKTOP = "niri";
         XDG_SESSION_TYPE = "wayland";
         XDG_SESSION_DESKTOP = "niri";
+        # Cursor settings for XWayland apps
+        XCURSOR_SIZE = "24";
+        XCURSOR_THEME = "Vanilla-DMZ";
       };
     };
   };
@@ -493,7 +509,7 @@ in
     timeouts = [
       {
         timeout = 300;
-        command = "${pkgs.swaylock}/bin/swaylock -f";
+        command = "${noctaliaPkg}/bin/noctalia-shell ipc call lockScreen lock";
       }
       {
         timeout = 600;
@@ -501,7 +517,8 @@ in
       }
     ];
     events = {
-      before-sleep = "${pkgs.swaylock}/bin/swaylock -f";
+      before-sleep = "${noctaliaPkg}/bin/noctalia-shell ipc call lockScreen lock";
+      lock = "${noctaliaPkg}/bin/noctalia-shell ipc call lockScreen lock";
     };
   };
 

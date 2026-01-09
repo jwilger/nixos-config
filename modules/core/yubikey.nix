@@ -39,6 +39,7 @@
     login.u2fAuth = true; # Console/TTY login
     sudo.u2fAuth = true; # Direct sudo command
     polkit-1.u2fAuth = true; # Polkit (run0, 1Password)
-    cosmic-greeter.u2fAuth = true; # Display manager + screen lock
+    cosmic-greeter.u2fAuth = true; # COSMIC display manager + screen lock
+    swaylock.u2fAuth = true; # Swaylock screen locker (niri)
   };
 }

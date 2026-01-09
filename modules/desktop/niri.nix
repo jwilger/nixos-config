@@ -17,28 +17,24 @@
     };
   };
 
-  # Disable COSMIC greeter since we're using greetd
-  services.displayManager.cosmic-greeter.enable = lib.mkForce false;
-
-  # XDG portal configuration for niri (merges with existing portal config)
+  # XDG portal configuration for niri
+  # Note: niri is NOT wlroots-based (it uses Smithay), so xdg-desktop-portal-wlr won't work
+  # niri-flake automatically configures portals via configPackages (installs niri-portals.conf)
+  # We just need to ensure xdg-desktop-portal-gnome is available for screencasting
   xdg.portal = {
     extraPortals = with pkgs; [
       xdg-desktop-portal-gnome
-      xdg-desktop-portal-wlr
     ];
-    config = {
-      niri = {
-        default = [ "gnome" "gtk" ];
-        "org.freedesktop.impl.portal.Screencast" = [ "wlr" ];
-        "org.freedesktop.impl.portal.Screenshot" = [ "wlr" ];
-      };
-    };
+    # Don't override config - let niri's niri-portals.conf handle it
   };
 
   # Environment variables for Wayland
   environment.sessionVariables = {
     NIXOS_OZONE_WL = "1";
     MOZ_ENABLE_WAYLAND = "1";
+    # Cursor settings for XWayland apps (Slack, Electron apps, etc.)
+    XCURSOR_SIZE = "24";
+    XCURSOR_THEME = "Vanilla-DMZ";
   };
 
   # Required services for noctalia-shell
@@ -48,15 +44,15 @@
   # Polkit for privilege escalation
   security.polkit.enable = true;
 
-  # Use lxqt polkit agent for themed password dialogs (picks up Qt/Catppuccin theme)
-  systemd.user.services.polkit-lxqt-agent = {
-    description = "LXQt Polkit Agent";
+  # Use GNOME polkit agent - automatically uses GTK/Catppuccin theme
+  systemd.user.services.polkit-gnome-agent = {
+    description = "GNOME Polkit Agent";
     wantedBy = [ "graphical-session.target" ];
     wants = [ "graphical-session.target" ];
     after = [ "graphical-session.target" ];
     serviceConfig = {
       Type = "simple";
-      ExecStart = "${pkgs.lxqt.lxqt-policykit}/bin/lxqt-policykit-agent";
+      ExecStart = "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1";
       Restart = "on-failure";
       RestartSec = 1;
       TimeoutStopSec = 10;
@@ -76,7 +72,7 @@
     brightnessctl # Brightness control
     playerctl # Media control
     pamixer # Audio control
-    lxqt.lxqt-policykit # Themed polkit agent
+    polkit_gnome # GTK polkit agent (uses Catppuccin theme)
   ];
 
   # PAM configuration for swaylock
