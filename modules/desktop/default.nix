@@ -7,6 +7,7 @@
     networkmanagerapplet
     adwaita-icon-theme
     vanilla-dmz # DMZ cursor theme
+    google-chrome
   ];
 
   fonts.fontconfig.enable = true;
