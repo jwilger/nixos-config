@@ -503,17 +503,24 @@ in
     swayidle
   ];
 
-  # Swayidle configuration for screen locking
+  # Swayidle configuration for screen locking and DPMS
   services.swayidle = {
     enable = true;
     timeouts = [
+      {
+        # Dim screen gradually over 30 seconds before lock as a warning
+        timeout = 270;
+        command = "${pkgs.chayang}/bin/chayang -d 30";
+      }
       {
         timeout = 300;
         command = "${noctaliaPkg}/bin/noctalia-shell ipc call lockScreen lock";
       }
       {
-        timeout = 600;
+        # Power off monitors 30 seconds after lock screen appears
+        timeout = 330;
         command = "niri msg action power-off-monitors";
+        resumeCommand = "niri msg action power-on-monitors";
       }
     ];
     events = {
