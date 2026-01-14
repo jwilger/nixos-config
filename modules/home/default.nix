@@ -15,5 +15,6 @@
   ++ [ (import ./starship.nix) ] # shell prompt
   ++ [ (import ./yazi) ] # terminal-based file explorer
   ++ [ (import ./zellij) ] # terminal multiplexer
-  ++ [ (import ./zsh.nix) ]; # shell
+  ++ [ (import ./zsh.nix) ] # shell
+  ++ [ (import ./claude-code) ]; # Claude Code CLI configuration
 }
