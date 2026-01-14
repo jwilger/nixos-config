@@ -1,0 +1,8 @@
+{
+  "installMethod": "native",
+  "autoUpdates": true,
+  "theme": "dark-ansi",
+  "preferredNotifChannel": "notifications_disabled",
+  "showExpandedTodos": true,
+  "autoConnectIde": true
+}
