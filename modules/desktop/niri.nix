@@ -75,6 +75,7 @@
     polkit_gnome # GTK polkit agent (uses Catppuccin theme)
   ];
 
-  # PAM configuration for swaylock
+  # PAM configuration for screen lockers
   security.pam.services.swaylock = { };
+  security.pam.services.hyprlock = { };
 }
