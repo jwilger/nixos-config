@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-# Claude Code Notification Helper
-# - If terminal is focused: low priority notification with short timeout
+# Claude Code Notification Helper (all notifications are low priority)
+# - If terminal is focused: short timeout since user is already looking
 # - If terminal is NOT focused: sticky notification with Focus button, auto-dismiss on focus
 
 set -euo pipefail
@@ -36,15 +36,8 @@ WATCHER_PID_FILE="$NOTIF_STATE_DIR/$SESSION_KEY_SAFE.watcher"
 # Build the notification title with project context
 TITLE="Claude Code [$PROJECT_NAME]"
 
-# Determine urgency based on notification type
-case "$NOTIFICATION_TYPE" in
-    permission_prompt)
-        URGENCY="critical"
-        ;;
-    *)
-        URGENCY="normal"
-        ;;
-esac
+# Always use low urgency to avoid being intrusive
+URGENCY="low"
 
 # Cleanup any existing notification/watcher for this session
 cleanup_existing() {
@@ -115,10 +108,10 @@ focus_terminal() {
 }
 
 if is_terminal_focused; then
-    # Terminal is focused - low priority, short timeout since user is already looking
+    # Terminal is focused - short timeout since user is already looking
     notify-send \
         --app-name="Claude Code" \
-        --urgency=low \
+        --urgency="$URGENCY" \
         --expire-time=3000 \
         "$TITLE" \
         "$MESSAGE" 2>/dev/null || true
