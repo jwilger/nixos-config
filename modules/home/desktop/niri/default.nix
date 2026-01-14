@@ -8,194 +8,20 @@
 let
   noctaliaPkg = inputs.noctalia.packages.${pkgs.stdenv.hostPlatform.system}.default;
 
-  # Script to lock screen and schedule monitor power-off after 60 seconds
-  # Uses systemd-run for reliable timer management
-  lockAndSchedulePowerOff = pkgs.writeShellScript "lock-and-power-off" ''
-    # Cancel any existing power-off timer AND service (both must be stopped)
-    ${pkgs.systemd}/bin/systemctl --user stop screen-power-off.timer 2>/dev/null || true
-    ${pkgs.systemd}/bin/systemctl --user stop screen-power-off.service 2>/dev/null || true
-    ${pkgs.systemd}/bin/systemctl --user reset-failed screen-power-off.service 2>/dev/null || true
-
-    # Lock the screen
-    ${noctaliaPkg}/bin/noctalia-shell ipc call lockScreen lock
-
-    # Schedule monitor power-off in 60 seconds using a transient systemd timer
-    # RemainAfterElapse=no ensures the timer is cleaned up after firing
-    ${pkgs.systemd}/bin/systemd-run --user \
-      --unit=screen-power-off \
-      --on-active=60s \
-      --timer-property=AccuracySec=1s \
-      --timer-property=RemainAfterElapse=no \
-      ${pkgs.niri}/bin/niri msg action power-off-monitors
+  # Lock screen with grace period - hyprlock allows dismissing within grace period
+  lockWithGrace = pkgs.writeShellScript "lock-with-grace" ''
+    # Lock 1password first
+    ${pkgs._1password-gui}/bin/1password --lock &
+    # Only start hyprlock if not already running
+    pidof hyprlock || ${pkgs.hyprlock}/bin/hyprlock --grace 30
   '';
 
-  # Script to cancel the power-off timer (called when user becomes active)
-  cancelPowerOffTimer = pkgs.writeShellScript "cancel-power-off-timer" ''
-    ${pkgs.systemd}/bin/systemctl --user stop screen-power-off.timer 2>/dev/null || true
-    ${pkgs.systemd}/bin/systemctl --user stop screen-power-off.service 2>/dev/null || true
+  # Lock without grace period (for manual lock or before-sleep)
+  lockImmediate = pkgs.writeShellScript "lock-immediate" ''
+    ${pkgs._1password-gui}/bin/1password --lock &
+    pidof hyprlock || ${pkgs.hyprlock}/bin/hyprlock
   '';
 
-  # Screen dimmer overlay using GTK4 + layer-shell
-  # Shows a dark transparent overlay with warning text that fades in
-  # Cancellable on ANY user input (keyboard, mouse, touch) with smooth fade-out
-  # CRITICAL: ctypes.CDLL must load gtk4-layer-shell BEFORE any gi imports
-  # This is because gtk4-layer-shell uses symbol interposition to shim libwayland
-  screenDimmerPython = pkgs.writeText "screen-dimmer.py" ''
-    # MUST be first - load gtk4-layer-shell before gi imports (symbol interposition requirement)
-    import ctypes
-    import os
-    import sys
-    # Use RTLD_GLOBAL to make symbols available to subsequently loaded libraries
-    ctypes.CDLL(os.environ.get("GTK4_LAYER_SHELL_PATH", "libgtk4-layer-shell.so"), mode=ctypes.RTLD_GLOBAL)
-
-    import gi
-    gi.require_version("Gtk", "4.0")
-    gi.require_version("Gtk4LayerShell", "1.0")
-    from gi.repository import Gtk, Gtk4LayerShell, GLib, Gdk
-
-    class ScreenDimmer(Gtk.Application):
-        def __init__(self, duration_ms=30000, target_opacity=0.7):
-            super().__init__(application_id="org.niri.screendimmer")
-            self.duration_ms = duration_ms
-            self.target_opacity = target_opacity
-            self.current_opacity = 0.0
-            self.cancelled = False
-
-        def do_activate(self):
-            win = Gtk.ApplicationWindow(application=self)
-
-            # Set up layer shell - fullscreen overlay on all monitors
-            Gtk4LayerShell.init_for_window(win)
-            Gtk4LayerShell.set_layer(win, Gtk4LayerShell.Layer.OVERLAY)
-            Gtk4LayerShell.set_anchor(win, Gtk4LayerShell.Edge.TOP, True)
-            Gtk4LayerShell.set_anchor(win, Gtk4LayerShell.Edge.BOTTOM, True)
-            Gtk4LayerShell.set_anchor(win, Gtk4LayerShell.Edge.LEFT, True)
-            Gtk4LayerShell.set_anchor(win, Gtk4LayerShell.Edge.RIGHT, True)
-            Gtk4LayerShell.set_exclusive_zone(win, -1)  # Don't reserve space, cover everything
-            
-            # CRITICAL: Enable keyboard input for cancellation detection
-            # ON_DEMAND allows us to receive input without permanently stealing focus
-            Gtk4LayerShell.set_keyboard_mode(win, Gtk4LayerShell.KeyboardMode.ON_DEMAND)
-
-            # Input event controllers for cancellation on ANY input
-            key_controller = Gtk.EventControllerKey()
-            key_controller.connect("key-pressed", self.on_cancel_input)
-            win.add_controller(key_controller)
-            
-            motion_controller = Gtk.EventControllerMotion()
-            motion_controller.connect("motion", self.on_cancel_input)
-            win.add_controller(motion_controller)
-            
-            click_controller = Gtk.GestureClick()
-            click_controller.connect("pressed", self.on_cancel_input)
-            win.add_controller(click_controller)
-
-            # UI layout with warning and cancellation hint
-            box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=20)
-            box.set_halign(Gtk.Align.CENTER)
-            box.set_valign(Gtk.Align.CENTER)
-            
-            warning_label = Gtk.Label(label="⚠ Screen locking in 30 seconds")
-            warning_label.add_css_class("warning-text")
-            
-            hint_label = Gtk.Label(label="Move mouse or press any key to cancel")
-            hint_label.add_css_class("hint-text")
-            
-            box.append(warning_label)
-            box.append(hint_label)
-            win.set_child(box)
-
-            # Styling - Catppuccin Mocha colors with prominent warning
-            css = Gtk.CssProvider()
-            css.load_from_string("""
-                window { 
-                    background-color: rgba(0, 0, 0, 0.7); 
-                }
-                .warning-text {
-                    color: #f38ba8;
-                    font-size: 48px;
-                    font-weight: bold;
-                    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
-                }
-                .hint-text {
-                    color: #cdd6f4;
-                    font-size: 24px;
-                    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.6);
-                }
-            """)
-            Gtk.StyleContext.add_provider_for_display(
-                Gdk.Display.get_default(), css, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
-            )
-
-            # Start fully transparent and fade in
-            win.set_opacity(0.0)
-            win.present()
-            self.win = win
-
-            # Fade in over 2 seconds (100 steps, 20ms each)
-            self.fade_steps = 100
-            self.fade_interval = 20
-            GLib.timeout_add(self.fade_interval, self.fade_in_step)
-
-            # Auto-quit after 30s if not cancelled (lock will happen at 300s anyway)
-            GLib.timeout_add(self.duration_ms, self.auto_quit)
-
-        def fade_in_step(self):
-            """Fade in animation - stops if cancelled"""
-            if self.cancelled:
-                return False
-            self.current_opacity = min(
-                self.current_opacity + (self.target_opacity / self.fade_steps),
-                self.target_opacity
-            )
-            self.win.set_opacity(self.current_opacity)
-            return self.current_opacity < self.target_opacity
-
-        def on_cancel_input(self, *args):
-            """Called on ANY input event (keyboard, mouse, touch) - cancel and fade out"""
-            if not self.cancelled:
-                self.cancelled = True
-                # Start smooth fade-out animation
-                GLib.timeout_add(16, self.fade_out_step)
-            return True
-
-        def fade_out_step(self):
-            """Fade out animation over ~400ms (25 steps, 16ms each)"""
-            self.current_opacity = max(self.current_opacity - 0.04, 0.0)
-            self.win.set_opacity(self.current_opacity)
-            if self.current_opacity <= 0.0:
-                self.quit()
-                return False
-            return True
-
-        def auto_quit(self):
-            """Auto-quit after timeout if not cancelled"""
-            if not self.cancelled:
-                self.quit()
-            return False
-
-    app = ScreenDimmer()
-    sys.exit(app.run(None))
-  '';
-
-  # Wrapper script - passes gtk4-layer-shell path via environment variable
-  # The Python script uses ctypes.CDLL with RTLD_GLOBAL for proper symbol interposition
-  # CRITICAL: GI_TYPELIB_PATH must include BOTH gtk4 AND gtk4-layer-shell typelib directories
-  lockWarning = pkgs.writeShellScript "lock-warning" ''
-    export GTK4_LAYER_SHELL_PATH="${pkgs.gtk4-layer-shell}/lib/libgtk4-layer-shell.so"
-    export GI_TYPELIB_PATH="${pkgs.gtk4}/lib/girepository-1.0:${pkgs.gtk4-layer-shell}/lib/girepository-1.0:''${GI_TYPELIB_PATH:-}"
-    exec ${pkgs.python3.withPackages (ps: [ ps.pygobject3 ])}/bin/python3 ${screenDimmerPython}
-  '';
-
-  # Script to cancel the warning (kill the dimmer process)
-  cancelWarning = pkgs.writeShellScript "cancel-warning" ''
-    # Kill the screen dimmer if running
-    ${pkgs.procps}/bin/pkill -f "screen-dimmer.py" 2>/dev/null || true
-
-    # Also cancel power-off timer and service if running
-    ${pkgs.systemd}/bin/systemctl --user stop screen-power-off.timer 2>/dev/null || true
-    ${pkgs.systemd}/bin/systemctl --user stop screen-power-off.service 2>/dev/null || true
-  '';
 in
 {
   # Import noctalia home-manager module
@@ -640,8 +466,8 @@ in
           "${mod}+Shift+E".action.spawn-sh = "noctalia-shell ipc call sessionMenu toggle";
           "${mod}+Shift+Slash".action.show-hotkey-overlay = [ ];
 
-          # Lock screen (Mod+Escape) - locks and schedules monitor power-off in 60s
-          "${mod}+Escape".action.spawn = "${lockAndSchedulePowerOff}";
+          # Lock screen (Mod+Escape) - immediate lock, no grace period
+          "${mod}+Escape".action.spawn = "${lockImmediate}";
 
           # Window management
           "${mod}+Q".action.close-window = [ ];
@@ -753,80 +579,165 @@ in
     wl-clipboard
     grim
     slurp
-    swaylock
+    hyprlock
     swayidle
-    libnotify # For lock warning notifications
   ];
 
   # Swayidle configuration for screen locking and DPMS
   #
   # How it works:
-  # 1. At 270s idle: Show fullscreen dimmer overlay with "Screen locking soon" message
-  # 2. At 300s idle: Lock screen via noctalia-shell + start 60s systemd timer for monitor power-off
-  # 3. 60s after lock: Monitors power off via systemd-run transient timer
-  # 4. On activity during warning: Dimmer killed, timer cancelled, normal operation resumes
-  # 5. On activity after monitors off: Wayland auto-wakes monitors
+  # 1. At 300s idle: Lock screen with 30s grace period (can dismiss with any input)
+  # 2. At 360s idle: Monitors power off
+  # 3. On activity after monitors off: Wayland auto-wakes monitors
   #
-  # For manual lock: use Mod+Escape keybinding (same behavior as idle lock)
+  # For manual lock: use Mod+Escape keybinding (immediate lock, no grace)
   services.swayidle = {
     enable = true;
     timeouts = [
       {
-        # Show notification warning 30 seconds before lock
-        timeout = 270;
-        command = "${lockWarning}";
-        # Kill dimmer overlay and cancel power-off timer if user becomes active
-        resumeCommand = "${cancelWarning}";
+        # Lock screen after 5 minutes of idle, with 30s grace period to dismiss
+        timeout = 300;
+        command = "${lockWithGrace}";
       }
       {
-        # Lock screen after 5 minutes of idle, schedule power-off 60s later
-        timeout = 300;
-        command = "${lockAndSchedulePowerOff}";
+        # Power off monitors 60s after lock
+        timeout = 360;
+        command = "${pkgs.niri}/bin/niri msg action power-off-monitors";
+        resumeCommand = "${pkgs.niri}/bin/niri msg action power-on-monitors";
       }
     ];
     events = {
-      # Lock before sleep (use the script so monitors also turn off after sleep)
-      before-sleep = "${lockAndSchedulePowerOff}";
-      # Also lock on systemd lock signal (e.g., loginctl lock-session)
-      lock = "${lockAndSchedulePowerOff}";
+      # Lock before sleep (no grace period)
+      before-sleep = "${lockImmediate}";
+      # Also lock on systemd lock signal
+      lock = "${lockImmediate}";
     };
   };
 
-  # Swaylock - just enable it, let catppuccin handle theming
-  programs.swaylock.enable = true;
+  # Hyprlock configuration - Catppuccin Mocha theme with FIDO support
+  xdg.configFile."hypr/hyprlock.conf".text = ''
+    # Catppuccin Mocha colors
+    $base = rgb(1e1e2e)
+    $surface0 = rgb(313244)
+    $surface1 = rgb(45475a)
+    $text = rgb(cdd6f4)
+    $subtext0 = rgb(a6adc8)
+    $lavender = rgb(b4befe)
+    $mauve = rgb(cba6f7)
+    $red = rgb(f38ba8)
+    $yellow = rgb(f9e2af)
 
-  # Systemd user service for monitor power-off (alternative to systemd-run transient timer)
-  # This provides better observability and reliability compared to transient timers
-  # To use this instead of transient timers, modify lockAndSchedulePowerOff to use:
-  #   systemctl --user start screen-power-off.timer
-  # instead of systemd-run
-  systemd.user.services.screen-power-off = {
-    Unit = {
-      Description = "Power off monitors after screen lock";
-      After = [ "graphical-session.target" ];
-    };
+    general {
+      disable_loading_bar = false
+      hide_cursor = true
+      grace = 0  # Grace is set via command line
+      no_fade_in = false
+      no_fade_out = false
+    }
 
-    Service = {
-      Type = "oneshot";
-      ExecStart = "${pkgs.niri}/bin/niri msg action power-off-monitors";
-      RemainAfterExit = false;
-    };
-  };
+    # Longer fade animation (3 seconds)
+    animations {
+      enabled = true
+      bezier = smooth, 0.25, 0.1, 0.25, 1.0
+      animation = fadeIn, 1, 30, smooth   # 3 seconds (30 = 3000ms / 100)
+      animation = fadeOut, 1, 20, smooth  # 2 seconds
+    }
 
-  systemd.user.timers.screen-power-off = {
-    Unit = {
-      Description = "Timer for monitor power-off after lock (60 seconds)";
-    };
+    # Background - use wallpaper with blur
+    background {
+      monitor =
+      path = ${config.home.homeDirectory}/.local/share/wallpapers/wallpaper.png
+      color = $base
+      blur_passes = 3
+      blur_size = 8
+      noise = 0.02
+      contrast = 0.9
+      brightness = 0.8
+      vibrancy = 0.2
+    }
 
-    Timer = {
-      OnActiveSec = "60s";
-      AccuracySec = "1s";
-    };
+    # Time display
+    label {
+      monitor =
+      text = cmd[update:1000] echo "<b>$(date +"%H:%M")</b>"
+      color = $text
+      font_size = 120
+      font_family = JetBrainsMono Nerd Font
+      shadow_passes = 3
+      shadow_size = 4
 
-    Install = {
-      WantedBy = [ ]; # Not auto-started, only triggered by lock script
-    };
-  };
+      position = 0, 200
+      halign = center
+      valign = center
+    }
+
+    # Date display
+    label {
+      monitor =
+      text = cmd[update:60000] echo "$(date +"%A, %B %d")"
+      color = $subtext0
+      font_size = 24
+      font_family = JetBrainsMono Nerd Font
+
+      position = 0, 100
+      halign = center
+      valign = center
+    }
+
+    # Password input field
+    input-field {
+      monitor =
+      size = 300, 50
+      outline_thickness = 3
+      dots_size = 0.33
+      dots_spacing = 0.15
+      dots_center = true
+      dots_rounding = -1
+      outer_color = $mauve
+      inner_color = $surface0
+      font_color = $text
+      fade_on_empty = true
+      fade_timeout = 2000
+      placeholder_text = <i>Enter PIN, then touch key</i>
+      hide_input = false
+      rounding = 15
+      check_color = $lavender
+      fail_color = $red
+      fail_text = <i>$FAIL <b>($ATTEMPTS)</b></i>
+      fail_timeout = 2000
+      fail_transition = 300
+
+      position = 0, -50
+      halign = center
+      valign = center
+    }
+
+    # User label
+    label {
+      monitor =
+      text = $USER
+      color = $text
+      font_size = 18
+      font_family = JetBrainsMono Nerd Font
+
+      position = 0, 30
+      halign = center
+      valign = center
+    }
+
+    # FIDO hint below input
+    label {
+      monitor =
+      text = FIDO: enter PIN → touch device
+      color = $subtext0
+      font_size = 14
+      font_family = JetBrainsMono Nerd Font
+
+      position = 0, -120
+      halign = center
+      valign = center
+    }
+  '';
 
   # Wallpaper managed by Nix
   home.file.".local/share/wallpapers/wallpaper.png".source = ../wallpaper.png;
