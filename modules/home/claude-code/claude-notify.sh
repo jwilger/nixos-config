@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Claude Code Notification Helper
-# - If terminal is focused: regular notification with timeout
+# - If terminal is focused: low priority notification with short timeout
 # - If terminal is NOT focused: sticky notification with Focus button, auto-dismiss on focus
 
 set -euo pipefail
@@ -115,10 +115,11 @@ focus_terminal() {
 }
 
 if is_terminal_focused; then
-    # Terminal is focused - just show a regular notification with timeout
+    # Terminal is focused - low priority, short timeout since user is already looking
     notify-send \
         --app-name="Claude Code" \
-        --urgency="$URGENCY" \
+        --urgency=low \
+        --expire-time=3000 \
         "$TITLE" \
         "$MESSAGE" 2>/dev/null || true
     exit 0
