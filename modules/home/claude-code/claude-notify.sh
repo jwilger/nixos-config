@@ -54,8 +54,8 @@ cleanup_existing() {
         local old_notif_id
         old_notif_id=$(cat "$NOTIF_ID_FILE" 2>/dev/null || echo "")
         if [[ -n "$old_notif_id" ]]; then
-            # Close by replacing with auto-expire notification
-            notify-send --replace-id="$old_notif_id" --expire-time=1 --app-name="Claude Code" " " " " 2>/dev/null || true
+            # Close by replacing with auto-expire notification (low priority, no sound)
+            notify-send --replace-id="$old_notif_id" --expire-time=1 --urgency=low --hint=int:suppress-sound:1 --app-name="Claude Code" " " " " 2>/dev/null || true
         fi
         rm -f "$NOTIF_ID_FILE"
     fi
@@ -155,8 +155,8 @@ fi
                 niri msg event-stream 2>/dev/null | while IFS= read -r event; do
                     # Event format: "Window focus changed: Some(41)"
                     if echo "$event" | grep -qE "Window focus changed: Some\(${TARGET_WINDOW_ID}\)"; then
-                        # User focused our terminal - dismiss notification by replacing with auto-expire
-                        notify-send --replace-id="$NOTIF_ID" --expire-time=1 --app-name="Claude Code" " " " " 2>/dev/null || true
+                        # User focused our terminal - dismiss notification by replacing with auto-expire (low priority, no sound)
+                        notify-send --replace-id="$NOTIF_ID" --expire-time=1 --urgency=low --hint=int:suppress-sound:1 --app-name="Claude Code" " " " " 2>/dev/null || true
                         # Kill the notify-send process if still waiting
                         kill "$NOTIFY_PID" 2>/dev/null || true
                         rm -f "$NOTIF_ID_FILE" "$WATCHER_PID_FILE" "$NOTIF_ID_TEMP"
