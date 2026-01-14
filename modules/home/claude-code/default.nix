@@ -12,7 +12,6 @@ let
 
   # Plugins to install (plugin@marketplace format)
   plugins = [
-    "marvin-output-style@jwilger-claude-plugins"
     "sdlc@jwilger-claude-plugins"
     "bootstrap@jwilger-claude-plugins"
   ];
@@ -55,13 +54,17 @@ in
   };
 
   # Activation script to install Claude Code and set up plugins
+  home.packages = [pkgs.curl];
   home.activation.claudeCodeSetup = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+    # Add ~/.local/bin to PATH for this activation script
+    export PATH="$HOME/.local/bin:$PATH"
+
     # Install Claude Code if not present
-    if ! command -v claude &> /dev/null; then
+    if [ ! -f "$HOME/.local/bin/claude" ]; then
       echo "Installing Claude Code..."
-      ${pkgs.curl}/bin/curl -fsSL https://claude.ai/install.sh | sh
-      # Add to PATH for this session
-      export PATH="$HOME/.local/bin:$PATH"
+      # The install script needs various tools in PATH
+      PATH="${pkgs.curl}/bin:${pkgs.gnutar}/bin:${pkgs.gzip}/bin:${pkgs.coreutils}/bin:${pkgs.gnugrep}/bin:${pkgs.bash}/bin:$PATH" \
+        ${pkgs.bash}/bin/bash -c '${pkgs.curl}/bin/curl -fsSL https://claude.ai/install.sh | ${pkgs.bash}/bin/bash'
     fi
 
     # Only set up plugins if claude is available and user is logged in
