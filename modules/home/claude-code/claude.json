@@ -1,8 +1,144 @@
 {
+  "numStartups": 9,
   "installMethod": "native",
   "autoUpdates": true,
   "theme": "dark-ansi",
   "preferredNotifChannel": "notifications_disabled",
   "showExpandedTodos": true,
-  "autoConnectIde": true
+  "autoConnectIde": true,
+  "cachedStatsigGates": {
+    "tengu_prompt_suggestion": true
+  },
+  "cachedGrowthBookFeatures": {
+    "tengu_1p_event_batch_config": {
+      "scheduledDelayMillis": 5000,
+      "maxExportBatchSize": 200,
+      "maxQueueSize": 8192
+    },
+    "tengu_mcp_tool_search": true,
+    "tengu_scratch": false,
+    "tengu_disable_bypass_permissions_mode": false,
+    "tengu_log_segment_events": false,
+    "tengu_log_datadog_events": true,
+    "tengu_event_sampling_config": {},
+    "tengu_tool_pear": false,
+    "tengu_c4w_usage_limit_notifications_enabled": true,
+    "tengu_thinkback": false,
+    "tengu_pid_based_version_locking": true,
+    "tengu_sumi": false,
+    "tengu_tool_search_unsupported_models": null,
+    "tengu_ant_attribution_header_new": true,
+    "enhanced_telemetry_beta": false,
+    "tengu-top-of-feed-tip": {
+      "tip": "",
+      "color": ""
+    },
+    "tengu_react_vulnerability_warning": false,
+    "tengu_code_diff_cli": true,
+    "tengu_post_compact_survey": false,
+    "tengu_streaming_tool_execution2": false,
+    "tengu_chrome_auto_enable": false,
+    "tengu_prompt_suggestion": true
+  },
+  "userID": "2ec7ebd655819b211f334b5f449c94c15f8c47c580c4478994e176e4fdf762ca",
+  "firstStartTime": "2026-01-14T18:00:49.090Z",
+  "sonnet45MigrationComplete": true,
+  "sonnet45MigrationTimestamp": 1768413649098,
+  "opus45MigrationComplete": true,
+  "opusProMigrationComplete": true,
+  "thinkingMigrationComplete": true,
+  "cachedChromeExtensionInstalled": true,
+  "changelogLastFetched": 1768413676046,
+  "oauthAccount": {
+    "accountUuid": "326248af-ae07-476a-8365-07fc519f7ed9",
+    "emailAddress": "john@johnwilger.com",
+    "organizationUuid": "7692ced2-dd5d-4964-b28d-ceef41a94e09",
+    "hasExtraUsageEnabled": true,
+    "displayName": "m'lord",
+    "organizationRole": "admin",
+    "workspaceRole": null,
+    "organizationName": "john@johnwilger.com's Organization"
+  },
+  "claudeCodeFirstTokenDate": "2025-05-21T14:00:57.009334Z",
+  "hasCompletedOnboarding": true,
+  "lastOnboardingVersion": "2.1.7",
+  "projects": {
+    "/etc/nixos": {
+      "allowedTools": [],
+      "mcpContextUris": [],
+      "mcpServers": {},
+      "enabledMcpjsonServers": [],
+      "disabledMcpjsonServers": [],
+      "hasTrustDialogAccepted": true,
+      "projectOnboardingSeenCount": 0,
+      "hasClaudeMdExternalIncludesApproved": false,
+      "hasClaudeMdExternalIncludesWarningShown": false,
+      "reactVulnerabilityCache": {
+        "detected": false,
+        "package": null,
+        "packageName": null,
+        "version": null,
+        "packageManager": null
+      },
+      "exampleFiles": [
+        "packages.nix",
+        "services.nix",
+        "config.nix",
+        "zsh.nix",
+        "overlays.nix"
+      ],
+      "exampleFilesGeneratedAt": 1768413678356,
+      "hasCompletedProjectOnboarding": true,
+      "lastCost": 0,
+      "lastAPIDuration": 0,
+      "lastAPIDurationWithoutRetries": 0,
+      "lastToolDuration": 0,
+      "lastDuration": 62126,
+      "lastLinesAdded": 0,
+      "lastLinesRemoved": 0,
+      "lastTotalInputTokens": 0,
+      "lastTotalOutputTokens": 0,
+      "lastTotalCacheCreationInputTokens": 0,
+      "lastTotalCacheReadInputTokens": 0,
+      "lastTotalWebSearchRequests": 0,
+      "lastModelUsage": {},
+      "lastSessionId": "d1d980c4-c2a2-4ec7-9d9d-2814cba70a7f"
+    }
+  },
+  "githubRepoPaths": {
+    "jwilger/nixos-config": [
+      "/etc/nixos"
+    ]
+  },
+  "s1mAccessCache": {
+    "7692ced2-dd5d-4964-b28d-ceef41a94e09": {
+      "hasAccess": false,
+      "hasAccessNotAsDefault": false,
+      "timestamp": 1768413675869
+    }
+  },
+  "lastReleaseNotesSeen": "2.1.7",
+  "hasShownOpus45Notice": {
+    "7692ced2-dd5d-4964-b28d-ceef41a94e09": true
+  },
+  "groveConfigCache": {
+    "326248af-ae07-476a-8365-07fc519f7ed9": {
+      "grove_enabled": true,
+      "timestamp": 1768413676022
+    }
+  },
+  "passesEligibilityCache": {
+    "7692ced2-dd5d-4964-b28d-ceef41a94e09": {
+      "eligible": true,
+      "referral_code_details": {
+        "code": "G7mFwehXQg",
+        "campaign": "claude_code_guest_pass",
+        "referral_link": "https://claude.ai/referral/G7mFwehXQg"
+      },
+      "timestamp": 1768413676143
+    }
+  },
+  "officialMarketplaceAutoInstallAttempted": true,
+  "officialMarketplaceAutoInstalled": true,
+  "passesUpsellSeenCount": 4
 }
