@@ -42,11 +42,6 @@ in
     source = config.lib.file.mkOutOfStoreSymlink "/etc/nixos/modules/home/claude-code/config";
   };
 
-  # Create symlink for ~/.claude.json
-  home.file.".claude.json" = {
-    source = config.lib.file.mkOutOfStoreSymlink "/etc/nixos/modules/home/claude-code/claude.json";
-  };
-
   # Install the claude-notify script
   home.file.".local/bin/claude-notify" = {
     source = ./claude-notify.sh;
