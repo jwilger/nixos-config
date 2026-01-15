@@ -63,8 +63,6 @@
   environment.systemPackages = with pkgs; [
     xwayland-satellite # XWayland support for niri
     wl-clipboard
-    swaylock # Screen locker
-    swayidle # Idle management
     fuzzel # Application launcher (backup)
     nautilus # File manager
     grim # Screenshot utility
@@ -75,7 +73,6 @@
     polkit_gnome # GTK polkit agent (uses Catppuccin theme)
   ];
 
-  # PAM configuration for screen lockers
-  security.pam.services.swaylock = { };
+  # PAM configuration for screen locker
   security.pam.services.hyprlock = { };
 }
