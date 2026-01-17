@@ -69,6 +69,7 @@
     ],
     "defaultMode": "acceptEdits"
   },
+  "model": "opus",
   "hooks": {
     "Notification": [
       {
@@ -91,6 +92,5 @@
     "bootstrap@jwilger-claude-plugins": true,
     "context7@claude-plugins-official": true
   },
-  "syntaxHighlightingDisabled": false,
-  "model": "opus"
+  "syntaxHighlightingDisabled": false
 }
