@@ -94,6 +94,7 @@ in
     ]
     # Linux-only packages
     ++ lib.optionals pkgs.stdenv.isLinux [
+      bc # calculator for audio processing
       cliphist # clipboard manager (Wayland)
       dwt1-shell-color-scripts
       gcc
@@ -102,7 +103,10 @@ in
       libnotify
       nitch # systhem fetch util
       pamixer # command-line audio mixer
+      pipx # Python package installer for Piper TTS
       poweralertd
+      pulseaudio # provides paplay for audio playback
+      sox # audio effects processing
       wl-clipboard # clipboard utils for wayland (wl-copy, wl-paste)
       wlogout
       xdg-utils
