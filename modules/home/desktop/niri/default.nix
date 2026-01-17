@@ -81,166 +81,333 @@ in
 
     # Main settings
     settings = {
-      appLauncher = {
-        autoPasteClipboard = false;
-        enableClipPreview = true;
-        enableClipboardHistory = true;
-        iconMode = "tabler";
-        position = "center";
-        showCategories = true;
-        showIconBackground = false;
-        sortByMostUsed = true;
-        terminalCommand = "kitty -e";
-        viewMode = "list";
-      };
-
-      audio = {
-        externalMixer = "pwvucontrol || pavucontrol";
-        preferredPlayer = "spotify";
-        visualizerType = "linear";
-        volumeStep = 5;
-      };
+      settingsVersion = 40;
 
       bar = {
-        backgroundOpacity = 0.93;
-        capsuleOpacity = 1;
-        density = "default";
-        exclusive = true;
-        floating = false;
         position = "top";
-        showCapsule = false;
+        monitors = [ ];
+        density = "default";
         showOutline = false;
+        showCapsule = false;
+        capsuleOpacity = 1;
+        backgroundOpacity = 0.8;
+        useSeparateOpacity = true;
+        floating = false;
+        marginVertical = 4;
+        marginHorizontal = 4;
         outerCorners = false;
+        exclusive = true;
+        hideOnOverview = false;
         widgets = {
-          center = [
-            {
-              id = "Clock";
-              formatHorizontal = "HH:mm ddd, MMM dd";
-              tooltipFormat = "HH:mm ddd, MMM dd";
-            }
-            {
-              id = "MediaMini";
-              showProgressRing = true;
-              showArtistFirst = true;
-              maxWidth = 145;
-              scrollingMode = "hover";
-            }
-            { id = "plugin:privacy-indicator"; }
-          ];
           left = [
             {
-              id = "Launcher";
-              icon = "rocket";
+              id = "Spacer";
+              width = 20;
             }
             {
-              id = "Workspace";
-              labelMode = "index+name";
-              showLabelsOnlyWhenOccupied = true;
+              icon = "rocket";
+              id = "Launcher";
+              usePrimaryColor = false;
+            }
+            {
+              characterCount = 2;
+              colorizeIcons = false;
+              enableScrollWheel = true;
+              followFocusedScreen = false;
+              groupedBorderOpacity = 1;
               hideUnoccupied = false;
               iconScale = 0.8;
+              id = "Workspace";
+              labelMode = "index+name";
+              showApplications = false;
+              showLabelsOnlyWhenOccupied = true;
+              unfocusedIconsOpacity = 1;
             }
             {
+              colorizeIcons = false;
+              hideMode = "hidden";
               id = "ActiveWindow";
               maxWidth = 145;
               scrollingMode = "hover";
               showIcon = true;
+              useFixedWidth = false;
+            }
+          ];
+          center = [
+            {
+              defaultSettings = {
+                hideBackground = false;
+                minimumThreshold = 10;
+              };
+              id = "plugin:catwalk";
+            }
+            {
+              customFont = "";
+              formatHorizontal = "HH:mm ddd, MMM dd";
+              formatVertical = "HH mm - dd MM";
+              id = "Clock";
+              tooltipFormat = "HH:mm ddd, MMM dd";
+              useCustomFont = false;
+              usePrimaryColor = false;
+            }
+            {
+              compactMode = false;
+              compactShowAlbumArt = true;
+              compactShowVisualizer = false;
+              hideMode = "hidden";
+              hideWhenIdle = false;
+              id = "MediaMini";
+              maxWidth = 145;
+              panelShowAlbumArt = true;
+              panelShowVisualizer = true;
+              scrollingMode = "hover";
+              showAlbumArt = true;
+              showArtistFirst = true;
+              showProgressRing = true;
+              showVisualizer = false;
+              useFixedWidth = false;
+              visualizerType = "linear";
+            }
+            {
+              defaultSettings = {
+                hideInactive = false;
+                removeMargins = false;
+              };
+              id = "plugin:privacy-indicator";
             }
           ];
           right = [
-            { id = "ScreenRecorder"; }
             {
-              id = "Tray";
-              colorizeIcons = true;
-              drawerEnabled = true;
+              displayMode = "onhover";
+              id = "Volume";
+              middleClickCommand = "pwvucontrol || pavucontrol";
             }
             {
+              displayMode = "onhover";
+              id = "Microphone";
+              middleClickCommand = "pwvucontrol || pavucontrol";
+            }
+            {
+              defaultSettings = {
+                autoStartBreaks = false;
+                autoStartWork = false;
+                compactMode = false;
+                longBreakDuration = 15;
+                sessionsBeforeLongBreak = 4;
+                shortBreakDuration = 5;
+                workDuration = 25;
+              };
+              id = "plugin:pomodoro";
+            }
+            {
+              hideWhenZero = false;
+              hideWhenZeroUnread = true;
               id = "NotificationHistory";
-              hideWhenZero = true;
               showUnreadBadge = true;
             }
             {
-              id = "Battery";
-              displayMode = "onhover";
-              showPowerProfiles = true;
-              warningThreshold = 30;
+              defaultSettings = {
+                maxEvents = 50;
+                openInBrowser = true;
+                refreshInterval = 1800;
+                showForks = true;
+                showMyRepoForks = true;
+                showMyRepoStars = true;
+                showPRs = true;
+                showRepoCreations = true;
+                showStars = true;
+                token = "";
+                username = "";
+              };
+              id = "plugin:github-feed";
             }
             {
-              id = "Volume";
-              displayMode = "onhover";
-            }
-            { id = "plugin:github-feed"; }
-            { id = "plugin:todo"; }
-            { id = "plugin:simple-notes"; }
-            {
-              id = "SystemMonitor";
-              compactMode = true;
-              showCpuUsage = true;
-              showCpuTemp = true;
-              showMemoryUsage = true;
-              showMemoryAsPercent = true;
-              showDiskUsage = true;
-              diskPath = "/home"; # Monitor /home instead of /
-              showNetworkStats = true;
-              showLoadAverage = true;
-              useMonospaceFont = true;
+              defaultSettings = {
+                audioCodec = "opus";
+                audioSource = "default_output";
+                colorRange = "limited";
+                copyToClipboard = false;
+                directory = "";
+                filenamePattern = "recording_yyyyMMdd_HHmmss";
+                frameRate = "60";
+                quality = "very_high";
+                resolution = "original";
+                showCursor = true;
+                videoCodec = "h264";
+                videoSource = "portal";
+              };
+              id = "plugin:screen-recorder";
             }
             {
-              id = "ControlCenter";
-              icon = "noctalia";
-              useDistroLogo = true;
-              enableColorization = true;
+              defaultSettings = {
+                mode = "region";
+              };
+              id = "plugin:screenshot";
+            }
+            { id = "KeepAwake"; }
+            {
+              blacklist = [ ];
+              colorizeIcons = true;
+              drawerEnabled = true;
+              hidePassive = false;
+              id = "Tray";
+              pinned = [ ];
+            }
+            {
+              id = "Spacer";
+              width = 20;
+            }
+            {
+              colorizeDistroLogo = false;
               colorizeSystemIcon = "primary";
+              customIconPath = "";
+              enableColorization = true;
+              icon = "noctalia";
+              id = "ControlCenter";
+              useDistroLogo = true;
+            }
+            {
+              id = "Spacer";
+              width = 20;
             }
           ];
         };
       };
 
-      brightness = {
-        brightnessStep = 5;
-        enableDdcSupport = true;
-        enforceMinimum = true;
+      general = {
+        avatarImage = "${./profile-headshot.png}";
+        dimmerOpacity = 0.2;
+        showScreenCorners = false;
+        forceBlackScreenCorners = false;
+        scaleRatio = 1;
+        radiusRatio = 1;
+        iRadiusRatio = 1;
+        boxRadiusRatio = 1;
+        screenRadiusRatio = 1;
+        animationSpeed = 1;
+        animationDisabled = false;
+        compactLockScreen = false;
+        lockOnSuspend = true;
+        showSessionButtonsOnLockScreen = false;
+        showHibernateOnLockScreen = false;
+        enableShadows = true;
+        shadowDirection = "bottom_right";
+        shadowOffsetX = 2;
+        shadowOffsetY = 3;
+        language = "";
+        allowPanelsOnScreenWithoutBar = true;
+        showChangelogOnStartup = true;
+        telemetryEnabled = true;
       };
 
-      colorSchemes = {
-        darkMode = true;
-        predefinedScheme = "Catppuccin";
-        useWallpaperColors = false;
-        schedulingMode = "off";
+      ui = {
+        fontDefault = "JetBrainsMono Nerd Font Mono";
+        fontFixed = "JetBrainsMono Nerd Font Mono";
+        fontDefaultScale = 1;
+        fontFixedScale = 1;
+        tooltipsEnabled = true;
+        panelBackgroundOpacity = 0.8;
+        panelsAttachedToBar = true;
+        settingsPanelMode = "attached";
+        wifiDetailsViewMode = "grid";
+        bluetoothDetailsViewMode = "grid";
+        networkPanelView = "wifi";
+        bluetoothHideUnnamedDevices = false;
+        boxBorderEnabled = false;
+      };
+
+      location = {
+        name = "Forest Grove, OR, USA";
+        weatherEnabled = true;
+        weatherShowEffects = true;
+        useFahrenheit = true;
+        use12hourFormat = false;
+        showWeekNumberInCalendar = false;
+        showCalendarEvents = true;
+        showCalendarWeather = true;
+        analogClockInCalendar = false;
+        firstDayOfWeek = -1;
+        hideWeatherTimezone = false;
+        hideWeatherCityName = false;
+      };
+
+      calendar = {
+        cards = [
+          {
+            enabled = true;
+            id = "calendar-header-card";
+          }
+          {
+            enabled = true;
+            id = "calendar-month-card";
+          }
+          {
+            enabled = true;
+            id = "weather-card";
+          }
+        ];
+      };
+
+      wallpaper = {
+        enabled = true;
+        overviewEnabled = false;
+        directory = "/home/jwilger/Pictures/Wallpapers";
+        monitorDirectories = [ ];
+        enableMultiMonitorDirectories = false;
+        recursiveSearch = false;
+        setWallpaperOnAllMonitors = true;
+        fillMode = "crop";
+        fillColor = "#000000";
+        useSolidColor = false;
+        solidColor = "#1a1a2e";
+        randomEnabled = false;
+        wallpaperChangeMode = "random";
+        randomIntervalSec = 300;
+        transitionDuration = 1500;
+        transitionType = "random";
+        transitionEdgeSmoothness = 0.05;
+        panelPosition = "follow_bar";
+        hideWallpaperFilenames = false;
+        useWallhaven = false;
+        wallhavenQuery = "";
+        wallhavenSorting = "relevance";
+        wallhavenOrder = "desc";
+        wallhavenCategories = "111";
+        wallhavenPurity = "100";
+        wallhavenRatios = "";
+        wallhavenApiKey = "";
+        wallhavenResolutionMode = "atleast";
+        wallhavenResolutionWidth = "";
+        wallhavenResolutionHeight = "";
+      };
+
+      appLauncher = {
+        enableClipboardHistory = true;
+        autoPasteClipboard = false;
+        enableClipPreview = true;
+        clipboardWrapText = true;
+        position = "center";
+        pinnedApps = [ ];
+        useApp2Unit = false;
+        sortByMostUsed = true;
+        terminalCommand = "kitty -e";
+        customLaunchPrefixEnabled = false;
+        customLaunchPrefix = "";
+        viewMode = "list";
+        showCategories = true;
+        iconMode = "tabler";
+        showIconBackground = false;
+        ignoreMouseInput = false;
+        screenshotAnnotationTool = "";
       };
 
       controlCenter = {
         position = "close_to_bar_button";
-        cards = [
-          {
-            id = "profile-card";
-            enabled = true;
-          }
-          {
-            id = "shortcuts-card";
-            enabled = true;
-          }
-          {
-            id = "audio-card";
-            enabled = true;
-          }
-          {
-            id = "brightness-card";
-            enabled = false;
-          }
-          {
-            id = "weather-card";
-            enabled = true;
-          }
-          {
-            id = "media-sysmon-card";
-            enabled = true;
-          }
-        ];
+        diskPath = "/";
         shortcuts = {
           left = [
             { id = "Network"; }
             { id = "Bluetooth"; }
-            { id = "ScreenRecorder"; }
             { id = "WallpaperSelector"; }
           ];
           right = [
@@ -250,51 +417,157 @@ in
             { id = "NightLight"; }
           ];
         };
+        cards = [
+          {
+            enabled = true;
+            id = "profile-card";
+          }
+          {
+            enabled = true;
+            id = "shortcuts-card";
+          }
+          {
+            enabled = true;
+            id = "audio-card";
+          }
+          {
+            enabled = false;
+            id = "brightness-card";
+          }
+          {
+            enabled = true;
+            id = "weather-card";
+          }
+          {
+            enabled = true;
+            id = "media-sysmon-card";
+          }
+        ];
       };
 
-      dock.enabled = false;
-      desktopWidgets.enabled = false;
+      systemMonitor = {
+        cpuWarningThreshold = 80;
+        cpuCriticalThreshold = 90;
+        tempWarningThreshold = 80;
+        tempCriticalThreshold = 90;
+        gpuWarningThreshold = 80;
+        gpuCriticalThreshold = 90;
+        memWarningThreshold = 80;
+        memCriticalThreshold = 90;
+        diskWarningThreshold = 80;
+        diskCriticalThreshold = 90;
+        cpuPollingInterval = 3000;
+        tempPollingInterval = 3000;
+        gpuPollingInterval = 3000;
+        enableDgpuMonitoring = true;
+        memPollingInterval = 3000;
+        diskPollingInterval = 3000;
+        networkPollingInterval = 3000;
+        loadAvgPollingInterval = 3000;
+        useCustomColors = false;
+        warningColor = "";
+        criticalColor = "";
+        externalMonitor = "resources || missioncenter || jdsystemmonitor || corestats || system-monitoring-center || gnome-system-monitor || plasma-systemmonitor || mate-system-monitor || ukui-system-monitor || deepin-system-monitor || pantheon-system-monitor";
+      };
 
-      general = {
-        avatarImage = "/home/jwilger/.face";
-        animationDisabled = false;
+      dock = {
+        enabled = false;
+        position = "bottom";
+        displayMode = "auto_hide";
+        backgroundOpacity = 1;
+        floatingRatio = 1;
+        size = 1;
+        onlySameOutput = true;
+        monitors = [ ];
+        pinnedApps = [ ];
+        colorizeIcons = false;
+        pinnedStatic = false;
+        inactiveIndicators = false;
+        deadOpacity = 0.6;
         animationSpeed = 1;
-        enableShadows = true;
-        lockOnSuspend = true;
-        showScreenCorners = false;
-        dimmerOpacity = 0.2;
       };
 
-      location = {
-        name = "Forest Grove, OR, USA";
-        useFahrenheit = true;
-        use12hourFormat = false;
-        weatherEnabled = true;
-        weatherShowEffects = true;
-        showCalendarEvents = true;
-        showCalendarWeather = true;
+      network = {
+        wifiEnabled = false;
+        bluetoothRssiPollingEnabled = true;
+        bluetoothRssiPollIntervalMs = 10000;
+        wifiDetailsViewMode = "grid";
+        bluetoothDetailsViewMode = "grid";
+        bluetoothHideUnnamedDevices = false;
       };
 
-      nightLight = {
-        enabled = true;
-        autoSchedule = true;
-        dayTemp = "6500";
-        nightTemp = "4000";
+      sessionMenu = {
+        enableCountdown = true;
+        countdownDuration = 10000;
+        position = "center";
+        showHeader = false;
+        largeButtonsStyle = false;
+        largeButtonsLayout = "grid";
+        showNumberLabels = true;
+        powerOptions = [
+          {
+            action = "lock";
+            command = "";
+            countdownEnabled = false;
+            enabled = true;
+          }
+          {
+            action = "suspend";
+            command = "";
+            countdownEnabled = true;
+            enabled = false;
+          }
+          {
+            action = "hibernate";
+            command = "";
+            countdownEnabled = true;
+            enabled = false;
+          }
+          {
+            action = "reboot";
+            command = "";
+            countdownEnabled = true;
+            enabled = true;
+          }
+          {
+            action = "logout";
+            command = "";
+            countdownEnabled = true;
+            enabled = true;
+          }
+          {
+            action = "shutdown";
+            command = "";
+            countdownEnabled = true;
+            enabled = false;
+          }
+        ];
       };
 
       notifications = {
         enabled = true;
+        monitors = [ ];
         location = "top_right";
-        backgroundOpacity = 1;
-        normalUrgencyDuration = 10;
+        overlayLayer = true;
+        backgroundOpacity = 0.8;
+        respectExpireTimeout = true;
         lowUrgencyDuration = 3;
+        normalUrgencyDuration = 10;
         criticalUrgencyDuration = 30;
-        respectExpireTime = true;
-        storeLowPriority = false;
+        enableKeyboardLayoutToast = true;
+        saveToHistory = {
+          low = false;
+          normal = true;
+          critical = true;
+        };
         sounds = {
           enabled = true;
-          excludedApps = "discord,firefox,chrome,chromium,edge,slack";
           volume = 1;
+          separateSounds = true;
+          criticalSoundFile = "";
+          normalSoundFile = "";
+          lowSoundFile = "";
+          excludedApps = "discord,firefox,chrome,chromium,edge,slack";
         };
       };
 
@@ -302,83 +575,105 @@ in
         enabled = true;
         location = "top_right";
         autoHideMs = 2000;
-      };
-
-      screenRecorder = {
-        directory = "/home/jwilger/Videos";
-        frameRate = 60;
-        quality = "high";
-        videoCodec = "hevc"; # h264 max is 4096x4096, but Studio Display is 5120x2880
-        audioCodec = "opus";
-        audioSource = "both";
-        showCursor = true;
-      };
-
-      sessionMenu = {
-        position = "center";
-        enableCountdown = true;
-        countdownDuration = 10000;
-        showHeader = true;
-        powerOptions = [
-          {
-            action = "lock";
-            enabled = true;
-            countdownEnabled = false;
-          }
-          {
-            action = "suspend";
-            enabled = false;
-            countdownEnabled = true;
-          }
-          {
-            action = "hibernate";
-            enabled = false;
-            countdownEnabled = true;
-          }
-          {
-            action = "reboot";
-            enabled = true;
-            countdownEnabled = true;
-          }
-          {
-            action = "logout";
-            enabled = true;
-            countdownEnabled = true;
-          }
-          {
-            action = "shutdown";
-            enabled = false;
-            countdownEnabled = true;
-          }
+        overlayLayer = true;
+        backgroundOpacity = 1;
+        enabledTypes = [
+          0
+          1
+          2
+          4
         ];
+        monitors = [ ];
+      };
+
+      audio = {
+        volumeStep = 5;
+        volumeOverdrive = false;
+        cavaFrameRate = 30;
+        visualizerType = "linear";
+        mprisBlacklist = [ ];
+        preferredPlayer = "spotify";
+      };
+
+      brightness = {
+        brightnessStep = 5;
+        enforceMinimum = true;
+        enableDdcSupport = true;
+      };
+
+      colorSchemes = {
+        useWallpaperColors = false;
+        predefinedScheme = "Catppuccin";
+        darkMode = true;
+        schedulingMode = "off";
+        manualSunrise = "06:30";
+        manualSunset = "18:30";
+        matugenSchemeType = "scheme-fruit-salad";
       };
 
       templates = {
-        gtk = true;
-        qt = true;
-        kitty = false; # Disable - home-manager manages kitty config with transparency
-        fuzzel = true;
-        niri = true;
-        yazi = true;
-        code = true;
-        kcolorscheme = true;
+        activeTemplates = [
+          {
+            enabled = true;
+            id = "gtk";
+          }
+          {
+            enabled = true;
+            id = "qt";
+          }
+          {
+            enabled = true;
+            id = "kcolorscheme";
+          }
+          {
+            enabled = true;
+            id = "fuzzel";
+          }
+          {
+            enabled = true;
+            id = "code";
+          }
+          {
+            enabled = true;
+            id = "yazi";
+          }
+          {
+            enabled = true;
+            id = "niri";
+          }
+          {
+            enabled = true;
+            id = "discord";
+          }
+        ];
+        enableUserTemplates = false;
       };
 
-      ui = {
-        fontDefault = "JetBrainsMono Nerd Font Mono";
-        fontFixed = "JetBrainsMono Nerd Font Mono";
-        panelBackgroundOpacity = 0.93;
-        panelsAttachedToBar = true;
-        tooltipsEnabled = true;
-      };
-
-      wallpaper = {
+      nightLight = {
         enabled = true;
-        directory = "${config.home.homeDirectory}/.local/share/wallpapers";
-        fillMode = "crop";
-        setWallpaperOnAllMonitors = true;
-        transitionType = "random";
-        transitionDuration = 1500;
+        forced = false;
+        autoSchedule = true;
+        nightTemp = "4000";
+        dayTemp = "6500";
+        manualSunrise = "06:30";
+        manualSunset = "18:30";
+      };
+
+      hooks = {
+        enabled = false;
+        wallpaperChange = "";
+        darkModeChange = "";
+        screenLock = "";
+        screenUnlock = "";
+        performanceModeEnabled = "";
+        performanceModeDisabled = "";
+        session = "";
+      };
+
+      desktopWidgets = {
+        enabled = false;
+        gridSnap = false;
+        monitorWidgets = [ ];
       };
     };
   };
@@ -953,12 +1248,12 @@ in
       "token": "$TOKEN",
       "refreshInterval": 1800,
       "maxEvents": 50,
-      "showStars": false,
-      "showForks": false,
-      "showPRs": false,
-      "showRepoCreations": false,
-      "showMyRepoStars": false,
-      "showMyRepoForks": false,
+      "showStars": true,
+      "showForks": true,
+      "showPRs": true,
+      "showRepoCreations": true,
+      "showMyRepoStars": true,
+      "showMyRepoForks": true,
       "openInBrowser": true
     }
     EOF
