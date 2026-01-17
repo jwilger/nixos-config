@@ -56,6 +56,16 @@
               export SSH_AUTH_SOCK="$HOME/.ssh/ssh_auth_sock"
           fi
       fi
+
+      if [[ -n "$ZELLIJ_SESSION_NAME" ]]; then
+          _zellij_update_title() {
+              print -n "\033]0;$ZELLIJ_SESSION_NAME - Zellij\007"
+          }
+
+          autoload -Uz add-zsh-hook
+          add-zsh-hook precmd _zellij_update_title
+          _zellij_update_title
+      fi
     '';
 
     shellAliases = {
