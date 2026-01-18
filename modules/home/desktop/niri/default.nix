@@ -854,6 +854,7 @@ in
           "XF86AudioRaiseVolume".action.spawn-sh = "pamixer -i 5";
           "XF86AudioLowerVolume".action.spawn-sh = "pamixer -d 5";
           "XF86AudioMute".action.spawn-sh = "pamixer -t";
+          "${mod}+M".action.spawn-sh = "pamixer --default-source -t"; # Toggle microphone mute
           "XF86AudioPlay".action.spawn-sh = "playerctl play-pause";
           "XF86AudioNext".action.spawn-sh = "playerctl next";
           "XF86AudioPrev".action.spawn-sh = "playerctl previous";
