@@ -10,12 +10,9 @@
   programs.zsh.shellAliases = {
     # Attach or create session named after current directory
     zz = ''
-      ${pkgs.zellij}/bin/zellij attach -c "`basename \"$PWD\"`"
-    '';
-
-    # Attach to first available session
-    za = ''
-      ${pkgs.zellij}/bin/zellij attach --index 0
+      local session_name="$(basename "$PWD")"
+      print -n "\033]0;$session_name - Zellij\007"
+      ${pkgs.zellij}/bin/zellij attach -c "$session_name"
     '';
   };
 }
