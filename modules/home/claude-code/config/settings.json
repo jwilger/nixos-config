@@ -90,7 +90,8 @@
   "enabledPlugins": {
     "sdlc@jwilger-claude-plugins": true,
     "bootstrap@jwilger-claude-plugins": true,
-    "context7@claude-plugins-official": true
+    "context7@claude-plugins-official": true,
+    "rust-analyzer-lsp@claude-plugins-official": true
   },
   "syntaxHighlightingDisabled": false
 }
