@@ -50,7 +50,9 @@ let
 
     unpackPhase = ''
       runHook preUnpack
-      dpkg-deb -x $src .
+      # Extract .deb manually to avoid setuid permission errors with chrome-sandbox
+      ar x $src
+      tar xf data.tar.xz --no-same-permissions
       runHook postUnpack
     '';
 
