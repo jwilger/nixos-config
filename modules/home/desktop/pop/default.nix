@@ -1,56 +1,16 @@
 { pkgs, lib, ... }:
 let
-  pop = pkgs.stdenv.mkDerivation rec {
-    pname = "pop";
+  # First extract the .deb contents
+  pop-unwrapped = pkgs.stdenv.mkDerivation rec {
+    pname = "pop-unwrapped";
     version = "8.0.21";
 
     src = ./pop_8.0.21_amd64.deb;
 
-    nativeBuildInputs = with pkgs; [
-      autoPatchelfHook
-      dpkg
-      makeWrapper
-    ];
-
-    buildInputs = with pkgs; [
-      alsa-lib
-      at-spi2-atk
-      at-spi2-core
-      cairo
-      cups
-      dbus
-      expat
-      gdk-pixbuf
-      glib
-      gtk3
-      libdrm
-      libnotify
-      libxkbcommon
-      mesa
-      nspr
-      nss
-      pango
-      systemd
-      xorg.libX11
-      xorg.libXcomposite
-      xorg.libXdamage
-      xorg.libXext
-      xorg.libXfixes
-      xorg.libXrandr
-      xorg.libxcb
-      xorg.libxshmfence
-    ];
-
-    runtimeDependencies = with pkgs; [
-      libGL
-      libva
-      pipewire
-      wayland
-    ];
+    nativeBuildInputs = with pkgs; [ dpkg ];
 
     unpackPhase = ''
       runHook preUnpack
-      # Extract .deb manually to avoid setuid permission errors with chrome-sandbox
       ar x $src
       tar xf data.tar.xz --no-same-permissions
       runHook postUnpack
@@ -58,23 +18,98 @@ let
 
     installPhase = ''
       runHook preInstall
+      mkdir -p $out
+      cp -r usr/* $out/
+      runHook postInstall
+    '';
 
-      mkdir -p $out/bin $out/lib/pop $out/share
+    meta = with lib; {
+      description = "Screen sharing for remote teams (unwrapped)";
+      homepage = "https://pop.com";
+      license = licenses.unfree;
+      platforms = [ "x86_64-linux" ];
+    };
+  };
 
-      cp -r usr/lib/pop/* $out/lib/pop/
-      cp -r usr/share/* $out/share/
+  # Wrap with FHS environment for compatibility
+  pop = pkgs.buildFHSEnv {
+    name = "pop";
+    targetPkgs =
+      pkgs: with pkgs; [
+        # Core
+        glib
+        glibc
+        nss
+        nspr
+        dbus
+        atk
+        at-spi2-atk
+        at-spi2-core
+        cups
+        gtk3
+        gdk-pixbuf
+        libdrm
+        libnotify
+        libsecret
+        libuuid
+        libxkbcommon
+        mesa
+        pango
+        systemd
+        xdg-utils
 
-      # Create wrapper script
-      makeWrapper $out/lib/pop/Pop $out/bin/pop \
-        --prefix LD_LIBRARY_PATH : "${lib.makeLibraryPath runtimeDependencies}" \
-        --add-flags "\''${NIXOS_OZONE_WL:+\''${WAYLAND_DISPLAY:+--ozone-platform-hint=auto --enable-features=WaylandWindowDecorations}}"
+        # X11
+        xorg.libX11
+        xorg.libXcomposite
+        xorg.libXcursor
+        xorg.libXdamage
+        xorg.libXext
+        xorg.libXfixes
+        xorg.libXi
+        xorg.libXrandr
+        xorg.libXrender
+        xorg.libXScrnSaver
+        xorg.libXtst
+        xorg.libxcb
+        xorg.libxshmfence
+
+        # Graphics
+        libGL
+        libgbm
+        libva
+        libvdpau
+        vulkan-loader
+
+        # Audio/Video
+        alsa-lib
+        libpulseaudio
+        pipewire
+
+        # Wayland
+        wayland
+
+        # Misc
+        cairo
+        expat
+        ffmpeg
+        freetype
+        harfbuzz
+        icu
+        libpng
+        libwebp
+        zlib
+      ];
+
+    runScript = "${pop-unwrapped}/lib/pop/Pop";
+
+    extraInstallCommands = ''
+      mkdir -p $out/share
+      cp -r ${pop-unwrapped}/share/* $out/share/
 
       # Fix desktop file
       substituteInPlace $out/share/applications/pop.desktop \
         --replace-fail "/usr/bin/pop" "$out/bin/pop" \
         --replace-fail "/usr/share/pixmaps/pop.png" "$out/share/pixmaps/pop.png"
-
-      runHook postInstall
     '';
 
     meta = with lib; {
@@ -92,7 +127,8 @@ in
   xdg.desktopEntries.pop = {
     name = "Pop";
     comment = "Screen sharing for remote teams";
-    exec = "env NIXOS_OZONE_WL=1 ${pop}/bin/pop %U";
+    # Pop currently only supports X11, runs via XWayland
+    exec = "${pop}/bin/pop %U";
     icon = "${pop}/share/pixmaps/pop.png";
     terminal = false;
     type = "Application";
