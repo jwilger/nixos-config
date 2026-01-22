@@ -13,5 +13,6 @@
     (import ./zoom.nix)
     (import ./packages.nix)
     (import ./obs-studio.nix)
+    (import ./pop)
   ];
 }
