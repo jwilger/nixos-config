@@ -1,5 +1,13 @@
 { pkgs, ... }:
 {
+  # Override polkit-agent-helper to allow reading ~/.config/Yubico/u2f_keys
+  # Workaround for polkit 127 regression breaking pam_u2f (YubiKey)
+  # The default has ProtectHome=yes which blocks access to the U2F keys file
+  # See: https://github.com/polkit-org/polkit/issues/622
+  systemd.services."polkit-agent-helper@".serviceConfig = {
+    ProtectHome = "read-only";
+  };
+
   # PC/SC daemon for smartcard operations
   services.pcscd.enable = true;
 
