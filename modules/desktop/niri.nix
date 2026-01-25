@@ -77,7 +77,4 @@
     pamixer # Audio control
     polkit_gnome # GTK polkit agent (uses Catppuccin theme)
   ];
-
-  # PAM configuration for screen locker
-  security.pam.services.hyprlock = { };
 }
