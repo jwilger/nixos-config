@@ -5,10 +5,6 @@
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     nixpkgs-small.url = "github:NixOS/nixpkgs/nixos-unstable-small";
 
-    # Pinned nixpkgs with polkit 126 (127 breaks pam_u2f/YubiKey)
-    # See: https://github.com/polkit-org/polkit/issues/622
-    nixpkgs-polkit126.url = "github:NixOS/nixpkgs/1412caf7bf9e660f2f962917c14b1ea1c3bc695e";
-
     nix-darwin = {
       url = "github:LnL7/nix-darwin";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -58,7 +54,6 @@
           modules = [
             catppuccin.nixosModules.catppuccin
             niri.nixosModules.niri
-            (import ./overlays.nix)
             (import ./hosts/gregor)
           ];
           specialArgs = {
@@ -70,7 +65,6 @@
         vm = nixpkgs.lib.nixosSystem {
           modules = [
             catppuccin.nixosModules.catppuccin
-            (import ./overlays.nix)
             (import ./hosts/vm)
           ];
           specialArgs = {
@@ -85,7 +79,6 @@
         darwin = nix-darwin.lib.darwinSystem {
           modules = [
             catppuccin.nixosModules.catppuccin
-            (import ./overlays.nix)
             (import ./hosts/darwin)
           ];
           specialArgs = {

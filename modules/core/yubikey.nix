@@ -1,5 +1,18 @@
 { pkgs, ... }:
 {
+  # Polkit 127 enables polkit-agent-helper with a strict sandbox; pam_u2f
+  # needs access to hidraw devices and the authfile.
+  # See: https://github.com/polkit-org/polkit/issues/622
+  systemd.services."polkit-agent-helper@".serviceConfig = {
+    StandardError = "journal";
+    PrivateDevices = "no";
+    DeviceAllow = [
+      "/dev/urandom r"
+      "char-hidraw rw"
+    ];
+    ProtectHome = "read-only";
+  };
+
   # PC/SC daemon for smartcard operations
   services.pcscd.enable = true;
 
