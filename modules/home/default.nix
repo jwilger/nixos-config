@@ -13,8 +13,8 @@
   ++ [ (import ./packages.nix) ] # other packages
   ++ [ (import ./ssh.nix) ] # SSH configuration
   ++ [ (import ./starship.nix) ] # shell prompt
+  ++ [ (import ./tmux.nix) ] # terminal multiplexer (tmux)
   ++ [ (import ./yazi) ] # terminal-based file explorer
   ++ [ (import ./zellij) ] # terminal multiplexer
-  ++ [ (import ./zsh.nix) ] # shell
-  ++ [ (import ./claude-code) ]; # Claude Code CLI configuration
+  ++ [ (import ./zsh.nix) ]; # shell
 }
