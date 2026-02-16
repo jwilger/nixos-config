@@ -4,24 +4,3 @@ node_modules
 
 # Cosmic Desktop user preferences that change frequently
 modules/home/desktop/cosmic/com.system76.CosmicNotifications/v1/do_not_disturb
-
-# Claude Code config - keep settings.json only, ignore secrets, local settings, and transient data
-modules/home/claude-code/config/.credentials.json
-modules/home/claude-code/config/**/*.local.*
-modules/home/claude-code/config/cache/
-modules/home/claude-code/config/debug/
-modules/home/claude-code/config/file-history/
-modules/home/claude-code/config/history.jsonl
-modules/home/claude-code/config/ide/
-modules/home/claude-code/config/output-styles/
-modules/home/claude-code/config/paste-cache/
-modules/home/claude-code/config/plans/
-modules/home/claude-code/config/plugins/
-modules/home/claude-code/config/projects/
-modules/home/claude-code/config/session-env/
-modules/home/claude-code/config/shell-snapshots/
-modules/home/claude-code/config/stats-cache.json
-modules/home/claude-code/config/statsig/
-modules/home/claude-code/config/telemetry/
-modules/home/claude-code/config/todos/
-modules/home/claude-code/config/transcripts/
