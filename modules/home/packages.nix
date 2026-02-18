@@ -53,13 +53,7 @@ let
     vscode-js-debug
     yaml-language-server
     yamlfmt
-    # TODO: remove override once nixos-unstable includes
-    # https://github.com/NixOS/nixpkgs/commit/b1a6d54b (zls: fix build by
-    # moving dep linking to postConfigure)
-    (zls.overrideAttrs (old: {
-      postPatch = "";
-      postConfigure = (old.postConfigure or "") + old.postPatch;
-    }))
+    zls
   ];
 in
 {
