@@ -4,19 +4,26 @@ layout {
 		pane size=1 borderless=true {
 			plugin location="https://github.com/dj95/zjstatus/releases/latest/download/zjstatus.wasm" {
 				format_left   "{mode}#[fg=#1e1e2e,bg=#89B4FA,bold]{session}  #[fg=#89B4FA,bg=#1e1e2e]{tabs}"
-	            format_center "{command_pwd}{command_git_branch}"
+	            format_center "{command_git_branch}{command_git_status}"
 	            format_right  "#[fg=#1e1e2e,bg=#89B4FA]{datetime}"
 	            format_space  "#[bg=#1e1e2e]"
 
-	            command_pwd_command       "pwd"
-	            command_pwd_format        "#[fg=#cdd6f4,bg=#1e1e2e] {stdout} "
-	            command_pwd_interval      "1"
-	            command_pwd_rendermode    "static"
+	            format_hide_on_overlength "true"
+	            format_precedence         "lcr"
 
-	            command_git_branch_command    "bash -c 'git rev-parse --abbrev-ref HEAD 2>/dev/null || true'"
+	            tab_display_count          "3"
+	            tab_truncate_start_format  "#[fg=#6C7086,bg=#1e1e2e] < "
+	            tab_truncate_end_format    "#[fg=#6C7086,bg=#1e1e2e] > "
+
+	            command_git_branch_command    "bash -c 'b=$(git rev-parse --abbrev-ref HEAD 2>/dev/null) || exit 0; [ ${#b} -gt 30 ] && echo \"…${b: -29}\" || echo \"$b\"'"
 	            command_git_branch_format     "#[fg=#cba6f7,bg=#1e1e2e] {stdout} "
 	            command_git_branch_interval   "5"
 	            command_git_branch_rendermode "static"
+
+	            command_git_status_command    "bash -c 's=\"\"; git diff --quiet 2>/dev/null && git diff --cached --quiet 2>/dev/null || s=\"●\"; ab=$(git rev-list --left-right --count HEAD...@{u} 2>/dev/null) && { a=$(echo \"$ab\" | cut -f1); b=$(echo \"$ab\" | cut -f2); [ \"$a\" -gt 0 ] 2>/dev/null && s=\"$s↑$a\"; [ \"$b\" -gt 0 ] 2>/dev/null && s=\"$s↓$b\"; }; echo \"$s\"'"
+	            command_git_status_format     "#[fg=#f38ba8,bg=#1e1e2e] {stdout}"
+	            command_git_status_interval   "5"
+	            command_git_status_rendermode "static"
 
 	            hide_frame_for_single_pane "false"
 
@@ -31,7 +38,7 @@ layout {
 
 
 	            datetime          "#[fg=#1e1e2e,bg=#89B4FA,bold] {format} "
-	            datetime_format   "%A, %d %b %Y %H:%M"
+	            datetime_format   "%d %b %H:%M"
 	            datetime_timezone "America/Los_Angeles"
 				border_enabled "false"
 			}
