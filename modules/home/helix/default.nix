@@ -38,12 +38,18 @@
         };
         insert = {
           S-tab = "move_parent_node_start";
-          C-s = [":update" "normal_mode"];
+          C-s = [
+            ":update"
+            "normal_mode"
+          ];
         };
         select = {
           tab = "extend_parent_node_end";
           S-tab = "extend_parent_node_start";
-          C-s = [":update" "normal_mode"];
+          C-s = [
+            ":update"
+            "normal_mode"
+          ];
         };
       };
     };
@@ -52,6 +58,7 @@
       language = [
         {
           name = "markdown";
+          soft-wrap.enable = true;
           formatter = {
             command = lib.getExe pkgs.nodePackages.prettier;
             args = [
