@@ -17,6 +17,16 @@ let
     ${noctaliaPkg}/bin/noctalia-shell ipc call lockScreen lock
   '';
 
+  # Resume script for when monitors power back on (after DPMS off or sleep).
+  # Re-issues the lock command so noctalia-shell re-renders its lock screen
+  # surface, which can go stale after prolonged monitor-off periods.
+  resumeScreen = pkgs.writeShellScript "resume-screen" ''
+    ${pkgs.niri}/bin/niri msg action power-on-monitors
+    # Give monitors a moment to initialize before re-rendering lock screen
+    sleep 1
+    ${noctaliaPkg}/bin/noctalia-shell ipc call lockScreen lock
+  '';
+
 in
 {
   # Import noctalia home-manager module
@@ -887,7 +897,7 @@ in
       general = {
         lock_cmd = "${lockScreen}";
         before_sleep_cmd = "${lockScreen}";
-        after_sleep_cmd = "${pkgs.niri}/bin/niri msg action power-on-monitors";
+        after_sleep_cmd = "${resumeScreen}";
         ignore_dbus_inhibit = false;
       };
       listener = [
@@ -900,7 +910,7 @@ in
           # Power off monitors 60s after lock (360s total)
           timeout = 360;
           on-timeout = "${pkgs.niri}/bin/niri msg action power-off-monitors";
-          on-resume = "${pkgs.niri}/bin/niri msg action power-on-monitors";
+          on-resume = "${resumeScreen}";
         }
       ];
     };
