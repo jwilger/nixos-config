@@ -3,6 +3,7 @@
   programs.yazi = {
     enable = true;
     enableZshIntegration = true;
+    shellWrapperName = "y";
     plugins = with pkgs.yaziPlugins; {
       git = git;
       sudo = sudo;
