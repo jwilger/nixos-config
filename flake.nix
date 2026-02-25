@@ -27,6 +27,11 @@
       url = "github:catppuccin/nix";
     };
 
+    ironclaw-src = {
+      url = "github:nearai/ironclaw/v0.11.1";
+      flake = false;
+    };
+
     niri = {
       url = "github:sodiboo/niri-flake";
       inputs.nixpkgs.follows = "nixpkgs";

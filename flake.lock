@@ -70,6 +70,23 @@
         "type": "github"
       }
     },
+    "ironclaw-src": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1771809841,
+        "narHash": "sha256-Dqie2lJ5Zh3tvo1q0yh96XoR3uyHUSCuYwca1MBxbSU=",
+        "owner": "nearai",
+        "repo": "ironclaw",
+        "rev": "ebb4ce95e3723112430d18e28d86deb8fb919103",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nearai",
+        "ref": "v0.11.1",
+        "repo": "ironclaw",
+        "type": "github"
+      }
+    },
     "niri": {
       "inputs": {
         "niri-stable": "niri-stable",
@@ -238,6 +255,7 @@
         "catppuccin-bat": "catppuccin-bat",
         "catppuccin-starship": "catppuccin-starship",
         "home-manager": "home-manager",
+        "ironclaw-src": "ironclaw-src",
         "niri": "niri",
         "nix-darwin": "nix-darwin",
         "nixpkgs": "nixpkgs_2",

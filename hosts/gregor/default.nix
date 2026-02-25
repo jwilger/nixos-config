@@ -89,7 +89,7 @@ in
     docker-compose
     libimobiledevice
     ifuse
-    lxqt.lxqt-openssh-askpass  # Qt-based askpass matching lxqt-policykit theme
+    lxqt.lxqt-openssh-askpass # Qt-based askpass matching lxqt-policykit theme
   ];
 
   environment.variables.SUDO_ASKPASS = "${pkgs.lxqt.lxqt-openssh-askpass}/bin/lxqt-openssh-askpass";
@@ -115,6 +115,29 @@ in
       rootless = {
         enable = false;
       };
+    };
+  };
+
+  services.ironclaw = {
+    enable = true;
+    postgresPort = 5433;
+
+    llm = {
+      backend = "anthropic";
+      model = "claude-sonnet-4-20250514";
+    };
+
+    telegram = {
+      botUsername = "MikeHatbot";
+      ownerId = 8711326105; # TODO: replace with your Telegram user ID (message @userinfobot)
+      allowedUserIds = [ "8711326105" ]; # TODO: add your Telegram user ID string
+    };
+
+    secrets.onePassword = {
+      enable = true;
+      serviceAccountTokenFile = "/etc/ironclaw/op-token";
+      anthropicApiKeyRef = "op://Personal/IronClaw/anthropic-api-key";
+      telegramBotTokenRef = "op://Personal/IronClaw/telegram-bot-token";
     };
   };
 
