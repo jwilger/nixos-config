@@ -81,17 +81,35 @@
         dbms.security.procedures.allowlist=apoc.*,gds.*,db.*
 
         # Memory configuration for better performance
-        dbms.memory.heap.initial_size=512m
-        dbms.memory.heap.max_size=2G
-        dbms.memory.pagecache.size=1G
+        server.memory.heap.initial_size=512m
+        server.memory.heap.max_size=2G
+        server.memory.pagecache.size=1G
 
         # Enable query logging for debugging
-        dbms.logs.query.enabled=INFO
-        dbms.logs.query.threshold=0
-
-        # Vector index settings
-        dbms.index.default_schema_provider=native-btree-1.0
+        db.logs.query.enabled=INFO
+        db.logs.query.threshold=0
       '';
     };
   };
+
+  systemd.services.neo4j.preStart = lib.mkBefore ''
+    # Neo4j can leave behind a stale PID file; remove it if it does not point
+    # to an active Neo4j process.
+    pid_file=/home/neo4j/run/neo4j.pid
+    mkdir -p /home/neo4j/run
+    chown neo4j:neo4j /home/neo4j/run
+
+    if [ -f "$pid_file" ]; then
+      pid="$(cat "$pid_file" 2>/dev/null || true)"
+      cmdline=""
+
+      if [ -n "$pid" ] && [ -r "/proc/$pid/cmdline" ]; then
+        cmdline="$(tr '\0' ' ' < "/proc/$pid/cmdline" 2>/dev/null || true)"
+      fi
+
+      if ! echo "$cmdline" | grep -qiE '(^|[[:space:]/])neo4j([[:space:]]|$)'; then
+        rm -f "$pid_file"
+      fi
+    fi
+  '';
 }
