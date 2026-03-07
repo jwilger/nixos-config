@@ -3,6 +3,7 @@
   imports = [
     (import ./aws.nix)
   ]
+  ++ [ (import ./ai-bot) ] # zero-seat bot automation profile
   ++ [ (import ./bat.nix) ] # better cat command
   ++ [ (import ./btop.nix) ] # resouces monitor
   ++ [ (import ./environment.nix) ] # global environment variables
