@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ ... }:
 {
   programs.ssh = {
     enable = true;
@@ -16,17 +16,15 @@
     };
   };
 
-  # Create ~/.ssh/rc to maintain stable SSH agent socket symlink
-  # This script runs on every SSH connection and updates the symlink
-  # to point to the current forwarded agent socket
+  # Update the forwarded agent socket on SSH login without clobbering the
+  # stable local 1Password socket used by local shells.
   home.file.".ssh/rc" = {
     executable = true;
     text = ''
       #!/bin/sh
 
-      # Update symlink to current SSH agent socket if one is forwarded
-      if [ -n "$SSH_AUTH_SOCK" ]; then
-          ln -sf "$SSH_AUTH_SOCK" "$HOME/.ssh/ssh_auth_sock"
+      if [ -n "$SSH_AUTH_SOCK" ] && [ -S "$SSH_AUTH_SOCK" ]; then
+          ln -sfn "$SSH_AUTH_SOCK" "$HOME/.ssh/agent-forwarded.sock"
       fi
 
       # Handle xauth for X11 forwarding (required when ~/.ssh/rc exists)
