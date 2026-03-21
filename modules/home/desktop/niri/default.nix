@@ -841,6 +841,9 @@ in
           "XF86MonBrightnessUp".action.spawn-sh = "brightnessctl set +5%";
           "XF86MonBrightnessDown".action.spawn-sh = "brightnessctl set 5%-";
 
+          # Voice dictation (push-to-talk toggle)
+          "${mod}+D".action.spawn = "voice-dictation";
+
           # Floating window toggle
           "${mod}+V".action.toggle-window-floating = [ ];
           "${mod}+Shift+V".action.switch-focus-between-floating-and-tiling = [ ];
