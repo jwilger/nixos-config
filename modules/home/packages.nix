@@ -94,6 +94,7 @@ in
       ]
       # Linux-only packages
       ++ lib.optionals pkgs.stdenv.isLinux [
+        telegram-desktop
         bc # calculator for audio processing
         cliphist # clipboard manager (Wayland)
         dwt1-shell-color-scripts
