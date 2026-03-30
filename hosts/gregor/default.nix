@@ -24,6 +24,8 @@ in
         22
         80
         443
+        3000 # Development server
+        3001 # Development server
         4070 # Spotify Connect TCP port
       ];
       # allow DNS over UDP and Spotify Connect discovery
@@ -89,7 +91,7 @@ in
     docker-compose
     libimobiledevice
     ifuse
-    lxqt.lxqt-openssh-askpass  # Qt-based askpass matching lxqt-policykit theme
+    lxqt.lxqt-openssh-askpass # Qt-based askpass matching lxqt-policykit theme
   ];
 
   environment.variables.SUDO_ASKPASS = "${pkgs.lxqt.lxqt-openssh-askpass}/bin/lxqt-openssh-askpass";
