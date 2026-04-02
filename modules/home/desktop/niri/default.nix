@@ -703,7 +703,7 @@ in
           top = 0;
           bottom = 0;
         };
-        center-focused-column = "always";
+        center-focused-column = "never";
         preset-column-widths = [
           { proportion = 1.0 / 3.0; }
           { proportion = 1.0 / 2.0; }
