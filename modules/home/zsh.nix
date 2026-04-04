@@ -45,6 +45,8 @@
       fi
 
       if [[ -n "$SSH_CONNECTION" ]]; then
+          export OP_BIOMETRIC_UNLOCK_ENABLED=false
+
           if [[ -n "$SSH_AUTH_SOCK" ]] && [[ "$SSH_AUTH_SOCK" != "$forwarded_agent_sock" ]] && [[ -S "$SSH_AUTH_SOCK" ]]; then
               ln -sfn "$SSH_AUTH_SOCK" "$forwarded_agent_sock"
           fi

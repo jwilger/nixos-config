@@ -148,7 +148,7 @@ in
       executable = true;
       text = ''
         #!/usr/bin/env bash
-        exec env AI_GIT_PROFILE=bot claude "$@"
+        exec env AI_GIT_PROFILE=bot GITHUB_PAT="$BOT_GITHUB_PAT" claude "$@"
       '';
     };
 
