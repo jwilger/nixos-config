@@ -3,6 +3,7 @@
   imports = [
     (import ./../default.nix)
     (import ./niri)
+    (import ./chrome.nix)
     (import ./firefox.nix)
     (import ./insync)
     (import ./kitty.nix)
