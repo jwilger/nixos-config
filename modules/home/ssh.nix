@@ -19,7 +19,7 @@
         port = 60022;
         user = "jwilger";
         forwardAgent = true;
-        identityAgent = "/Users/jwilger/.ssh/ssh_auth_sock";
+        identityAgent = "/Users/jwilger/.ssh/agent-local.sock";
         extraOptions = {
           PreferredAuthentications = "publickey";
           StrictHostKeyChecking = "accept-new";

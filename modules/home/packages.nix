@@ -77,6 +77,7 @@ in
         fzf # fuzzy finder
         gh
         git-crypt
+        glab
         glow
         gnumake
         jq # JSON processor

@@ -96,6 +96,16 @@
             inherit self inputs;
           };
         };
+        bender = nix-darwin.lib.darwinSystem {
+          modules = [
+            (import ./hosts/bender)
+          ];
+          specialArgs = {
+            host = "bender";
+            username = "jwilger";
+            inherit self inputs;
+          };
+        };
       };
 
       checks = nixpkgs.lib.genAttrs [
@@ -114,6 +124,7 @@
         // (nixpkgs.lib.optionalAttrs pkgs.stdenv.isDarwin {
           darwin-darwin = self.darwinConfigurations.darwin.system;
           darwin-sansa = self.darwinConfigurations.sansa.system;
+          darwin-bender = self.darwinConfigurations.bender.system;
         })
       );
     };
