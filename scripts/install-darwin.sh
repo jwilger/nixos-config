@@ -71,6 +71,10 @@ fi
 
 echo ""
 
+# Step 2.1: Determine target host
+HOST="${1:-sansa}"
+echo -e "${YELLOW}Target host: ${HOST}${NC}"
+
 # Step 3: Backup existing nix-darwin configuration if it exists
 echo -e "${YELLOW}Step 3: Checking for existing nix-darwin configuration...${NC}"
 if [ -e "/etc/nix/nix-darwin" ]; then
@@ -86,10 +90,10 @@ echo -e "${YELLOW}Step 4: Building and activating nix-darwin configuration...${N
 echo "This may take a while on first run..."
 
 # First, we need to build the configuration
-nix build "$FLAKE_DIR#darwinConfigurations.darwin.system" --extra-experimental-features 'nix-command flakes'
+nix build "$FLAKE_DIR#darwinConfigurations.${HOST}.system" --extra-experimental-features 'nix-command flakes'
 
 # Activate the configuration
-./result/sw/bin/darwin-rebuild switch --flake "$FLAKE_DIR#darwin"
+./result/sw/bin/darwin-rebuild switch --flake "$FLAKE_DIR#${HOST}"
 
 echo ""
 echo -e "${GREEN}=== Installation Complete! ===${NC}"
@@ -97,7 +101,7 @@ echo ""
 echo "Next steps:"
 echo "1. Restart your terminal to load the new environment"
 echo "2. Future updates can be applied with:"
-echo "   darwin-rebuild switch --flake $FLAKE_DIR#darwin"
+echo "   darwin-rebuild switch --flake $FLAKE_DIR#${HOST}"
 echo ""
 echo "3. To update flake inputs (nixpkgs, etc.):"
 echo "   nix flake update --flake $FLAKE_DIR"

@@ -1,31 +1,39 @@
-{ pkgs, inputs, username, ... }:
+{
+  pkgs,
+  inputs,
+  username,
+  host,
+  ...
+}:
 {
   imports = [
     inputs.home-manager.darwinModules.home-manager
-    inputs.catppuccin.darwinModules.catppuccin
     ./system.nix
     ./homebrew.nix
   ];
-
-  # Catppuccin theme system-wide
-  catppuccin = {
-    enable = true;
-    flavor = "mocha";
-    accent = "lavender";
-  };
 
   # Home Manager configuration
   home-manager = {
     useUserPackages = true;
     useGlobalPkgs = true;
-    extraSpecialArgs = { inherit inputs username; };
+    backupFileExtension = "before-hm";
+    extraSpecialArgs = {
+      inherit inputs username host;
+    };
+    sharedModules = [
+      inputs.catppuccin.homeModules.catppuccin
+    ];
   };
 
   # Nix settings
   nix = {
+    enable = true;
     settings = {
-      auto-optimise-store = true;
-      experimental-features = [ "nix-command" "flakes" ];
+      experimental-features = [
+        "nix-command"
+        "flakes"
+      ];
+      ssl-cert-file = "/etc/ssl/cert.pem";
       substituters = [
         "https://cache.nixos.org"
       ];
@@ -33,12 +41,17 @@
         "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
       ];
     };
+    optimise.automatic = true;
     gc = {
       automatic = true;
-      interval = { Weekday = 7; };
+      interval = {
+        Weekday = 7;
+      };
       options = "--delete-older-than 7d";
     };
   };
+
+  system.primaryUser = username;
 
   nixpkgs.config.allowUnfree = true;
 }

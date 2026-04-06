@@ -1,4 +1,4 @@
-{ pkgs, ... }: 
+{ pkgs, lib, ... }:
 {
   programs.btop = {
     enable = true;
@@ -9,5 +9,8 @@
     };
   };
 
-  home.packages = (with pkgs; [ nvtopPackages.intel ]);
+  home.packages =
+    lib.optionals pkgs.stdenv.isLinux (with pkgs; [
+      nvtopPackages.intel
+    ]);
 }

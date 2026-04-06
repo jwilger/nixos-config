@@ -9,20 +9,14 @@
     source = ./../desktop/wallpaper.png;
   };
 
-  # Note: macOS wallpaper can be set via:
-  # osascript -e 'tell application "Finder" to set desktop picture to POSIX file "~/Pictures/wallpaper.png"'
-  # This would typically be done in an activation script
-
-  home.activation.setWallpaper = lib.hm.dag.entryAfter ["writeBoundary"] ''
+  # Set desktop wallpaper on macOS 14+ (Sonoma)
+  # Uses osascript to set wallpaper via System Events
+  # Note: We use 'run' instead of $DRY_RUN_CMD to ensure the command executes
+  home.activation.setWallpaper = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
     wallpaper_path="$HOME/Pictures/wallpaper.png"
     if [ -f "$wallpaper_path" ]; then
-      $DRY_RUN_CMD /usr/bin/osascript <<EOF
-        tell application "System Events"
-          tell every desktop
-            set picture to "$wallpaper_path"
-          end tell
-        end tell
-EOF
+      # macOS 14 (Sonoma) requires setting the wallpaper for each display individually
+      run /usr/bin/osascript -e "tell application \"System Events\" to tell every desktop to set picture to POSIX file \"$wallpaper_path\""
     fi
   '';
 }

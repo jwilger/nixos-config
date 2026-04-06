@@ -4,6 +4,7 @@
   # AeroSpace is installed via Homebrew (see modules/darwin/homebrew.nix)
   programs.aerospace = {
     enable = true;
+    launchd.enable = true;
 
     settings = {
       # Start AeroSpace at login

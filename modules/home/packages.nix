@@ -5,11 +5,8 @@ let
     bash-language-server
     basedpyright
     black
-    bubblewrap
     clang-tools
-    lldb
     cmake-format
-    codeql
     delve
     docker-compose-language-service
     dockerfile-language-server
@@ -25,7 +22,6 @@ let
     haskell-language-server
     jq-lsp
     lua-language-server
-    marksman
     markdown-oxide
     neocmakelsp
     nixfmt
@@ -54,6 +50,11 @@ let
     yaml-language-server
     yamlfmt
     zls
+  ];
+  helixToolingLinux = with pkgs; [
+    # macOS uses Homebrew for these tools
+    lldb
+    marksman
   ];
 in
 {
@@ -84,7 +85,6 @@ in
         nix-prefetch-github
         nodejs_22
         openssl
-        pre-commit
         python312
         ripgrep
         statix
@@ -96,6 +96,8 @@ in
       ++ lib.optionals pkgs.stdenv.isLinux [
         telegram-desktop
         bc # calculator for audio processing
+        bubblewrap
+        codeql
         cliphist # clipboard manager (Wayland)
         dwt1-shell-color-scripts
         gcc
@@ -105,6 +107,7 @@ in
         nitch # systhem fetch util
         pamixer # command-line audio mixer
         pipx # Python package installer for Piper TTS
+        pre-commit
         poweralertd
         pulseaudio # provides paplay for audio playback
         sox # audio effects processing
@@ -113,5 +116,6 @@ in
         xdg-utils
       ]
     )
-    ++ helixTooling;
+    ++ helixTooling
+    ++ lib.optionals pkgs.stdenv.isLinux helixToolingLinux;
 }
