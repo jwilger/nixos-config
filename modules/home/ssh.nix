@@ -20,8 +20,8 @@
         user = "jwilger";
         forwardAgent = true;
         identityAgent = "/Users/jwilger/.ssh/ssh_auth_sock";
-        preferredAuthentications = [ "publickey" ];
         extraOptions = {
+          PreferredAuthentications = "publickey";
           StrictHostKeyChecking = "accept-new";
         };
       };

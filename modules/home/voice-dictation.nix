@@ -73,7 +73,7 @@ let
     fi
   '';
 in
-{
+lib.mkIf pkgs.stdenv.hostPlatform.isLinux {
   home.packages = [
     voiceDictation
     pkgs.whisper-cpp

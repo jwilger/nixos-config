@@ -25,9 +25,9 @@ let
     markdown-oxide
     neocmakelsp
     nixfmt
-    nodePackages.prettier
-    nodePackages.sql-formatter
-    nodePackages.typescript
+    prettier
+    sql-formatter
+    typescript
     prisma-language-server
     protols
     ruby

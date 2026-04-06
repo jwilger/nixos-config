@@ -60,7 +60,7 @@
           name = "markdown";
           soft-wrap.enable = true;
           formatter = {
-            command = lib.getExe pkgs.nodePackages.prettier;
+            command = lib.getExe pkgs.prettier;
             args = [
               "--parser"
               "markdown"
@@ -73,7 +73,7 @@
         {
           name = "markdown-rustdoc";
           formatter = {
-            command = lib.getExe pkgs.nodePackages.prettier;
+            command = lib.getExe pkgs.prettier;
             args = [
               "--parser"
               "markdown"
