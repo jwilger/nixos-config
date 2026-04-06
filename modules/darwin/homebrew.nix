@@ -31,7 +31,7 @@
     # Casks (GUI applications)
     casks = [
       # Window Management
-      "aerospace" # Tiling window manager (alternative to Rectangle)
+      # "aerospace" # Tiling window manager (alternative to Rectangle)
 
       # Utilities
       "iterm2" # Terminal emulator

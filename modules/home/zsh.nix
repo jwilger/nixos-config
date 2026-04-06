@@ -40,8 +40,16 @@
           rm -f "$forwarded_agent_sock"
       fi
 
+      # 1Password agent socket lives at different paths on Linux vs macOS
+      op_agent_sock=""
       if [[ -S "$HOME/.1password/agent.sock" ]]; then
-          ln -sfn "$HOME/.1password/agent.sock" "$local_agent_sock"
+          op_agent_sock="$HOME/.1password/agent.sock"
+      elif [[ -S "$HOME/Library/Group Containers/2BUA8C4S2C.com.1password/t/agent.sock" ]]; then
+          op_agent_sock="$HOME/Library/Group Containers/2BUA8C4S2C.com.1password/t/agent.sock"
+      fi
+
+      if [[ -n "$op_agent_sock" ]]; then
+          ln -sfn "$op_agent_sock" "$local_agent_sock"
       fi
 
       if [[ -n "$SSH_CONNECTION" ]]; then
