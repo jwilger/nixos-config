@@ -47,8 +47,10 @@ These components work identically on both macOS and Linux:
 2. Run the installation script:
 
    ```bash
-   ./scripts/install-darwin.sh
+   ./scripts/install-darwin.sh sansa
    ```
+
+   You can pass a different host name as the first argument; it defaults to `sansa`.
 
    This script will:
    - Install Nix if not present
@@ -77,13 +79,13 @@ If you prefer to install manually:
 2. Build the configuration:
 
    ```bash
-   nix build .#darwinConfigurations.darwin.system --extra-experimental-features 'nix-command flakes'
+   nix build .#darwinConfigurations.sansa.system --extra-experimental-features 'nix-command flakes'
    ```
 
 3. Activate:
 
    ```bash
-   ./result/sw/bin/darwin-rebuild switch --flake .#darwin
+   ./result/sw/bin/darwin-rebuild switch --flake .#sansa
    ```
 
 ## Post-Installation
@@ -105,7 +107,7 @@ Most configuration is automated, but you'll need to complete one manual step:
 After making changes to configuration files:
 
 ```bash
-darwin-rebuild switch --flake ~/nixos-config#darwin
+darwin-rebuild switch --flake ~/nixos-config#sansa
 ```
 
 ### Update Flake Inputs
@@ -114,7 +116,7 @@ To update nixpkgs and other inputs to their latest versions:
 
 ```bash
 nix flake update --flake ~/nixos-config
-darwin-rebuild switch --flake ~/nixos-config#darwin
+darwin-rebuild switch --flake ~/nixos-config#sansa
 ```
 
 ### Update Homebrew Packages
@@ -132,7 +134,9 @@ Or let nix-darwin handle it (automatic on configuration rebuild).
 .
 ├── flake.nix                          # Main flake with darwin configuration
 ├── hosts/
-│   └── darwin/
+│   ├── darwin/
+│   │   └── default.nix                # macOS template configuration
+│   └── sansa/
 │       └── default.nix                # macOS host configuration
 ├── modules/
 │   ├── darwin/                        # macOS-specific system modules
@@ -169,7 +173,7 @@ casks = [
 Then rebuild:
 
 ```bash
-darwin-rebuild switch --flake ~/nixos-config#darwin
+darwin-rebuild switch --flake ~/nixos-config#sansa
 ```
 
 ### Change System Preferences

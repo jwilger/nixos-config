@@ -13,6 +13,18 @@
       "github.com" = {
         user = "git";
       };
+
+      "ubuntu-2510-dev" = {
+        host = "127.0.0.1";
+        port = 60022;
+        user = "jwilger";
+        forwardAgent = true;
+        identityAgent = "/Users/jwilger/.ssh/ssh_auth_sock";
+        preferredAuthentications = [ "publickey" ];
+        extraOptions = {
+          StrictHostKeyChecking = "accept-new";
+        };
+      };
     };
   };
 

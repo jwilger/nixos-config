@@ -78,7 +78,6 @@
       darwinConfigurations = {
         darwin = nix-darwin.lib.darwinSystem {
           modules = [
-            catppuccin.nixosModules.catppuccin
             (import ./hosts/darwin)
           ];
           specialArgs = {
@@ -87,6 +86,35 @@
             inherit self inputs;
           };
         };
+        sansa = nix-darwin.lib.darwinSystem {
+          modules = [
+            (import ./hosts/sansa)
+          ];
+          specialArgs = {
+            host = "sansa";
+            username = "jwilger";
+            inherit self inputs;
+          };
+        };
       };
+
+      checks = nixpkgs.lib.genAttrs [
+        "aarch64-darwin"
+        "aarch64-linux"
+        "x86_64-linux"
+      ] (
+        system:
+        let
+          pkgs = import nixpkgs { inherit system; };
+        in
+        (nixpkgs.lib.optionalAttrs pkgs.stdenv.isLinux {
+          nixos-gregor = self.nixosConfigurations.gregor.config.system.build.toplevel;
+          nixos-vm = self.nixosConfigurations.vm.config.system.build.toplevel;
+        })
+        // (nixpkgs.lib.optionalAttrs pkgs.stdenv.isDarwin {
+          darwin-darwin = self.darwinConfigurations.darwin.system;
+          darwin-sansa = self.darwinConfigurations.sansa.system;
+        })
+      );
     };
 }

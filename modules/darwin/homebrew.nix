@@ -16,15 +16,16 @@
 
     # Taps (third-party repositories)
     taps = [
-      "homebrew/cask"
-      "homebrew/cask-versions"
-      "homebrew/services"
       "nikitabobko/tap" # For AeroSpace window manager
     ];
 
     # Formulae (CLI tools)
     brews = [
       # Development tools that work better via Homebrew on macOS
+      "dotnet"
+      "llvm"
+      "marksman"
+      "pre-commit"
     ];
 
     # Casks (GUI applications)
@@ -33,7 +34,6 @@
       "aerospace" # Tiling window manager (alternative to Rectangle)
 
       # Utilities
-      "caffeine" # Prevent Mac from sleeping
       "iterm2" # Terminal emulator
       "tuple" # Pair programming tool
 
@@ -49,7 +49,7 @@
       "vlc"
 
       # Development
-      "docker"
+      "docker-desktop"
 
       # Password Management
       "1password"
