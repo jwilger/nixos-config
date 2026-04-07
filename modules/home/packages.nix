@@ -88,6 +88,7 @@ in
         openssl
         python312
         ripgrep
+        rtk # reduce token use by llm cli tools
         statix
         tdf # cli pdf viewer
         unzip
