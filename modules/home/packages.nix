@@ -3,8 +3,9 @@ let
   # Conservative ad-hoc-editor toolset only. Project-specific toolchains
   # and LSPs (rust-analyzer, gopls, elixir-ls, haskell-language-server,
   # terraform-ls, texlab, typescript-language-server, zls, etc.) and the
-  # corresponding compilers/runtimes (go, ruby, elixir, terraform, cargo,
-  # python, nodejs) come from each project's flake.nix via direnv.
+  # corresponding compilers (go, ruby, elixir, terraform, cargo) come
+  # from each project's flake.nix via direnv. nodejs and python live
+  # globally because Claude Code hooks shell out to them.
   helixTooling = with pkgs; [
     awk-language-server
     bash-language-server
@@ -43,9 +44,10 @@ in
       with pkgs;
       [
         # Cross-platform packages.
-        # Toolchains (cargo, nodejs_22, python312) intentionally dropped:
-        # they live in per-project flake.nix files and are activated by
-        # direnv. For one-off scripts use `nix run nixpkgs#<pkg> -- ...`.
+        # Toolchains (cargo, etc.) intentionally dropped: they live in
+        # per-project flake.nix files and are activated by direnv. For
+        # one-off scripts use `nix run nixpkgs#<pkg> -- ...`.
+        # nodejs + python stay global — Claude Code hooks need them.
         _1password-cli
         man-pages
         cbonsai # terminal screensaver
@@ -66,7 +68,9 @@ in
         ncdu # disk space
         nil
         nix-prefetch-github
+        nodejs_22 # Claude Code hooks
         openssl
+        python312 # Claude Code hooks
         ripgrep
         rtk # reduce token use by llm cli tools
         statix
