@@ -48,10 +48,22 @@ in
   # Blacklist noisy, unused sensor driver
   boot.blacklistedKernelModules = [ "hid_sensor_rotation" ];
 
+  zramSwap = {
+    enable = true;
+    algorithm = "zstd";
+    memoryPercent = 50;
+  };
+
   # Enable AMD redistributable firmware
   hardware.enableRedistributableFirmware = true;
 
-  boot.kernel.sysctl."net.ipv4.ip_unprivileged_port_start" = 0;
+  boot.kernel.sysctl = {
+    "net.ipv4.ip_unprivileged_port_start" = 0;
+    "vm.swappiness" = 100;
+    "vm.watermark_boost_factor" = 0;
+    "vm.watermark_scale_factor" = 125;
+    "vm.page-cluster" = 0;
+  };
 
   services.pipewire = {
     enable = true;
@@ -63,29 +75,7 @@ in
 
   services.pulseaudio.enable = false;
 
-  # BcacheFS scrub service & timer
-  systemd.services.bcachefs-scrub = {
-    description = "Scrub BcacheFS filesystems";
-    serviceConfig = {
-      Type = "oneshot";
-      ExecStart = [
-        "${pkgs.bcachefs-tools}/bin/bcachefs"
-        "scrub"
-        "/"
-      ];
-    };
-    wantedBy = [ "multi-user.target" ];
-  };
-  systemd.timers.bcachefs-scrub = {
-    wantedBy = [ "timers.target" ];
-    timerConfig = {
-      OnCalendar = "Sun 03:00";
-      Persistent = true;
-    };
-  };
-
   environment.systemPackages = with pkgs; [
-    bcachefs-tools
     fuse-overlayfs
     linux-firmware
     docker-compose
@@ -112,7 +102,7 @@ in
     docker = {
       enable = true;
       daemon.settings = {
-        storage-driver = "vfs";
+        storage-driver = "btrfs";
       };
       rootless = {
         enable = false;

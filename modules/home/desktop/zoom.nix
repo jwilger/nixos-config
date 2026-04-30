@@ -14,10 +14,12 @@
   # browser, which then uses the zoom:// protocol handler to redirect back.
   #
   # Note on screen sharing:
-  # Screen sharing on Wayland/Hyprland requires:
+  # Screen sharing on Wayland/niri requires:
   # - pipewire and wireplumber (configured at system level)
-  # - xdg-desktop-portal-hyprland (configured at system level)
-  # - Proper portal configuration (see modules/desktop/default.nix)
+  # - xdg-desktop-portal-gtk (system level) plus the niri portal that
+  #   niri-flake installs automatically via configPackages
+  # - Proper portal configuration (see modules/desktop/default.nix and
+  #   modules/desktop/niri.nix)
   #
   # If screen sharing still doesn't work after rebuild:
   # 1. Check Zoom settings -> Share Screen -> Advanced -> Screen Capture Mode
@@ -59,6 +61,5 @@
     };
   };
 
-  programs.zsh.shellAliases.zoom =
-    "QT_QPA_PLATFORM=wayland ${config.home.profileDirectory}/bin/zoom";
+  programs.zsh.shellAliases.zoom = "QT_QPA_PLATFORM=wayland ${config.home.profileDirectory}/bin/zoom";
 }
