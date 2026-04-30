@@ -1,5 +1,10 @@
 { pkgs, lib, ... }:
 let
+  # Conservative ad-hoc-editor toolset only. Project-specific toolchains
+  # and LSPs (rust-analyzer, gopls, elixir-ls, haskell-language-server,
+  # terraform-ls, texlab, typescript-language-server, zls, etc.) and the
+  # corresponding compilers/runtimes (go, ruby, elixir, terraform, cargo,
+  # python, nodejs) come from each project's flake.nix via direnv.
   helixTooling = with pkgs; [
     awk-language-server
     bash-language-server
@@ -7,49 +12,24 @@ let
     black
     clang-tools
     cmake-format
-    delve
     docker-compose-language-service
     dockerfile-language-server
-    elixir
-    elixir-ls
-    erlang-language-platform
-    fourmolu
-    gleam
-    go
-    golangci-lint-langserver
-    gopls
     graphql-language-service-cli
-    haskell-language-server
     jq-lsp
     lua-language-server
     markdown-oxide
     neocmakelsp
     nixfmt
     prettier
-    sql-formatter
-    typescript
-    prisma-language-server
-    protols
-    ruby
-    rubyPackages.ruby-lsp
-    rubyPackages.syntax_tree
-    rust-analyzer
-    rustfmt
     shfmt
     socat
+    sql-formatter
     sqls
     stylua
     taplo
-    terraform
-    terraform-ls
-    texlab
-    texlivePackages.latexindent
-    typescript-language-server
     vscode-langservers-extracted
-    vscode-js-debug
     yaml-language-server
     yamlfmt
-    zls
   ];
   helixToolingLinux = with pkgs; [
     # macOS uses Homebrew for these tools
@@ -62,10 +42,12 @@ in
     (
       with pkgs;
       [
-        # Cross-platform packages
+        # Cross-platform packages.
+        # Toolchains (cargo, nodejs_22, python312) intentionally dropped:
+        # they live in per-project flake.nix files and are activated by
+        # direnv. For one-off scripts use `nix run nixpkgs#<pkg> -- ...`.
         _1password-cli
         man-pages
-        cargo
         cbonsai # terminal screensaver
         cmatrix
         delta
@@ -84,9 +66,7 @@ in
         ncdu # disk space
         nil
         nix-prefetch-github
-        nodejs_22
         openssl
-        python312
         ripgrep
         rtk # reduce token use by llm cli tools
         statix

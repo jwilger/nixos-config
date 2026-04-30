@@ -8,22 +8,13 @@
 let
   noctaliaPkg = inputs.noctalia.packages.${pkgs.stdenv.hostPlatform.system}.default;
 
-  # Lock screen using noctalia-shell
+  # Manual & idle-driven lock command. Locks 1Password in addition to
+  # activating noctalia's session lock — noctalia by itself blocks the
+  # desktop but doesn't tell other apps to drop their unlocked state.
+  # Used by the Mod+Escape keybind and by noctalia's idle service
+  # (settings.idle.lockCommand).
   lockScreen = pkgs.writeShellScript "lock-screen" ''
-    # Lock 1password first
     ${pkgs._1password-gui}/bin/1password --lock &
-
-    # Lock screen via noctalia-shell
-    ${noctaliaPkg}/bin/noctalia-shell ipc call lockScreen lock
-  '';
-
-  # Resume script for when monitors power back on (after DPMS off or sleep).
-  # Re-issues the lock command so noctalia-shell re-renders its lock screen
-  # surface, which can go stale after prolonged monitor-off periods.
-  resumeScreen = pkgs.writeShellScript "resume-screen" ''
-    ${pkgs.niri}/bin/niri msg action power-on-monitors
-    # Give monitors a moment to initialize before re-rendering lock screen
-    sleep 1
     ${noctaliaPkg}/bin/noctalia-shell ipc call lockScreen lock
   '';
 
@@ -34,10 +25,12 @@ in
     inputs.noctalia.homeModules.default
   ];
 
-  # Enable noctalia-shell with declarative settings
+  # Enable noctalia-shell with declarative settings.
+  # systemd-service startup is deprecated upstream; noctalia is launched
+  # via niri's spawn-at-startup instead (see programs.niri.settings).
   programs.noctalia-shell = {
     enable = true;
-    systemd.enable = true;
+    systemd.enable = false;
 
     # Color scheme (Catppuccin Mocha)
     colors = {
@@ -64,6 +57,10 @@ in
       settingsVersion = 40;
 
       bar = {
+        # `floating` + `exclusive` booleans were collapsed into `barType`
+        # upstream. "simple" matches the prior floating=false / exclusive=true
+        # combination (always-visible exclusive zone).
+        barType = "simple";
         position = "top";
         monitors = [ ];
         density = "default";
@@ -72,11 +69,9 @@ in
         capsuleOpacity = 1;
         backgroundOpacity = 0.8;
         useSeparateOpacity = true;
-        floating = false;
         marginVertical = 4;
         marginHorizontal = 4;
         outerCorners = false;
-        exclusive = true;
         hideOnOverview = false;
         widgets = {
           left = [
@@ -278,9 +273,18 @@ in
         allowPanelsOnScreenWithoutBar = true;
         showChangelogOnStartup = true;
         telemetryEnabled = true;
+        # Lock-screen + clock preferences ported from live noctalia state
+        lockScreenAnimations = true;
+        enableLockScreenMediaControls = true;
+        lockScreenBlur = 0.1;
+        lockScreenTint = 0.1;
+        passwordChars = true;
+        clockStyle = "digital";
       };
 
       ui = {
+        # Bluetooth/wifi panel view-mode keys moved out of `ui` upstream;
+        # they're configured per-widget now.
         fontDefault = "JetBrainsMono Nerd Font Mono";
         fontFixed = "JetBrainsMono Nerd Font Mono";
         fontDefaultScale = 1;
@@ -289,15 +293,13 @@ in
         panelBackgroundOpacity = 0.8;
         panelsAttachedToBar = true;
         settingsPanelMode = "attached";
-        wifiDetailsViewMode = "grid";
-        bluetoothDetailsViewMode = "grid";
-        networkPanelView = "wifi";
-        bluetoothHideUnnamedDevices = false;
         boxBorderEnabled = false;
+        translucentWidgets = true;
       };
 
       location = {
         name = "Forest Grove, OR, USA";
+        autoLocate = false;
         weatherEnabled = true;
         weatherShowEffects = true;
         useFahrenheit = true;
@@ -334,17 +336,17 @@ in
         directory = "/home/jwilger/Pictures/Wallpapers";
         monitorDirectories = [ ];
         enableMultiMonitorDirectories = false;
-        recursiveSearch = false;
         setWallpaperOnAllMonitors = true;
         fillMode = "crop";
         fillColor = "#000000";
         useSolidColor = false;
         solidColor = "#1a1a2e";
-        randomEnabled = false;
         wallpaperChangeMode = "random";
         randomIntervalSec = 300;
         transitionDuration = 1500;
-        transitionType = "random";
+        # Schema changed in noctalia: transitionType is now an array of
+        # strings (allowing multiple modes to randomise across).
+        transitionType = [ "random" ];
         transitionEdgeSmoothness = 0.05;
         panelPosition = "follow_bar";
         hideWallpaperFilenames = false;
@@ -368,7 +370,6 @@ in
         clipboardWrapText = true;
         position = "center";
         pinnedApps = [ ];
-        useApp2Unit = false;
         sortByMostUsed = true;
         terminalCommand = "kitty -e";
         customLaunchPrefixEnabled = false;
@@ -426,6 +427,8 @@ in
       };
 
       systemMonitor = {
+        # Per-metric *PollingInterval keys were removed upstream — runtime
+        # consolidates polling. Threshold keys are still active.
         cpuWarningThreshold = 80;
         cpuCriticalThreshold = 90;
         tempWarningThreshold = 80;
@@ -436,14 +439,7 @@ in
         memCriticalThreshold = 90;
         diskWarningThreshold = 80;
         diskCriticalThreshold = 90;
-        cpuPollingInterval = 3000;
-        tempPollingInterval = 3000;
-        gpuPollingInterval = 3000;
         enableDgpuMonitoring = true;
-        memPollingInterval = 3000;
-        diskPollingInterval = 3000;
-        networkPollingInterval = 3000;
-        loadAvgPollingInterval = 3000;
         useCustomColors = false;
         warningColor = "";
         criticalColor = "";
@@ -468,7 +464,6 @@ in
       };
 
       network = {
-        wifiEnabled = false;
         bluetoothRssiPollingEnabled = true;
         bluetoothRssiPollIntervalMs = 10000;
         wifiDetailsViewMode = "grid";
@@ -483,7 +478,6 @@ in
         showHeader = false;
         largeButtonsStyle = false;
         largeButtonsLayout = "grid";
-        showNumberLabels = true;
         powerOptions = [
           {
             action = "lock";
@@ -526,6 +520,7 @@ in
 
       notifications = {
         enabled = true;
+        enableMarkdown = true;
         monitors = [ ];
         location = "top_right";
         overlayLayer = true;
@@ -569,7 +564,6 @@ in
       audio = {
         volumeStep = 5;
         volumeOverdrive = false;
-        cavaFrameRate = 30;
         visualizerType = "linear";
         mprisBlacklist = [ ];
         preferredPlayer = "spotify";
@@ -588,7 +582,6 @@ in
         schedulingMode = "off";
         manualSunrise = "06:30";
         manualSunset = "18:30";
-        matugenSchemeType = "scheme-fruit-salad";
       };
 
       templates = {
@@ -626,7 +619,6 @@ in
             id = "discord";
           }
         ];
-        enableUserTemplates = false;
       };
 
       nightLight = {
@@ -650,6 +642,23 @@ in
         session = "";
       };
 
+      plugins = {
+        autoUpdate = true;
+      };
+
+      # Native idle / lock / DPMS via noctalia's IdleService. Replaces the
+      # previous hypridle setup. lockCommand wraps both 1Password and
+      # noctalia's session lock IPC. suspendTimeout = 0 disables the
+      # suspend stage entirely — only lock + screen-off fire.
+      idle = {
+        enabled = true;
+        lockTimeout = 300;
+        screenOffTimeout = 360;
+        suspendTimeout = 0;
+        fadeDuration = 5;
+        lockCommand = "${lockScreen}";
+      };
+
       desktopWidgets = {
         enabled = false;
         gridSnap = false;
@@ -670,6 +679,7 @@ in
             "--silent"
           ];
         }
+        { command = [ "${noctaliaPkg}/bin/noctalia-shell" ]; }
       ];
 
       # Input configuration
@@ -877,47 +887,15 @@ in
     };
   };
 
-  # Additional packages for niri session
+  # Additional packages for niri session.
+  # Idle/DPMS/lock are now driven by noctalia's native IdleService
+  # (ext-idle-notify-v1 protocol) — no external idle daemon needed.
   home.packages = with pkgs; [
     noctaliaPkg
     wl-clipboard
     grim
     slurp
-    hypridle
   ];
-
-  # Hypridle configuration for screen locking and DPMS
-  # Uses noctalia-shell lock screen
-  #
-  # How it works:
-  # 1. At 300s idle: Lock screen via noctalia-shell
-  # 2. At 360s idle: Monitors power off (60s after lock)
-  #
-  # For manual lock: use Mod+Escape keybinding
-  services.hypridle = {
-    enable = true;
-    settings = {
-      general = {
-        lock_cmd = "${lockScreen}";
-        before_sleep_cmd = "${lockScreen}";
-        after_sleep_cmd = "${resumeScreen}";
-        ignore_dbus_inhibit = false;
-      };
-      listener = [
-        {
-          # Lock screen after 5 minutes of idle
-          timeout = 300;
-          on-timeout = "${lockScreen}";
-        }
-        {
-          # Power off monitors 60s after lock (360s total)
-          timeout = 360;
-          on-timeout = "${pkgs.niri}/bin/niri msg action power-off-monitors";
-          on-resume = "${resumeScreen}";
-        }
-      ];
-    };
-  };
 
   # Wallpaper managed by Nix
   home.file.".local/share/wallpapers/wallpaper.png".source = ../wallpaper.png;
