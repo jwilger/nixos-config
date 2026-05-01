@@ -15,6 +15,7 @@ in
     ./../../modules/hardware/edid-apple-studio-display.nix
     ./../../modules/services/postgres.nix
     ./../../modules/services/forgejo.nix
+    ./../../modules/services/forgejo-runner.nix
     ./../../modules/services/caddy.nix
   ];
 
