@@ -7,9 +7,14 @@
     instances.gregor = {
       enable = true;
       name = "gregor";
-      # Talk to Forgejo over loopback to skip Caddy/TLS — the runner
-      # lives on the same host as the server.
-      url = "http://localhost:3300";
+      # The runner injects this URL into action containers as
+      # GITHUB_SERVER_URL, so it must be reachable from inside Docker —
+      # not just from the host. A loopback URL (http://localhost:3300)
+      # works for the runner itself but breaks every actions/checkout
+      # step inside the spawned container, which sees its own loopback.
+      # Use the public URL; the small TLS hairpin through Caddy is the
+      # cost of correctness.
+      url = "https://git.johnwilger.com";
       # First-run registration token. Prefer the site-level token from
       # Site Admin → Actions → Runners → "Show registration token"
       # (multi-use, accepted by act_runner reliably). User-scope tokens
