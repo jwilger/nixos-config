@@ -17,7 +17,6 @@ in
     ./../../modules/services/forgejo.nix
     ./../../modules/services/forgejo-runner.nix
     ./../../modules/services/caddy.nix
-    ./../../modules/services/ollama.nix
   ];
 
   powerManagement.cpuFreqGovernor = "performance";
