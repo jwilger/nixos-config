@@ -30,6 +30,17 @@
         ENABLED = true;
         DEFAULT_ACTIONS_URL = "github";
       };
+      "repository.signing" = {
+        SIGNING_FORMAT = "ssh";
+        SIGNING_KEY = "/home/forgejo/.ssh/forgejo_signing";
+        SIGNING_NAME = "Forgejo";
+        SIGNING_EMAIL = "forgejo@git.johnwilger.com";
+        DEFAULT_TRUST_MODEL = "committer";
+        INITIAL_COMMIT = "always";
+        CRUD_ACTIONS = "always";
+        WIKI = "always";
+        MERGES = "always";
+      };
     };
   };
 
