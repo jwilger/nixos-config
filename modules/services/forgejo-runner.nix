@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ lib, pkgs, ... }:
 {
   # Gitea's act_runner speaks the same protocol as Forgejo's runner —
   # nixpkgs ships only the gitea variant, which works fine here.
@@ -10,9 +10,11 @@
       # Talk to Forgejo over loopback to skip Caddy/TLS — the runner
       # lives on the same host as the server.
       url = "http://localhost:3300";
-      # First-run registration token. Mint one via Forgejo's
-      # Site Admin → Actions → Runners → "Create new runner",
-      # then write it as a systemd EnvironmentFile (`TOKEN=...`):
+      # First-run registration token. Prefer the site-level token from
+      # Site Admin → Actions → Runners → "Show registration token"
+      # (multi-use, accepted by act_runner reliably). User-scope tokens
+      # from /user/settings/actions/runners are sometimes rejected by
+      # the registration API. Write it as a systemd EnvironmentFile:
       #   sudo install -d -m 0700 /var/lib/forgejo-runner
       #   echo 'TOKEN=<paste>' | sudo tee /var/lib/forgejo-runner/token
       #   sudo chmod 0400 /var/lib/forgejo-runner/token
@@ -30,4 +32,15 @@
   systemd.tmpfiles.rules = [
     "d /var/lib/forgejo-runner 0700 root root -"
   ];
+
+  # The upstream register-runner ExecStartPre script doesn't check
+  # `act_runner register`'s exit code, so a bad/expired token lets the
+  # daemon start anyway, fail on missing .runner, and restart-loop
+  # forever. Cap restarts so a broken token surfaces as a clean
+  # `failed` state instead of burning CPU.
+  systemd.services.gitea-runner-gregor = {
+    startLimitIntervalSec = 60;
+    startLimitBurst = 3;
+    serviceConfig.RestartSec = lib.mkForce "10s";
+  };
 }
