@@ -31,11 +31,24 @@
         "docker:docker://node:20-bookworm"
         "native:host"
       ];
+      # Persist /nix across container jobs so flake-based builds reuse
+      # a warm store instead of rebuilding from scratch every run.
+      # valid_volumes is the runner's allowlist — without it, options'
+      # bind mount is silently dropped. dockerd performs the mount as
+      # root, so the host dir's ownership doesn't need to track the
+      # runner's DynamicUser UID.
+      settings = {
+        container = {
+          valid_volumes = [ "/var/cache/forgejo-runner-nix" ];
+          options = "-v /var/cache/forgejo-runner-nix:/nix";
+        };
+      };
     };
   };
 
   systemd.tmpfiles.rules = [
     "d /var/lib/forgejo-runner 0700 root root -"
+    "d /var/cache/forgejo-runner-nix 0755 root root -"
   ];
 
   # The upstream register-runner ExecStartPre script doesn't check
