@@ -26,6 +26,10 @@
       };
       service.DISABLE_REGISTRATION = true;
       security.INSTALL_LOCK = true;
+      actions = {
+        ENABLED = true;
+        DEFAULT_ACTIONS_URL = "github";
+      };
     };
   };
 

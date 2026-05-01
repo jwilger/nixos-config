@@ -15,11 +15,8 @@ in
     ./../../modules/hardware/edid-apple-studio-display.nix
     ./../../modules/services/postgres.nix
     ./../../modules/services/forgejo.nix
-    ./../../modules/services/teamcity.nix
     ./../../modules/services/caddy.nix
   ];
-
-  services.teamcity.enable = true;
 
   powerManagement.cpuFreqGovernor = "performance";
 
