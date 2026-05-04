@@ -37,10 +37,16 @@
       # bind mount is silently dropped. dockerd performs the mount as
       # root, so the host dir's ownership doesn't need to track the
       # runner's DynamicUser UID.
+      #
+      # --add-host=host.docker.internal:host-gateway maps the special
+      # name to the docker0 bridge gateway (172.17.0.1) so jobs can
+      # reach services running on the host (e.g. the auto_review dev
+      # gateway on :8090). docker0 is also added to the firewall's
+      # trusted interfaces below so the connection isn't dropped.
       settings = {
         container = {
           valid_volumes = [ "/var/cache/forgejo-runner-nix" ];
-          options = "-v /var/cache/forgejo-runner-nix:/nix";
+          options = "-v /var/cache/forgejo-runner-nix:/nix --add-host=host.docker.internal:host-gateway";
         };
       };
     };
