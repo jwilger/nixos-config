@@ -1,4 +1,9 @@
-{ config, lib, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 {
   # Expose the forgejo CLI system-wide so admin commands like
   # `sudo -u forgejo forgejo admin user create …` work without
@@ -30,9 +35,10 @@
         ENABLED = true;
         DEFAULT_ACTIONS_URL = "github";
       };
+      webhook.ALLOWED_HOST_LIST = "loopback,external";
       "repository.signing" = {
-        SIGNING_FORMAT = "ssh";
-        SIGNING_KEY = "/home/forgejo/.ssh/forgejo_signing";
+        FORMAT = "ssh";
+        SIGNING_KEY = "/home/forgejo/.ssh/forgejo_signing.pub";
         SIGNING_NAME = "Forgejo";
         SIGNING_EMAIL = "forgejo@git.johnwilger.com";
         DEFAULT_TRUST_MODEL = "committer";
@@ -49,4 +55,16 @@
   # rides along on btrbk's nightly /home → /archive snapshots, so we
   # need /home visible to the unit.
   systemd.services.forgejo.serviceConfig.ProtectHome = lib.mkForce false;
+
+  # Forgejo only writes /home/forgejo/data/home/.gitconfig once on first
+  # run, so SIGNING_FORMAT changes in app.ini do not propagate. Force
+  # gpg.format=ssh and user.signingkey on every start so merge-commit
+  # signing actually invokes ssh-keygen instead of gpg.
+  systemd.services.forgejo.preStart = lib.mkAfter ''
+    GITCONFIG=/home/forgejo/data/home/.gitconfig
+    if [ -f "$GITCONFIG" ]; then
+      ${pkgs.git}/bin/git config --file "$GITCONFIG" gpg.format ssh
+      ${pkgs.git}/bin/git config --file "$GITCONFIG" user.signingkey /home/forgejo/.ssh/forgejo_signing.pub
+    fi
+  '';
 }
