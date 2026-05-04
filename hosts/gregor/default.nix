@@ -39,6 +39,11 @@ in
         5353 # mDNS (multicast DNS) - required for Spotify Connect discovery
         57621 # Spotify Connect
       ];
+      # Allow forgejo-runner job containers to reach the auto_review dev
+      # gateway via host.docker.internal:8090. Scoped to docker0 + the one
+      # port so other host services (Postgres, Forgejo, Caddy admin) stay
+      # invisible from container-land.
+      interfaces.docker0.allowedTCPPorts = [ 8090 ];
     };
   };
   # Ensure filesystem checks (fsck) occur at boot for root
