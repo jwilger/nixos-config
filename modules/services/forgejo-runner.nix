@@ -38,15 +38,15 @@
       # root, so the host dir's ownership doesn't need to track the
       # runner's DynamicUser UID.
       #
-      # --add-host=host.docker.internal:host-gateway maps the special
-      # name to the docker0 bridge gateway (172.17.0.1) so jobs can
-      # reach services running on the host (e.g. the auto_review dev
-      # gateway on :8090). docker0 is also added to the firewall's
-      # trusted interfaces below so the connection isn't dropped.
+      # Use host networking so job containers can reach services bound on
+      # the runner host, including the auto_review dev gateway on
+      # localhost:8090. act_runner creates per-job bridge networks; Docker's
+      # host-gateway alias points at docker0 (172.17.0.1), which is isolated
+      # from those task networks and times out.
       settings = {
         container = {
           valid_volumes = [ "/var/cache/forgejo-runner-nix" ];
-          options = "-v /var/cache/forgejo-runner-nix:/nix --add-host=host.docker.internal:host-gateway";
+          options = "-v /var/cache/forgejo-runner-nix:/nix --network host";
         };
       };
     };
