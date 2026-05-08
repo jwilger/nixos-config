@@ -7,6 +7,9 @@
         "nix-command"
         "flakes"
       ];
+      extra-platforms = [
+        "aarch64-linux"
+      ];
       substituters = [
         "https://cache.nixos.org"
       ];
@@ -28,6 +31,7 @@
   };
 
   boot.tmp.cleanOnBoot = true;
+  boot.binfmt.emulatedSystems = [ "aarch64-linux" ];
 
   # Periodic data-integrity scrub for all btrfs filesystems on this box.
   # Catches silent bit-rot; auto-corrects on RAID1 mirrors when a checksum
