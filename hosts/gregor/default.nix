@@ -6,6 +6,12 @@
 }:
 let
   run0Bin = lib.getExe' pkgs.systemd "run0";
+  sudoAskpass = pkgs.writeShellScript "sudo-askpass" ''
+    ${lib.getExe pkgs.zenity} --password \
+      --title="Authentication required" \
+      --text="''${1:-Password required}" \
+      --width=360
+  '';
 in
 {
   imports = [
@@ -91,10 +97,10 @@ in
     docker-compose
     libimobiledevice
     ifuse
-    lxqt.lxqt-openssh-askpass # Qt-based askpass matching lxqt-policykit theme
+    zenity
   ];
 
-  environment.variables.SUDO_ASKPASS = "${pkgs.lxqt.lxqt-openssh-askpass}/bin/lxqt-openssh-askpass";
+  environment.variables.SUDO_ASKPASS = sudoAskpass;
 
   time.timeZone = "America/Los_Angeles";
 

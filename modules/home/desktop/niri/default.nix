@@ -18,6 +18,13 @@ let
     ${noctaliaPkg}/bin/noctalia-shell ipc call lockScreen lock
   '';
 
+  sudoAskpass = pkgs.writeShellScript "sudo-askpass" ''
+    ${lib.getExe pkgs.zenity} --password \
+      --title="Authentication required" \
+      --text="''${1:-Password required}" \
+      --width=360
+  '';
+
 in
 {
   # Import noctalia home-manager module
@@ -757,7 +764,9 @@ in
           matches = [
             { app-id = "^lxqt-openssh-askpass$"; }
             { app-id = "^polkit-gnome-authentication-agent-1$"; }
+            { app-id = "^org\\.gnome\\.Zenity$"; }
             { app-id = "^ksshaskpass$"; }
+            { app-id = "^zenity$"; }
           ];
           open-floating = true;
         }
@@ -877,6 +886,7 @@ in
         DISPLAY = ":0";
         QT_QPA_PLATFORM = "wayland";
         SDL_VIDEODRIVER = "wayland";
+        SUDO_ASKPASS = "${sudoAskpass}";
         XDG_CURRENT_DESKTOP = "niri";
         XDG_SESSION_TYPE = "wayland";
         XDG_SESSION_DESKTOP = "niri";
