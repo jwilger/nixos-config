@@ -2,6 +2,7 @@
 {
   imports = [
     ./../../modules/darwin
+    ./../../modules/darwin/ollama.nix
   ];
 
   # macOS system settings
