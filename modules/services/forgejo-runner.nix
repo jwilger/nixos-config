@@ -19,6 +19,7 @@ let
       timeout: 3h
       labels:
         - docker:docker://node:20-bookworm
+        - nix:host
         - native:host
     cache:
       enabled: false
