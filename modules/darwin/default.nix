@@ -54,4 +54,13 @@
   system.primaryUser = username;
 
   nixpkgs.config.allowUnfree = true;
+
+  # direnv's upstream test suite hangs in the macOS Nix sandbox (zsh test
+  # spawns an interactive shell that never exits). Skip it so we don't wedge
+  # rebuilds when cache.nixos.org hasn't yet published the binary.
+  nixpkgs.overlays = [
+    (_: prev: {
+      direnv = prev.direnv.overrideAttrs (_: { doCheck = false; });
+    })
+  ];
 }
