@@ -45,6 +45,7 @@ in
       pkgs.git
       pkgs.bash
       pkgs.coreutils
+      pkgs.jq
       pkgs.nix
       pkgs.openssh
     ];
@@ -84,6 +85,15 @@ in
       echo "[forgejo-runner] waiting for /Users/${username}/.docker/run/docker.sock" >&2
       /bin/wait4path /Users/${username}/.docker/run/docker.sock
       echo "[forgejo-runner] docker socket ready" >&2
+
+      DOCKER_CONFIG_JSON=/Users/${username}/.docker/config.json
+      if [ -f "$DOCKER_CONFIG_JSON" ] && jq -e 'has("credsStore")' "$DOCKER_CONFIG_JSON" >/dev/null; then
+        echo "[forgejo-runner] removing credsStore from $DOCKER_CONFIG_JSON" >&2
+        TMP_CONFIG=$(mktemp)
+        jq 'del(.credsStore)' "$DOCKER_CONFIG_JSON" > "$TMP_CONFIG"
+        install -m 0600 "$TMP_CONFIG" "$DOCKER_CONFIG_JSON"
+        rm -f "$TMP_CONFIG"
+      fi
 
       UUID=$(cat ${stateDir}/uuid)
       TOKEN=$(cat ${stateDir}/token)
