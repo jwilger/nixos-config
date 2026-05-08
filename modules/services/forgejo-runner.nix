@@ -29,13 +29,14 @@ let
       # valid_volumes is the runner's allowlist — without it, options'
       # bind mount is silently dropped.
       #
-      # Use host networking so job containers can reach services bound on
-      # the runner host, including the auto_review dev gateway on
-      # localhost:8090. Per-job bridge networks would otherwise isolate
-      # them from those host services.
+      # Use host networking so Docker jobs can curl host-local review
+      # services via http://localhost:8080/... and
+      # http://localhost:8090/.... Per-job bridge networks would otherwise
+      # isolate them from those host services.
+      network: host
       valid_volumes:
         - ${cacheDir}
-      options: -v ${cacheDir}:/nix --network host
+      options: -v ${cacheDir}:/nix
       privileged: false
       force_pull: false
   '';
