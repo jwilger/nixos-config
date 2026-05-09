@@ -24,11 +24,11 @@ let
       # add an explicit `darwin:host` label here and target it from the
       # workflow with runs-on: darwin.
       labels:
-        - docker:docker://node:20-bookworm
+        - docker:docker://docker.io/gitea/runner-images:ubuntu-24.04
     cache:
       enabled: false
     container:
-      network: host
+      docker_host: automount
       privileged: false
       force_pull: false
     host:
@@ -42,9 +42,14 @@ in
   # use Docker until login anyway.
   launchd.user.agents.forgejo-runner = {
     path = [
-      pkgs.git
       pkgs.bash
+      pkgs.cacert
       pkgs.coreutils
+      pkgs.curl
+      pkgs.docker
+      pkgs.gawk
+      pkgs.git
+      pkgs.gnused
       pkgs.jq
       pkgs.nix
       pkgs.openssh
