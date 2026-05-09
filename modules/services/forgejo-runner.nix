@@ -18,7 +18,7 @@ let
       capacity: 2
       timeout: 3h
       labels:
-        - docker:docker://node:20-bookworm
+        - docker:docker://docker.io/gitea/runner-images:ubuntu-24.04
     cache:
       enabled: false
     container:
@@ -27,15 +27,12 @@ let
       # valid_volumes is the runner's allowlist — without it, options'
       # bind mount is silently dropped.
       #
-      # Use host networking so Docker jobs can curl host-local review
-      # services via http://localhost:8080/... and
-      # http://localhost:8090/.... Per-job bridge networks would otherwise
-      # isolate them from those host services.
-      network: host
+      # Expose the host Docker daemon to job, service, and step containers so
+      # workflows can build, load, tag, login, and push images.
+      docker_host: automount
       valid_volumes:
         - ${cacheDir}
-        - /var/run/docker.sock
-      options: -v ${cacheDir}:/nix -v /var/run/docker.sock:/var/run/docker.sock
+      options: -v ${cacheDir}:/nix
       privileged: false
       force_pull: false
   '';
@@ -66,10 +63,15 @@ in
     wantedBy = [ "multi-user.target" ];
 
     path = [
-      pkgs.docker
-      pkgs.git
       pkgs.bash
+      pkgs.cacert
       pkgs.coreutils
+      pkgs.curl
+      pkgs.docker
+      pkgs.gawk
+      pkgs.git
+      pkgs.gnused
+      pkgs.jq
       pkgs.openssh
     ];
 
