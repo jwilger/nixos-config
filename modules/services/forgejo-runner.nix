@@ -19,8 +19,6 @@ let
       timeout: 3h
       labels:
         - docker:docker://node:20-bookworm
-        - nix:host
-        - native:host
     cache:
       enabled: false
     container:
@@ -36,7 +34,8 @@ let
       network: host
       valid_volumes:
         - ${cacheDir}
-      options: -v ${cacheDir}:/nix
+        - /var/run/docker.sock
+      options: -v ${cacheDir}:/nix -v /var/run/docker.sock:/var/run/docker.sock
       privileged: false
       force_pull: false
   '';
