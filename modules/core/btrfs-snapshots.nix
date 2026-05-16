@@ -26,9 +26,13 @@
         snapshot_preserve_min = "2d";
         target_preserve_min = "2d";
 
-        # Retention ladder: 14 dailies, 8 weeklies, 12 monthlies.
-        # Same ladder on both source and target.
-        snapshot_preserve = "14d 8w 12m";
+        # Retention ladder: 14 dailies, 8 weeklies, 12 monthlies on the
+        # /archive target — that's where the real backup history lives.
+        # The /home source only keeps 3 dailies: btrbk just needs a
+        # recent snapshot as the base for incremental sends, and keeping
+        # a long ladder on /home pins deleted data (e.g. build artifacts)
+        # on the smaller SSD pool. History stays safe on /archive.
+        snapshot_preserve = "3d";
         target_preserve = "14d 8w 12m";
 
         # /archive is already mounted with compress=zstd:15, so don't
@@ -52,8 +56,19 @@
   # btrbk's source snapshot directory (/home/.snapshots) needs to exist
   # before the first run; tmpfiles handles it. Mode 0700 because these
   # snapshots are full read-only views of /home — restrict to root.
+  #
+  # The `v` rules create nested btrfs subvolumes for regenerable data
+  # we deliberately keep OUT of the snapshots: a btrfs snapshot does not
+  # recurse into child subvolumes, so anything living under one of these
+  # is excluded from the daily backup to /archive. ~/.cache is XDG cache
+  # data; ~/.build holds all Rust build output (CARGO_TARGET_DIR points
+  # at ~/.build/cargo — see modules/home/environment.nix). tmpfiles only
+  # creates the subvolume when the path is missing; existing ones are
+  # left as-is.
   systemd.tmpfiles.rules = [
     "d /home/.snapshots 0700 root root -"
+    "v /home/jwilger/.cache 0755 jwilger jwilger -"
+    "v /home/jwilger/.build 0755 jwilger jwilger -"
   ];
 
   # Make the backup yield to interactive work. `idle` I/O class only
