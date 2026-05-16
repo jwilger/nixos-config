@@ -39,14 +39,13 @@
   };
 
   outputs =
-    {
-      catppuccin,
-      niri,
-      noctalia,
-      nix-darwin,
-      nixpkgs,
-      self,
-      ...
+    { catppuccin
+    , niri
+    , noctalia
+    , nix-darwin
+    , nixpkgs
+    , self
+    , ...
     }@inputs:
     {
       nixosConfigurations = {
@@ -69,6 +68,17 @@
           ];
           specialArgs = {
             host = "vm";
+            username = "jwilger";
+            inherit self inputs;
+          };
+        };
+        sansa-vm = nixpkgs.lib.nixosSystem {
+          modules = [
+            catppuccin.nixosModules.catppuccin
+            (import ./hosts/sansa-vm)
+          ];
+          specialArgs = {
+            host = "sansa-vm";
             username = "jwilger";
             inherit self inputs;
           };
@@ -112,20 +122,22 @@
         "aarch64-darwin"
         "aarch64-linux"
         "x86_64-linux"
-      ] (
-        system:
-        let
-          pkgs = import nixpkgs { inherit system; };
-        in
-        (nixpkgs.lib.optionalAttrs pkgs.stdenv.isLinux {
-          nixos-gregor = self.nixosConfigurations.gregor.config.system.build.toplevel;
-          nixos-vm = self.nixosConfigurations.vm.config.system.build.toplevel;
-        })
-        // (nixpkgs.lib.optionalAttrs pkgs.stdenv.isDarwin {
-          darwin-darwin = self.darwinConfigurations.darwin.system;
-          darwin-sansa = self.darwinConfigurations.sansa.system;
-          darwin-bender = self.darwinConfigurations.bender.system;
-        })
-      );
+      ]
+        (
+          system:
+          let
+            pkgs = import nixpkgs { inherit system; };
+          in
+          (nixpkgs.lib.optionalAttrs pkgs.stdenv.isLinux {
+            nixos-gregor = self.nixosConfigurations.gregor.config.system.build.toplevel;
+            nixos-sansa-vm = self.nixosConfigurations.sansa-vm.config.system.build.toplevel;
+            nixos-vm = self.nixosConfigurations.vm.config.system.build.toplevel;
+          })
+          // (nixpkgs.lib.optionalAttrs pkgs.stdenv.isDarwin {
+            darwin-darwin = self.darwinConfigurations.darwin.system;
+            darwin-sansa = self.darwinConfigurations.sansa.system;
+            darwin-bender = self.darwinConfigurations.bender.system;
+          })
+        );
     };
 }
