@@ -133,7 +133,7 @@
   system.autoUpgrade.enable = true;
 
   catppuccin = {
-    enable = true;
+    enable = false;
     flavor = "mocha";
     accent = "lavender";
   };
