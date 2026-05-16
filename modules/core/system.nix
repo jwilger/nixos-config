@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ lib, pkgs, ... }:
 {
   nix = {
     settings = {
@@ -31,7 +31,9 @@
   };
 
   boot.tmp.cleanOnBoot = true;
-  boot.binfmt.emulatedSystems = [ "aarch64-linux" ];
+  boot.binfmt.emulatedSystems = lib.optionals (pkgs.stdenv.hostPlatform.system != "aarch64-linux") [
+    "aarch64-linux"
+  ];
 
   # Periodic data-integrity scrub for all btrfs filesystems on this box.
   # Catches silent bit-rot; auto-corrects on RAID1 mirrors when a checksum
