@@ -340,7 +340,7 @@ in
       wallpaper = {
         enabled = true;
         overviewEnabled = false;
-        directory = "/home/jwilger/Pictures/Wallpapers";
+        directory = "/etc/nixos/modules/home/desktop";
         monitorDirectories = [ ];
         enableMultiMonitorDirectories = false;
         setWallpaperOnAllMonitors = true;
@@ -909,6 +909,26 @@ in
 
   # Wallpaper managed by Nix
   home.file.".local/share/wallpapers/wallpaper.png".source = ../wallpaper.png;
+
+  # Noctalia stores the active wallpaper per-monitor in ~/.cache/noctalia/
+  # wallpapers.json (writable — unlike the declaratively-managed settings.json).
+  # If that cache file is wiped, noctalia falls back to its bundled logo
+  # wallpaper. Seed the file when absent so a cache wipe self-heals to our
+  # wallpaper instead. Only writes when missing, so GUI wallpaper picks (which
+  # noctalia writes back to this same file) are never clobbered.
+  home.activation.noctaliaWallpaperSeed = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+    cacheFile="$HOME/.cache/noctalia/wallpapers.json"
+    if [ ! -e "$cacheFile" ]; then
+      mkdir -p "$HOME/.cache/noctalia"
+      cat > "$cacheFile" << 'EOF'
+    {
+      "defaultWallpaper": "/etc/nixos/modules/home/desktop/wallpaper.png",
+      "usedRandomWallpapers": {},
+      "wallpapers": {}
+    }
+    EOF
+    fi
+  '';
 
   # GitHub feed plugin settings - token retrieved from 1Password at activation
   home.activation.noctaliaGithubFeed = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
