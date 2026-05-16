@@ -3,6 +3,7 @@
   imports = [
     ./hardware-configuration.nix
     ./../../modules/core
+    ./../../modules/desktop
   ];
 
   networking.hostName = "sansa-vm";
@@ -35,5 +36,7 @@
     services.timesyncd.enable = lib.mkForce true;
   };
 
-  home-manager.users.${username}.imports = [ ./../../modules/home ];
+  catppuccin.enable = lib.mkForce false;
+
+  home-manager.users.${username}.imports = [ ./../../modules/home/desktop ];
 }
