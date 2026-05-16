@@ -105,6 +105,23 @@ let
         exit 1
       fi
       ${extra}
+      # Wait for Forgejo to be reachable before the runner calls Declare.
+      # On a co-restart (e.g. nixos-rebuild) the runner can start before
+      # Forgejo's backend is up, and the reverse proxy answers 502.
+      i=0
+      while [ "$i" -lt 60 ]; do
+        code=$(curl -s -o /dev/null -w '%{http_code}' --max-time 5 \
+          ${forgejoUrl}/api/healthz || echo 000)
+        if [ "$code" = "200" ]; then
+          break
+        fi
+        i=$((i + 1))
+        sleep 2
+      done
+      if [ "$i" -eq 60 ]; then
+        echo "ERROR: ${forgejoUrl} not reachable (last status $code)." >&2
+        exit 1
+      fi
       UUID=$(cat uuid)
       TOKEN=$(cat token)
       umask 077
@@ -131,6 +148,7 @@ let
       after ? [
         "network-online.target"
         "docker.service"
+        "forgejo.service"
       ],
       wants ? [ "network-online.target" ],
       requires ? [ "docker.service" ],
@@ -257,6 +275,7 @@ in
     after = [
       "network-online.target"
       "forgejo-runner-dind.service"
+      "forgejo.service"
     ];
     wants = [ "network-online.target" ];
     requires = [ "forgejo-runner-dind.service" ];
