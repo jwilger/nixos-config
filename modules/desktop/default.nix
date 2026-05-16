@@ -1,14 +1,25 @@
-{ pkgs, username, ... }:
+{ lib
+, pkgs
+, username
+, ...
+}:
+let
+  isX86_64Linux = pkgs.stdenv.hostPlatform.system == "x86_64-linux";
+in
 {
-  environment.systemPackages = with pkgs; [
-    nerd-fonts.jetbrains-mono
-    nerd-fonts.noto
-    twemoji-color-font
-    networkmanagerapplet
-    adwaita-icon-theme
-    vanilla-dmz # DMZ cursor theme
-    google-chrome
-  ];
+  environment.systemPackages =
+    with pkgs;
+    [
+      nerd-fonts.jetbrains-mono
+      nerd-fonts.noto
+      twemoji-color-font
+      networkmanagerapplet
+      adwaita-icon-theme
+      vanilla-dmz # DMZ cursor theme
+    ]
+    ++ lib.optionals isX86_64Linux [
+      google-chrome
+    ];
 
   fonts.fontconfig.enable = true;
   fonts.fontconfig.defaultFonts.sansSerif = [ "JetBrainsMono Nerd Font" ];
@@ -70,16 +81,17 @@
         HOLD: KEY_LEFTCTRL
   '';
 
-  programs._1password.enable = true;
-  # Ensure the 1Password CLI binary is installed for the agent
-  programs._1password.package = pkgs._1password-cli;
-  programs._1password-gui = {
+  programs._1password = lib.mkIf isX86_64Linux {
+    enable = true;
+    package = pkgs._1password-cli;
+  };
+  programs._1password-gui = lib.mkIf isX86_64Linux {
     enable = true;
     polkitPolicyOwners = [ "${username}" ];
   };
 
   imports = [
-    (import ./gaming.nix { inherit pkgs; })
+    (import ./gaming.nix)
     (import ./niri.nix)
   ];
 }

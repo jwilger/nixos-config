@@ -75,6 +75,7 @@
         sansa-vm = nixpkgs.lib.nixosSystem {
           modules = [
             catppuccin.nixosModules.catppuccin
+            niri.nixosModules.niri
             (import ./hosts/sansa-vm)
           ];
           specialArgs = {
