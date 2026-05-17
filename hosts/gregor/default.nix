@@ -23,6 +23,7 @@ in
     ./../../modules/services/forgejo.nix
     ./../../modules/services/forgejo-runner.nix
     ./../../modules/services/caddy.nix
+    ./../../modules/services/hindsight.nix
   ];
 
   powerManagement.cpuFreqGovernor = "performance";
