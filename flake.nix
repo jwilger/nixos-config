@@ -1,15 +1,6 @@
 {
   description = "jwilger's nixos configuration";
 
-  nixConfig = {
-    extra-substituters = [
-      "https://quickshell.cachix.org"
-    ];
-    extra-trusted-public-keys = [
-      "quickshell.cachix.org-1:OJszzthtpAEkFkBD35pIqjL8NlZ1y/I1O5wP9XFml2s="
-    ];
-  };
-
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     nixpkgs-small.url = "github:NixOS/nixpkgs/nixos-unstable-small";
@@ -40,20 +31,16 @@
       url = "github:sodiboo/niri-flake";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-
-    noctalia = {
-      url = "github:noctalia-dev/noctalia-shell";
-    };
   };
 
   outputs =
-    { catppuccin
-    , niri
-    , noctalia
-    , nix-darwin
-    , nixpkgs
-    , self
-    , ...
+    {
+      catppuccin,
+      niri,
+      nix-darwin,
+      nixpkgs,
+      self,
+      ...
     }@inputs:
     {
       nixosConfigurations = {
@@ -127,26 +114,28 @@
         };
       };
 
-      checks = nixpkgs.lib.genAttrs [
-        "aarch64-darwin"
-        "aarch64-linux"
-        "x86_64-linux"
-      ]
-        (
-          system:
-          let
-            pkgs = import nixpkgs { inherit system; };
-          in
-          (nixpkgs.lib.optionalAttrs pkgs.stdenv.isLinux {
-            nixos-gregor = self.nixosConfigurations.gregor.config.system.build.toplevel;
-            nixos-sansa-vm = self.nixosConfigurations.sansa-vm.config.system.build.toplevel;
-            nixos-vm = self.nixosConfigurations.vm.config.system.build.toplevel;
-          })
-          // (nixpkgs.lib.optionalAttrs pkgs.stdenv.isDarwin {
-            darwin-darwin = self.darwinConfigurations.darwin.system;
-            darwin-sansa = self.darwinConfigurations.sansa.system;
-            darwin-bender = self.darwinConfigurations.bender.system;
-          })
-        );
+      checks =
+        nixpkgs.lib.genAttrs
+          [
+            "aarch64-darwin"
+            "aarch64-linux"
+            "x86_64-linux"
+          ]
+          (
+            system:
+            let
+              pkgs = import nixpkgs { inherit system; };
+            in
+            (nixpkgs.lib.optionalAttrs pkgs.stdenv.isLinux {
+              nixos-gregor = self.nixosConfigurations.gregor.config.system.build.toplevel;
+              nixos-sansa-vm = self.nixosConfigurations.sansa-vm.config.system.build.toplevel;
+              nixos-vm = self.nixosConfigurations.vm.config.system.build.toplevel;
+            })
+            // (nixpkgs.lib.optionalAttrs pkgs.stdenv.isDarwin {
+              darwin-darwin = self.darwinConfigurations.darwin.system;
+              darwin-sansa = self.darwinConfigurations.sansa.system;
+              darwin-bender = self.darwinConfigurations.bender.system;
+            })
+          );
     };
 }
