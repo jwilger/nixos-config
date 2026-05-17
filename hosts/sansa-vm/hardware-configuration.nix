@@ -20,7 +20,7 @@
     device = "/dev/disk/by-uuid/D3B2-1C9D";
     fsType = "vfat";
     options = [ "fmask=0022" "dmask=0022" ];
-  }
+  };
 
   networking.useDHCP = lib.mkDefault true;
 
