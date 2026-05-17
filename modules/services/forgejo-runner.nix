@@ -20,6 +20,10 @@ let
     "--env=DOCKER_TLS_CERTDIR="
     "--volume=${dindRunDir}:${dindRunDir}"
     "--volume=${dindStateDir}:/var/lib/docker"
+    # The Docker daemon runs inside this DinD container. Bind the host Nix
+    # cache at the same absolute path so job containers created by that daemon
+    # can mount ${cacheDir}:/nix from the daemon's filesystem namespace.
+    "--volume=${cacheDir}:${cacheDir}"
     dindImage
     "dockerd"
     "--host=unix://${dindSocket}"
@@ -79,6 +83,12 @@ let
       enabled: false
     container:
       docker_host: unix://${dindSocket}
+      # Release jobs use Docker-in-Docker. The DinD daemon also mounts
+      # ${cacheDir} at this path, so this bind reaches the same persistent
+      # store used by the ordinary CI runner.
+      valid_volumes:
+        - ${cacheDir}
+      options: -v ${cacheDir}:/nix
       privileged: true
       force_pull: false
   '';
