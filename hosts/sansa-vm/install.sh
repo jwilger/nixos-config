@@ -6,7 +6,7 @@ BOOT_DEV="${BOOT_DEV:-/dev/vda1}"
 FLAKE_REF="${FLAKE_REF:-github:jwilger/nixos-config#sansa-vm}"
 
 QUICKSHELL_SUBSTITUTER="https://quickshell.cachix.org"
-QUICKSHELL_KEY="quickshell.cachix.org-1:OJszzthtpAEkFkBD35pIqjL8NlZ1y/I105wP9XFml2s="
+QUICKSHELL_KEY="quickshell.cachix.org-1:OJszzthtpAEkFkBD35pIqjL8NlZ1y/I1O5wP9XFml2s="
 
 mountpoint -q /mnt || sudo mount "$ROOT_DEV" /mnt
 sudo mkdir -p /mnt/boot
