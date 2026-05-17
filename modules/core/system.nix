@@ -134,9 +134,9 @@
   system.stateVersion = "24.11";
   system.autoUpgrade.enable = true;
 
-  catppuccin = {
-    enable = false;
-    flavor = "mocha";
-    accent = "lavender";
-  };
+  # catppuccin = {
+  #   enable = false;
+  #   flavor = "mocha";
+  #   accent = "lavender";
+  # };
 }
