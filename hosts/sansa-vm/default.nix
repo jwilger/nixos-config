@@ -1,7 +1,7 @@
 { lib, username, ... }:
 {
   imports = [
-    /etc/nixos/hardware-configuration.nix
+    ./hardware-configuration.nix
     ./../../modules/core
     ./../../modules/desktop
   ];
