@@ -33,8 +33,14 @@
   # password, ordered after PostgreSQL is up and before the Hindsight container.
   systemd.services.hindsight-pg-init = {
     description = "Enable pgvector + set password for the hindsight DB";
-    after = [ "postgresql.service" ];
-    requires = [ "postgresql.service" ];
+    after = [
+      "postgresql.service"
+      "postgresql-setup.service"
+    ];
+    requires = [
+      "postgresql.service"
+      "postgresql-setup.service"
+    ];
     wantedBy = [ "multi-user.target" ];
     path = [ config.services.postgresql.package ];
     serviceConfig = {
