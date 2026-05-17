@@ -1,6 +1,15 @@
 {
   description = "jwilger's nixos configuration";
 
+  nixConfig = {
+    extra-substituters = [
+      "https://cachix.org"
+    ];
+    extra-trusted-public-keys = [
+      "quickshell.cachix.org-1:OJszzthtpAEkFkBD35pIqjL8NlZ1y/I1O5wP9XFml2s="
+    ];
+  };
+
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     nixpkgs-small.url = "github:NixOS/nixpkgs/nixos-unstable-small";

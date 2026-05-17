@@ -12,9 +12,11 @@
       ];
       substituters = [
         "https://cache.nixos.org"
+        "https://cachix.org"
       ];
       trusted-public-keys = [
         "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
+        "quickshell.cachix.org-1:OJszzthtpAEkFkBD35pIqjL8NlZ1y/I1O5wP9XFml2s="
       ];
       extra-substituters = [
         "https://noctalia.cachix.org"
