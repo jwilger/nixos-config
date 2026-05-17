@@ -1,0 +1,14 @@
+# Replace the two age public keys below before running `sops`:
+#   gregor  — derive from the host SSH key:
+#     nix run nixpkgs#ssh-to-age -- -i /etc/ssh/ssh_host_ed25519_key.pub
+#   jwilger — your personal age key (create with `age-keygen` if you have none;
+#     store the private key at ~/.config/sops/age/keys.txt)
+keys:
+  - &gregor age1qfmu0r2qsklxr4y49e983ksyhcusuet26dxe5qghfzfsetvhefhqk2995d
+  - &jwilger age13ysynz63h2aekwqzdvn55qqk44sddpqh6qndq8rx7rx4xhc9d9fqa6kjyf
+creation_rules:
+  - path_regex: secrets/hindsight\.yaml$
+    key_groups:
+      - age:
+          - *gregor
+          - *jwilger
