@@ -7,19 +7,28 @@
     (modulesPath + "/profiles/qemu-guest.nix")
   ];
 
-  boot.initrd.availableKernelModules = ["xhci_pci" "virtio_pci" "usbhid" "usb_storage" "sr_mod" ];
+  boot.initrd.availableKernelModules = [
+    "xhci_pci"
+    "virtio_pci"
+    "usbhid"
+    "usb_storage"
+    "sr_mod"
+  ];
   boot.initrd.kernelModules = [ ];
   boot.extraModulePackages = [ ];
 
   fileSystems."/" = {
-    device = "/dev/disk/by-uuid/42e196c9-3c4a-4f1a-9f60-819ba90a3df9";
+    device = "/dev/disk/by-uuid/b80e8cd4-d695-45cc-aba6-2a21c4f02c17";
     fsType = "ext4";
   };
 
   fileSystems."/boot" = {
-    device = "/dev/disk/by-uuid/D3B2-1C9D";
+    device = "/dev/disk/by-uuid/FDF8-A284";
     fsType = "vfat";
-    options = [ "fmask=0022" "dmask=0022" ];
+    options = [
+      "fmask=0022"
+      "dmask=0022"
+    ];
   };
 
   networking.useDHCP = lib.mkDefault true;
