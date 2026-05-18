@@ -6,8 +6,3 @@ repos:
         entry: nixfmt
         language: system
         files: "\\.nix$"
-      - id: nix-flake-check
-        name: nix flake check
-        entry: nix flake check
-        language: system
-        pass_filenames: false

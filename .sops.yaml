@@ -12,3 +12,8 @@ creation_rules:
       - age:
           - *gregor
           - *jwilger
+  - path_regex: secrets/forgejo\.yaml$
+    key_groups:
+      - age:
+          - *gregor
+          - *jwilger
