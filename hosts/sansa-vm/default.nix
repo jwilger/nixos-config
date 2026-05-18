@@ -57,7 +57,6 @@
 
   environment.systemPackages = with pkgs; [
     mesa-demos
-    eglinfo
     vulkan-tools
     foot
     wezterm
