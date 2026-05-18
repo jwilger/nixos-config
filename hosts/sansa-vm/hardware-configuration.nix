@@ -10,6 +10,10 @@
   boot.initrd.availableKernelModules = [
     "xhci_pci"
     "virtio_pci"
+    "virtio_blk"
+    "virtio_scsi"
+    "virtio_gpu"
+    "virtio_rng"
     "usbhid"
     "usb_storage"
     "sr_mod"
@@ -36,4 +40,9 @@
   swapDevices = [ ];
 
   nixpkgs.hostPlatform = lib.mkDefault "aarch64-linux";
+
+  hardware.graphics = {
+    enable = true;
+    enable32Bit = false;
+  };
 }

@@ -1,4 +1,9 @@
-{ lib, username, ... }:
+{
+  pkgs,
+  lib,
+  username,
+  ...
+}:
 {
   imports = [
     ./hardware-configuration.nix
@@ -49,4 +54,12 @@
   catppuccin.enable = lib.mkForce false;
 
   home-manager.users.${username}.imports = [ ./../../modules/home/desktop ];
+
+  environment.systemPackages = with pkgs; [
+    mesa-demos
+    eglinfo
+    vulkan-tools
+    foot
+    wezterm
+  ];
 }
