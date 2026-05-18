@@ -24,6 +24,7 @@
       # Development tools that work better via Homebrew on macOS
       "dotnet"
       "llvm"
+      "marksman"
       "pre-commit"
     ];
 

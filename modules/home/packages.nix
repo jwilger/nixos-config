@@ -35,6 +35,7 @@ let
   helixToolingLinux = with pkgs; [
     # macOS uses Homebrew for these tools
     lldb
+    marksman
   ];
 in
 {

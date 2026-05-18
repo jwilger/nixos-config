@@ -36,12 +36,17 @@
       url = "github:Mic92/sops-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    noctalia = {
+      url = "github:noctalia-dev/noctalia-shell";
+    };
   };
 
   outputs =
     {
       catppuccin,
       niri,
+      noctalia,
       nix-darwin,
       nixpkgs,
       self,
