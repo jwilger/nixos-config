@@ -36,6 +36,17 @@
         DEFAULT_ACTIONS_URL = "github";
       };
       webhook.ALLOWED_HOST_LIST = "loopback,external";
+      # Release/issue attachments live on Backblaze B2 (S3-compatible) instead
+      # of local disk. New uploads go straight to B2; existing files must be
+      # moved once with `forgejo migrate-storage` (see notes below).
+      "storage.attachments" = {
+        STORAGE_TYPE = "minio";
+        MINIO_ENDPOINT = "s3.us-west-004.backblazeb2.com";
+        MINIO_BUCKET = "forgejo-release-assets";
+        MINIO_LOCATION = "us-west-004";
+        MINIO_USE_SSL = true;
+        MINIO_BASE_PATH = "attachments/";
+      };
       "repository.signing" = {
         FORMAT = "ssh";
         SIGNING_KEY = "/home/forgejo/.ssh/forgejo_signing.pub";
@@ -48,6 +59,23 @@
         MERGES = "always";
       };
     };
+  };
+
+  # B2 application key for the attachment storage bucket. The forgejo module
+  # injects these into the [storage.attachments] section of app.ini at start,
+  # so the credentials never land in the Nix store.
+  services.forgejo.secrets."storage.attachments" = {
+    MINIO_ACCESS_KEY_ID = config.sops.secrets."forgejo/b2-key-id".path;
+    MINIO_SECRET_ACCESS_KEY = config.sops.secrets."forgejo/b2-app-key".path;
+  };
+
+  sops.secrets."forgejo/b2-key-id" = {
+    sopsFile = ./../../secrets/forgejo.yaml;
+    owner = "forgejo";
+  };
+  sops.secrets."forgejo/b2-app-key" = {
+    sopsFile = ./../../secrets/forgejo.yaml;
+    owner = "forgejo";
   };
 
   # The upstream forgejo module sets ProtectHome=true, which hides /home
