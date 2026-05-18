@@ -42,12 +42,9 @@
     XCURSOR_THEME = "Vanilla-DMZ";
   };
 
-  # Required services for ashell's settings panel (power profile, battery)
+  # Required services for noctalia-shell
   services.power-profiles-daemon.enable = true;
   services.upower.enable = true;
-
-  # PAM service so swaylock can authenticate to unlock the session
-  security.pam.services.swaylock = { };
 
   # Polkit for privilege escalation
   security.polkit.enable = true;
