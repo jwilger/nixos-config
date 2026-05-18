@@ -18,7 +18,7 @@
 
   virtualisation.oci-containers.backend = "docker";
   virtualisation.oci-containers.containers.hindsight = {
-    image = "ghcr.io/vectorize-io/hindsight:slim";
+    image = "ghcr.io/vectorize-io/hindsight:latest-slim";
     environmentFiles = [ config.sops.templates."hindsight.env".path ];
     environment = {
       HINDSIGHT_API_HOST = "127.0.0.1";
