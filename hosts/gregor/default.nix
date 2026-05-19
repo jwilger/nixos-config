@@ -24,6 +24,7 @@ in
     ./../../modules/services/forgejo-runner.nix
     ./../../modules/services/caddy.nix
     ./../../modules/services/hindsight.nix
+    ./../../modules/services/auto-review.nix
   ];
 
   powerManagement.cpuFreqGovernor = "performance";

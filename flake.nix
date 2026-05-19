@@ -2,6 +2,8 @@
   description = "jwilger's nixos configuration";
 
   inputs = {
+    auto-review.url = "git+https://git.johnwilger.com/Slipstream/auto_review?ref=main";
+
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     nixpkgs-small.url = "github:NixOS/nixpkgs/nixos-unstable-small";
 
@@ -44,6 +46,7 @@
 
   outputs =
     {
+      auto-review,
       catppuccin,
       niri,
       noctalia,
@@ -57,6 +60,7 @@
       nixosConfigurations = {
         gregor = nixpkgs.lib.nixosSystem {
           modules = [
+            auto-review.nixosModules.default
             catppuccin.nixosModules.catppuccin
             niri.nixosModules.niri
             sops-nix.nixosModules.sops
