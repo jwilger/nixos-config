@@ -2,6 +2,49 @@
 {
   catppuccin.tmux.enable = false;
 
+  home.file.".gitmux.conf".text = ''
+    tmux:
+        symbols:
+            branch: "⎇ "
+            hashprefix: ":"
+            ahead: ↑·
+            behind: ↓·
+            staged: "● "
+            conflict: "✖ "
+            modified: "✚ "
+            untracked: "… "
+            stashed: "⚑ "
+            insertions: Σ
+            deletions: Δ
+            clean: ✔
+
+        styles:
+            clear: ""
+            state: ""
+            branch: ""
+            remote: ""
+            divergence: ""
+            staged: ""
+            conflict: ""
+            modified: ""
+            untracked: ""
+            stashed: ""
+            insertions: ""
+            deletions: ""
+            clean: ""
+
+        layout: [branch, remote-branch, divergence, " - ", flags]
+
+        options:
+            branch_max_len: 0
+            branch_trim: right
+            ellipsis: …
+            hide_clean: false
+            swap_divergence: false
+            divergence_space: false
+            flags_without_count: false
+  '';
+
   programs.tmux = {
     enable = true;
     mouse = true;
@@ -72,7 +115,7 @@
       set -g status-right-length 100
       set -g status-left-length 100
       set -g status-left ""
-      set -g @catppuccin_gitmux_text ' #(${lib.getExe pkgs.gitmux} "#{pane_current_path}")'
+      set -g @catppuccin_gitmux_text ' #(${lib.getExe pkgs.gitmux} -cfg "$HOME/.gitmux.conf" "#{pane_current_path}" | ${lib.getExe pkgs.gnused} "s/#\[fg=default,bg=default\]\$//")'
       set -g @catppuccin_date_time_text " %H:%M"
       set -g status-right "#{E:@catppuccin_status_gitmux}"
       set -ag status-right "#{E:@catppuccin_status_session}"
