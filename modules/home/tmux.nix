@@ -42,6 +42,9 @@
       # Status bar refresh interval
       set -g status-interval 5
 
+      # Refresh connection-specific environment values when attaching.
+      set -g update-environment "DISPLAY KRB5CCNAME MSYSTEM SSH_ASKPASS SSH_AUTH_SOCK SSH_AGENT_PID SSH_CONNECTION WINDOWID XAUTHORITY"
+
       # Zoom
       bind z resize-pane -Z
 

@@ -30,14 +30,9 @@
 
     initContent = ''
       local_agent_sock="$HOME/.ssh/agent-local.sock"
-      forwarded_agent_sock="$HOME/.ssh/agent-forwarded.sock"
 
       if [[ -L "$local_agent_sock" ]] && [[ ! -S "$local_agent_sock" ]]; then
           rm -f "$local_agent_sock"
-      fi
-
-      if [[ -L "$forwarded_agent_sock" ]] && [[ ! -S "$forwarded_agent_sock" ]]; then
-          rm -f "$forwarded_agent_sock"
       fi
 
       # 1Password agent socket lives at different paths on Linux vs macOS
@@ -54,14 +49,6 @@
 
       if [[ -n "$SSH_CONNECTION" ]]; then
           export OP_BIOMETRIC_UNLOCK_ENABLED=false
-
-          if [[ -n "$SSH_AUTH_SOCK" ]] && [[ "$SSH_AUTH_SOCK" != "$forwarded_agent_sock" ]] && [[ -S "$SSH_AUTH_SOCK" ]]; then
-              ln -sfn "$SSH_AUTH_SOCK" "$forwarded_agent_sock"
-          fi
-
-          if [[ -S "$forwarded_agent_sock" ]]; then
-              export SSH_AUTH_SOCK="$forwarded_agent_sock"
-          fi
       elif [[ -S "$local_agent_sock" ]]; then
           export SSH_AUTH_SOCK="$local_agent_sock"
       fi
