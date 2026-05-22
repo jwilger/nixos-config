@@ -66,6 +66,7 @@
       # Utils
       cat = "bat";
       open = "xdg-open";
+      ssh = "kitten ssh";
 
       # Nixos
       ns = "nix-shell --run zsh";
