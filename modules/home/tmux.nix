@@ -81,6 +81,7 @@
     extraConfig = ''
       # so that shift-enter works in agent CLIs
       set -g extended-keys on
+      set -g extended-keys-format csi-u
 
       # Renumber windows when one is closed
       set -g renumber-windows on
