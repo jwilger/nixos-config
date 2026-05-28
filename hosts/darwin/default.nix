@@ -6,6 +6,7 @@
 
   # macOS system settings
   networking.hostName = "darwin";
+  nixpkgs.hostPlatform = "aarch64-darwin";
 
   # Timezone (matching your Linux config)
   time.timeZone = "America/Los_Angeles";

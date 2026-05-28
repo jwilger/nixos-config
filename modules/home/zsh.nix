@@ -1,4 +1,4 @@
-{ config, host, ... }:
+{ config, host, lib, pkgs, ... }:
 {
   programs.zsh = {
     enable = true;
@@ -66,7 +66,6 @@
       # Utils
       cat = "bat";
       open = "xdg-open";
-      ssh = "kitten ssh";
 
       # Nixos
       ns = "nix-shell --run zsh";
@@ -86,6 +85,8 @@
       gci = "git commit";
       gco = "git checkout";
 
+    } // lib.optionalAttrs (!pkgs.stdenv.isDarwin) {
+      ssh = "kitten ssh";
     };
   };
 
