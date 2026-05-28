@@ -33,8 +33,12 @@
       # Window Management
       # "aerospace" # Tiling window manager (alternative to Rectangle)
 
+      # Fonts
+      "font-jetbrains-mono-nerd-font"
+
       # Utilities
       "iterm2" # Terminal emulator
+      "kitty" # Terminal emulator (matches gregor); Launchpad-visible alongside the nix-installed CLI
       "tuple" # Pair programming tool
 
       # Browsers
