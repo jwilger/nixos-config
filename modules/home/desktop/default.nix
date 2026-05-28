@@ -5,7 +5,7 @@
     (import ./niri)
     (import ./chrome.nix)
     (import ./insync)
-    (import ./kitty.nix)
+    (import ./../kitty.nix)
     (import ./onepassword.nix)
     (import ./spotify.nix)
     (import ./slack.nix)
