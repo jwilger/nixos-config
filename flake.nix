@@ -45,16 +45,15 @@
   };
 
   outputs =
-    {
-      auto-review,
-      catppuccin,
-      niri,
-      noctalia,
-      nix-darwin,
-      nixpkgs,
-      self,
-      sops-nix,
-      ...
+    { auto-review
+    , catppuccin
+    , niri
+    , noctalia
+    , nix-darwin
+    , nixpkgs
+    , self
+    , sops-nix
+    , ...
     }@inputs:
     {
       nixosConfigurations = {
@@ -151,6 +150,19 @@
               darwin-darwin = self.darwinConfigurations.darwin.system;
               darwin-sansa = self.darwinConfigurations.sansa.system;
               darwin-bender = self.darwinConfigurations.bender.system;
+              no-kitten-ssh-alias-on-darwin =
+                let
+                  darwinHosts = builtins.attrNames self.darwinConfigurations;
+                  hostsWithSshAlias =
+                    builtins.filter
+                      (
+                        host:
+                        self.darwinConfigurations.${host}.config.home-manager.users.jwilger.programs.zsh.shellAliases
+                        ? ssh
+                      )
+                      darwinHosts;
+                in
+                assert hostsWithSshAlias == [ ]; pkgs.emptyDirectory;
             })
           );
     };
