@@ -8,6 +8,7 @@ let
   dindStateDir = "/var/lib/forgejo-runner-dind";
   dindSocket = "${dindRunDir}/docker.sock";
   dindContainerName = "forgejo-runner-dind";
+  dindNetworkName = "forgejo-runner-dind";
   dindImage = "docker.io/library/docker:27-dind";
   package = pkgs.forgejo-runner;
   dindExecStart = lib.concatStringsSep " " [
@@ -16,7 +17,7 @@ let
     "--rm"
     "--name=${dindContainerName}"
     "--privileged"
-    "--network=bridge"
+    "--network=${dindNetworkName}"
     "--env=DOCKER_TLS_CERTDIR="
     "--volume=${dindRunDir}:${dindRunDir}"
     "--volume=${dindStateDir}:/var/lib/docker"
@@ -239,6 +240,8 @@ in
       install -d -m 0750 -o root -g forgejo-runner-release ${dindRunDir}
       install -d -m 0700 -o root -g root ${dindStateDir}
       rm -f ${dindSocket}
+      docker network inspect ${dindNetworkName} >/dev/null 2>&1 \
+        || docker network create ${dindNetworkName} >/dev/null
       docker rm -f ${dindContainerName} >/dev/null 2>&1 || true
     '';
 

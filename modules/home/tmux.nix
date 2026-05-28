@@ -83,6 +83,10 @@
       set -g extended-keys on
       set -g extended-keys-format csi-u
 
+      # Allow programs inside tmux to copy through kitty using OSC-52.
+      set -g set-clipboard on
+      set -as terminal-features ',xterm-kitty:clipboard'
+
       # Renumber windows when one is closed
       set -g renumber-windows on
 
