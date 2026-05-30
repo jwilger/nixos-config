@@ -45,15 +45,16 @@
   };
 
   outputs =
-    { auto-review
-    , catppuccin
-    , niri
-    , noctalia
-    , nix-darwin
-    , nixpkgs
-    , self
-    , sops-nix
-    , ...
+    {
+      auto-review,
+      catppuccin,
+      niri,
+      noctalia,
+      nix-darwin,
+      nixpkgs,
+      self,
+      sops-nix,
+      ...
     }@inputs:
     {
       nixosConfigurations = {
@@ -145,6 +146,16 @@
               nixos-gregor = self.nixosConfigurations.gregor.config.system.build.toplevel;
               nixos-sansa-vm = self.nixosConfigurations.sansa-vm.config.system.build.toplevel;
               nixos-vm = self.nixosConfigurations.vm.config.system.build.toplevel;
+              no-kitten-ssh-alias-on-nixos =
+                let
+                  nixosHosts = builtins.attrNames self.nixosConfigurations;
+                  hostsWithSshAlias = builtins.filter (
+                    host:
+                    self.nixosConfigurations.${host}.config.home-manager.users.jwilger.programs.zsh.shellAliases ? ssh
+                  ) nixosHosts;
+                in
+                assert hostsWithSshAlias == [ ];
+                pkgs.emptyDirectory;
             })
             // (nixpkgs.lib.optionalAttrs pkgs.stdenv.isDarwin {
               darwin-darwin = self.darwinConfigurations.darwin.system;
@@ -153,16 +164,13 @@
               no-kitten-ssh-alias-on-darwin =
                 let
                   darwinHosts = builtins.attrNames self.darwinConfigurations;
-                  hostsWithSshAlias =
-                    builtins.filter
-                      (
-                        host:
-                        self.darwinConfigurations.${host}.config.home-manager.users.jwilger.programs.zsh.shellAliases
-                        ? ssh
-                      )
-                      darwinHosts;
+                  hostsWithSshAlias = builtins.filter (
+                    host:
+                    self.darwinConfigurations.${host}.config.home-manager.users.jwilger.programs.zsh.shellAliases ? ssh
+                  ) darwinHosts;
                 in
-                assert hostsWithSshAlias == [ ]; pkgs.emptyDirectory;
+                assert hostsWithSshAlias == [ ];
+                pkgs.emptyDirectory;
             })
           );
     };
