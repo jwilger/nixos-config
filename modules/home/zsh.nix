@@ -1,4 +1,4 @@
-{ config, host, lib, pkgs, ... }:
+{ config, host, ... }:
 {
   programs.zsh = {
     enable = true;
@@ -84,9 +84,6 @@
       gps = "git push";
       gci = "git commit";
       gco = "git checkout";
-
-    } // lib.optionalAttrs (!pkgs.stdenv.isDarwin) {
-      ssh = "kitten ssh";
     };
   };
 
