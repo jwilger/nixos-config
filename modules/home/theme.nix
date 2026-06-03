@@ -1,7 +1,8 @@
 { ... }:
 {
   catppuccin = {
-    enable = false;
+    enable = true;
+    autoEnable = false;
     helix.enable = false;
     starship.enable = false;
     flavor = "mocha";
