@@ -125,12 +125,24 @@
 
   i18n.defaultLocale = "en_US.UTF-8";
   nixpkgs.config.allowUnfree = true;
+  nixpkgs.overlays = [
+    (_: prev: {
+      # pipx 1.8.0's tests currently disagree with packaging's normalized
+      # direct-reference spacing; keep the package available while nixpkgs catches up.
+      pythonPackagesExtensions = prev.pythonPackagesExtensions ++ [
+        (_: pythonPrev: {
+          pipx = pythonPrev.pipx.overridePythonAttrs (_: {
+            doCheck = false;
+          });
+        })
+      ];
+    })
+  ];
   system.stateVersion = "24.11";
   system.autoUpgrade.enable = true;
 
-  # catppuccin = {
-  #   enable = false;
-  #   flavor = "mocha";
-  #   accent = "lavender";
-  # };
+  catppuccin = {
+    enable = lib.mkDefault true;
+    autoEnable = lib.mkDefault false;
+  };
 }

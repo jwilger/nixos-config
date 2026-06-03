@@ -1,7 +1,8 @@
-{ lib
-, pkgs
-, username
-, ...
+{
+  lib,
+  pkgs,
+  username,
+  ...
 }:
 let
   isX86_64Linux = pkgs.stdenv.hostPlatform.system == "x86_64-linux";
@@ -39,6 +40,7 @@ in
 
   catppuccin = {
     enable = true;
+    autoEnable = true;
     flavor = "mocha";
     accent = "lavender";
   };

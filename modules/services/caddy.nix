@@ -11,5 +11,8 @@
     virtualHosts."auto-review.johnwilger.com".extraConfig = ''
       reverse_proxy 127.0.0.1:8080
     '';
+    virtualHosts."comfyui.johnwilger.com".extraConfig = ''
+      reverse_proxy 127.0.0.1:8188
+    '';
   };
 }
