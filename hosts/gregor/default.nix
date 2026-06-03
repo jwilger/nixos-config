@@ -25,7 +25,6 @@ in
     ./../../modules/services/caddy.nix
     ./../../modules/services/hindsight.nix
     ./../../modules/services/auto-review.nix
-    ./../../modules/services/comfyui.nix
   ];
 
   powerManagement.cpuFreqGovernor = "performance";
@@ -122,11 +121,6 @@ in
         enable = false;
       };
     };
-  };
-
-  services.comfyui = {
-    enable = true;
-    # Gated to gregor via this host file; no explicit host check needed.
   };
 
   services.usbmuxd.enable = true;

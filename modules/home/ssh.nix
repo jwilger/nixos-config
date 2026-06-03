@@ -4,23 +4,26 @@
     enable = true;
     enableDefaultConfig = false;
 
-    settings = {
+    # Match blocks for specific hosts
+    matchBlocks = {
       "*" = {
-        ForwardAgent = true;
+        forwardAgent = true;
       };
 
       "github.com" = {
-        User = "git";
+        user = "git";
       };
 
       "ubuntu-2510-dev" = {
-        HostName = "127.0.0.1";
-        Port = 60022;
-        User = "jwilger";
-        ForwardAgent = true;
-        IdentityAgent = "/Users/jwilger/.ssh/agent-local.sock";
-        PreferredAuthentications = "publickey";
-        StrictHostKeyChecking = "accept-new";
+        host = "127.0.0.1";
+        port = 60022;
+        user = "jwilger";
+        forwardAgent = true;
+        identityAgent = "/Users/jwilger/.ssh/agent-local.sock";
+        extraOptions = {
+          PreferredAuthentications = "publickey";
+          StrictHostKeyChecking = "accept-new";
+        };
       };
     };
   };
