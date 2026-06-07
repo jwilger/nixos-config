@@ -4,6 +4,7 @@ let
   ciStateDir = "/var/lib/forgejo-runner";
   releaseStateDir = "/var/lib/forgejo-runner-release";
   cacheDir = "/var/cache/forgejo-runner-nix";
+  cacheStoreUrl = "local?real=${cacheDir}/store&state=${cacheDir}/var/nix&log=${cacheDir}/var/log/nix";
   dindRunDir = "/run/forgejo-runner-dind";
   dindStateDir = "/var/lib/forgejo-runner-dind";
   dindSocket = "${dindRunDir}/docker.sock";
@@ -172,6 +173,7 @@ let
         requires
         wants
         ;
+      unitConfig.RequiresMountsFor = [ cacheDir ];
       wantedBy = [ "multi-user.target" ];
 
       path = runnerPath;
@@ -234,6 +236,10 @@ in
       pkgs.docker
     ];
     requires = [ "docker.service" ];
+    unitConfig.RequiresMountsFor = [
+      cacheDir
+      dindStateDir
+    ];
     wantedBy = [ "multi-user.target" ];
 
     preStart = ''
@@ -266,6 +272,30 @@ in
       ExecStop = "-${pkgs.docker}/bin/docker stop ${dindContainerName}";
       Restart = "on-failure";
       RestartSec = lib.mkForce "10s";
+    };
+  };
+
+  systemd.services.forgejo-runner-nix-cache-gc = {
+    description = "Garbage collect Forgejo runner nested Nix store";
+    unitConfig.RequiresMountsFor = [ cacheDir ];
+    path = [ pkgs.nix ];
+    serviceConfig = {
+      Type = "oneshot";
+      IOSchedulingClass = "idle";
+      Nice = 19;
+    };
+    script = ''
+      nix store gc --store '${cacheStoreUrl}'
+    '';
+  };
+
+  systemd.timers.forgejo-runner-nix-cache-gc = {
+    description = "Daily Forgejo runner nested Nix store garbage collection";
+    wantedBy = [ "timers.target" ];
+    timerConfig = {
+      OnCalendar = "*-*-* 02:30:00";
+      Persistent = true;
+      RandomizedDelaySec = "15m";
     };
   };
 

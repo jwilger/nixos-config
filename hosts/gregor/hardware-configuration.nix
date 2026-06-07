@@ -70,6 +70,18 @@
     ];
   };
 
+  # Forgejo Actions jobs mount this cache as /nix inside containers. It is a
+  # large, regenerable nested Nix store, so keep it off the smaller NVMe root.
+  fileSystems."/var/cache/forgejo-runner-nix" = {
+    device = "/dev/disk/by-label/home-pool";
+    fsType = "btrfs";
+    options = [
+      "compress=zstd"
+      "noatime"
+      "subvol=.system-subvolumes/forgejo-runner-nix"
+    ];
+  };
+
   fileSystems."/archive" = {
     device = "/dev/disk/by-label/archive";
     fsType = "btrfs";
