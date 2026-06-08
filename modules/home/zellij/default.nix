@@ -1,11 +1,20 @@
-{ pkgs, ... }:
+{
+  inputs,
+  pkgs,
+  ...
+}:
+let
+  zjstatus = inputs.zjstatus.packages.${pkgs.stdenv.hostPlatform.system}.default;
+in
 {
   home.packages = with pkgs; [
     zellij
   ];
 
   xdg.configFile."zellij/config.kdl".source = ./config.kdl;
-  xdg.configFile."zellij/layouts/default.kdl".source = ./layout.kdl;
+  xdg.configFile."zellij/layouts/default.kdl".source = pkgs.replaceVars ./layout.kdl {
+    zjstatus_wasm = "${zjstatus}/bin/zjstatus.wasm";
+  };
   # Zellij-specific shell aliases
   programs.zsh.shellAliases = {
     # Attach or create session named after current directory
