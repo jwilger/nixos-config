@@ -13,7 +13,7 @@ in
 
   xdg.configFile."zellij/config.kdl".source = ./config.kdl;
   xdg.configFile."zellij/layouts/default.kdl".source = pkgs.replaceVars ./layout.kdl {
-    zjstatus_wasm = "${zjstatus}/bin/zjstatus.wasm";
+    zjstatus_wasm = "file:${zjstatus}/bin/zjstatus.wasm";
   };
   # Zellij-specific shell aliases
   programs.zsh.shellAliases = {
