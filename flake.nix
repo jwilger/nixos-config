@@ -39,6 +39,10 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    zjstatus = {
+      url = "github:dj95/zjstatus/053898e1e245c0df9aaaa783710e88e2926fbbb2";
+    };
+
     noctalia = {
       url = "github:noctalia-dev/noctalia-shell";
     };
