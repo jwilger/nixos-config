@@ -3,7 +3,7 @@ theme "catppuccin-mocha"
 env {
     COLORTERM "truecolor"
 }
-default_layout "default"
+default_layout "compact-with-datetime"
 mouse_mode true
 mirror_session true
 pane_frames true
