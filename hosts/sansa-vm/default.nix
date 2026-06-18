@@ -51,7 +51,10 @@
     services.timesyncd.enable = lib.mkForce true;
   };
 
-  catppuccin.enable = lib.mkForce false;
+  catppuccin = {
+    enable = lib.mkForce false;
+    autoEnable = lib.mkForce false;
+  };
 
   home-manager.users.${username}.imports = [ ./../../modules/home/desktop ];
 
