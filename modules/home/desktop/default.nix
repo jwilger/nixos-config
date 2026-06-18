@@ -3,8 +3,8 @@
   imports = [
     (import ./../default.nix)
     (import ./niri)
-    (import ./chrome.nix)
     (import ./insync)
+    (import ./nignite.nix)
     (import ./../kitty.nix)
     (import ./onepassword.nix)
     (import ./spotify.nix)
