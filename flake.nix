@@ -44,7 +44,10 @@
     };
 
     noctalia = {
-      url = "github:noctalia-dev/noctalia-shell";
+      # Pinned to pre-v5 release; v5 renamed programs.noctalia-shell → programs.noctalia
+      # and replaced the JSON settings schema with TOML. Migrate modules/home/desktop/niri/
+      # before bumping this pin.
+      url = "github:noctalia-dev/noctalia-shell/da95089dfe5148ee7fb33b3faa314e86de1e6f25";
     };
   };
 
