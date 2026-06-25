@@ -7,6 +7,7 @@
     settings = {
       "*" = {
         ForwardAgent = true;
+        IdentityAgent = "~/.ssh/ssh_auth_sock";
       };
 
       "github.com" = {

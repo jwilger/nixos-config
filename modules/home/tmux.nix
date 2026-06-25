@@ -96,6 +96,8 @@
       # Keep SSH agent access stable across local and remote attaches.
       set-environment -g SSH_AUTH_SOCK "$HOME/.ssh/ssh_auth_sock"
 
+      set-hook -g client-attached 'run-shell "$HOME/.local/bin/ssh-agent-bridge >/dev/null 2>&1 || true"'
+
       # Refresh connection-specific environment values when attaching.
       set -g update-environment "DISPLAY KRB5CCNAME MSYSTEM SSH_ASKPASS SSH_AGENT_PID SSH_CONNECTION WINDOWID XAUTHORITY"
 

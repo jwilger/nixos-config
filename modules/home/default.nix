@@ -12,6 +12,7 @@
   ++ [ (import ./theme.nix) ] # general theme settings
   ++ [ (import ./helix) ] # helix editor
   ++ [ (import ./packages.nix) ] # other packages
+  ++ [ (import ./ssh-agent-bridge.nix) ] # stable SSH agent socket bridge
   ++ [ (import ./ssh.nix) ] # SSH configuration
   ++ [ (import ./starship.nix) ] # shell prompt
   ++ [ (import ./tmux.nix) ] # terminal multiplexer (tmux)

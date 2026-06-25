@@ -29,33 +29,14 @@
     };
 
     initContent = ''
-      stable_agent_sock="$HOME/.ssh/ssh_auth_sock"
-
-      if [[ -L "$stable_agent_sock" ]] && [[ ! -S "$stable_agent_sock" ]]; then
-          rm -f "$stable_agent_sock"
-      fi
-
-      # 1Password agent socket lives at different paths on Linux vs macOS
-      op_agent_sock=""
-      if [[ -S "$HOME/.1password/agent.sock" ]]; then
-          op_agent_sock="$HOME/.1password/agent.sock"
-      elif [[ -S "$HOME/Library/Group Containers/2BUA8C4S2C.com.1password/t/agent.sock" ]]; then
-          op_agent_sock="$HOME/Library/Group Containers/2BUA8C4S2C.com.1password/t/agent.sock"
-      fi
-
       if [[ -n "$SSH_CONNECTION" ]]; then
           export OP_BIOMETRIC_UNLOCK_ENABLED=false
-
-          if [[ -n "$SSH_AUTH_SOCK" ]] && [[ "$SSH_AUTH_SOCK" != "$stable_agent_sock" ]] && [[ -S "$SSH_AUTH_SOCK" ]]; then
-              ln -sfn "$SSH_AUTH_SOCK" "$stable_agent_sock"
-          fi
-      elif [[ -n "$op_agent_sock" ]]; then
-          ln -sfn "$op_agent_sock" "$stable_agent_sock"
+          "$HOME/.local/bin/ssh-agent-bridge" remote >/dev/null 2>&1 || true
+      else
+          "$HOME/.local/bin/ssh-agent-bridge" local >/dev/null 2>&1 || true
       fi
 
-      if [[ -S "$stable_agent_sock" ]]; then
-          export SSH_AUTH_SOCK="$stable_agent_sock"
-      fi
+      export SSH_AUTH_SOCK="$HOME/.ssh/ssh_auth_sock"
 
       # Zellij 0.43.1+ natively manages terminal title with session name.
       # Shell-based title setting is disabled as zellij intercepts OSC sequences.
