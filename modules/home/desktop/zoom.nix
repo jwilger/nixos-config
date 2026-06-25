@@ -1,13 +1,13 @@
-{ config
-, lib
-, pkgs
-, ...
+{
+  config,
+  lib,
+  pkgs,
+  ...
 }:
 let
   isX86_64Linux = pkgs.stdenv.hostPlatform.system == "x86_64-linux";
 in
-lib.mkIf isX86_64Linux
-{
+lib.mkIf isX86_64Linux {
   # Install Zoom
   home.packages = with pkgs; [
     zoom-us
@@ -60,7 +60,10 @@ lib.mkIf isX86_64Linux
     X-KDE-Protocols=zoommtg;zoomus;tel;callto;zoomphonecall;zoomphonesms;zoomcontactcentercall;
   '';
 
-  # Register Zoom as the handler for zoom protocol URLs
+  # Register Zoom as the handler for zoom protocol URLs.
+  # NOTE: this only writes the [Default Applications] entry in mimeapps.list,
+  # which is what `xdg-mime`/`xdg-open` consult. It is NOT enough on its own to
+  # make the SSO callback work in Chrome (see the activation script below).
   xdg.mimeApps = {
     enable = true;
     defaultApplications = {
@@ -68,6 +71,29 @@ lib.mkIf isX86_64Linux
       "x-scheme-handler/zoomus" = "Zoom.desktop";
     };
   };
+
+  # Regenerate ~/.local/share/applications/mimeinfo.cache so the zoom:// SSO
+  # callback works in Chrome.
+  #
+  # Root cause of the "no applications to open the link" window:
+  # Chrome routes the zoommtg:// redirect through the xdg-desktop-portal
+  # OpenURI interface, not through xdg-open. The portal builds its launch /
+  # app-chooser list from g_app_info_get_recommended_for_type() — i.e. the
+  # "recommended" apps, which come from the mimeinfo.cache sitting NEXT TO the
+  # .desktop file that wins resolution. Our handler override (Zoom.desktop) is
+  # installed into ~/.local/share/applications via xdg.dataFile above, but
+  # nothing (neither NixOS nor home-manager) ever generates a mimeinfo.cache in
+  # that directory. Result: `gio mime x-scheme-handler/zoommtg` reports Zoom as
+  # the *default* but with "No recommended applications", so the portal opens an
+  # empty app chooser -> "no applications to open the link".
+  #
+  # Building mimeinfo.cache here makes Zoom appear as a Registered + Recommended
+  # handler, which is exactly what the OpenURI portal needs. Runs after files are
+  # linked so the Zoom.desktop symlink already exists.
+  home.activation.zoomMimeinfoCache = lib.hm.dag.entryAfter [ "linkGeneration" ] ''
+    run ${pkgs.desktop-file-utils}/bin/update-desktop-database -q \
+      "${config.xdg.dataHome}/applications" || true
+  '';
 
   programs.zsh.shellAliases.zoom = "QT_QPA_PLATFORM=wayland ${config.home.profileDirectory}/bin/zoom";
 }
