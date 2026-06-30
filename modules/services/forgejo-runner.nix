@@ -278,14 +278,40 @@ in
   systemd.services.forgejo-runner-nix-cache-gc = {
     description = "Garbage collect Forgejo runner nested Nix store";
     unitConfig.RequiresMountsFor = [ cacheDir ];
-    path = [ pkgs.nix ];
+    path = [
+      pkgs.nix
+      pkgs.coreutils
+    ];
     serviceConfig = {
       Type = "oneshot";
       IOSchedulingClass = "idle";
       Nice = 19;
     };
+    # Size-gated GC. The old behaviour ran an unconditional `nix store gc`,
+    # which deletes every path not reachable from a GC root. CI uses
+    # `nix develop` / `nix build`, which leave NO persistent roots, so the
+    # warm dev-shell closures (nodejs, rust, …) were wiped every night.
+    # Job containers can neither rebuild (sandbox refuses the world-writable
+    # container `/`) nor reliably substitute, so the next CI run failed
+    # realizing whatever the sweep had just evicted.
+    #
+    # The store now lives on its own ${cacheDir} disk (its own spindle, not
+    # the NVMe the GC was originally added to relieve), so a nightly wipe to
+    # reclaim a few hundred MiB is all cost and no benefit. Instead: only
+    # collect once the store grows past a budget, and then only trim the
+    # excess with `--max` so most of the warm set survives. At normal size
+    # this is a no-op and the warm closures persist indefinitely.
     script = ''
-      nix store gc --store '${cacheStoreUrl}'
+      budget=$(( 50 * 1024 * 1024 * 1024 ))   # collect only above 50 GiB
+      target=$(( 40 * 1024 * 1024 * 1024 ))   # trim back down toward 40 GiB
+      size=$(du -sb '${cacheDir}/store' | cut -f1)
+      if [ "$size" -gt "$budget" ]; then
+        free=$(( size - target ))
+        echo "nested store is $size bytes (> $budget); freeing up to $free bytes"
+        nix store gc --store '${cacheStoreUrl}' --max "$free"
+      else
+        echo "nested store is $size bytes (<= $budget); skipping GC"
+      fi
     '';
   };
 
