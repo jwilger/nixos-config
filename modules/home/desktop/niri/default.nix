@@ -682,6 +682,21 @@ in
     };
   };
 
+  # Keep Noctalia's GUI-editable files outside the Nix store. The upstream
+  # Home Manager module normally renders these into immutable store paths,
+  # which causes GUI changes to be replaced on every activation.
+  xdg.configFile = {
+    "noctalia/colors.json".source = lib.mkForce (
+      config.lib.file.mkOutOfStoreSymlink "/etc/nixos/modules/home/desktop/niri/noctalia/colors.json"
+    );
+    "noctalia/plugins.json".source = lib.mkForce (
+      config.lib.file.mkOutOfStoreSymlink "/etc/nixos/modules/home/desktop/niri/noctalia/plugins.json"
+    );
+    "noctalia/settings.json".source = lib.mkForce (
+      config.lib.file.mkOutOfStoreSymlink "/etc/nixos/modules/home/desktop/niri/noctalia/settings.json"
+    );
+  };
+
   # Niri configuration via niri-flake home-manager module
   programs.niri = {
     settings = {
