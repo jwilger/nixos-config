@@ -4,8 +4,14 @@ let
   # and LSPs (rust-analyzer, gopls, elixir-ls, haskell-language-server,
   # terraform-ls, texlab, typescript-language-server, zls, etc.) and the
   # corresponding compilers (go, ruby, elixir, terraform, cargo) come
-  # from each project's flake.nix via direnv. nodejs and python live
-  # globally because Claude Code hooks shell out to them.
+  # from each project's flake.nix via direnv. nodejs and a small Python
+  # runtime live globally because agent hooks and skill validators shell
+  # out to them.
+  agentPython = pkgs.python312.withPackages (
+    python-pkgs: with python-pkgs; [
+      pyyaml
+    ]
+  );
   helixTooling = with pkgs; [
     awk-language-server
     bash-language-server
@@ -47,11 +53,14 @@ in
         # Toolchains (cargo, etc.) intentionally dropped: they live in
         # per-project flake.nix files and are activated by direnv. For
         # one-off scripts use `nix run nixpkgs#<pkg> -- ...`.
-        # nodejs + python stay global — Claude Code hooks need them.
+        # nodejs + agentPython stay global — Claude Code/Codex hooks and
+        # skill validators need them.
         _1password-cli
+        agentPython
         man-pages
         cbonsai # terminal screensaver
         cmatrix
+        curl
         delta
         entr # perform action when file change
         eza # ls replacement
@@ -70,13 +79,15 @@ in
         nix-prefetch-github
         nodejs_22 # Claude Code hooks
         openssl
-        python312 # Claude Code hooks
         ripgrep
         rtk # reduce token use by llm cli tools
         statix
         tdf # cli pdf viewer
+        tree
         unzip
         uv
+        yq-go
+        zip
       ]
       # Linux-only packages
       ++ lib.optionals pkgs.stdenv.isLinux [

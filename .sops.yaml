@@ -22,3 +22,8 @@ creation_rules:
       - age:
           - *gregor
           - *jwilger
+  - path_regex: secrets/github-runner\.yaml$
+    key_groups:
+      - age:
+          - *gregor
+          - *jwilger

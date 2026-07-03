@@ -8,14 +8,9 @@
     enable = true;
     extensions = ps: [ ps.pgvector ];
     ensureDatabases = [
-      "forgejo"
       "hindsight"
     ];
     ensureUsers = [
-      {
-        name = "forgejo";
-        ensureDBOwnership = true;
-      }
       {
         name = "hindsight";
         ensureDBOwnership = true;
