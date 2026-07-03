@@ -1,4 +1,11 @@
-{ ... }:
+{ pkgs, ... }:
+let
+  onePasswordAgentSock =
+    if pkgs.stdenv.isDarwin then
+      "~/Library/Group\\ Containers/2BUA8C4S2C.com.1password/t/agent.sock"
+    else
+      "~/.1password/agent.sock";
+in
 {
   programs.ssh = {
     enable = true;
@@ -7,7 +14,7 @@
     settings = {
       "*" = {
         ForwardAgent = true;
-        IdentityAgent = "~/.ssh/ssh_auth_sock";
+        IdentityAgent = onePasswordAgentSock;
       };
 
       "github.com" = {

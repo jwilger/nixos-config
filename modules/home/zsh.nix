@@ -1,4 +1,16 @@
-{ config, host, ... }:
+{
+  config,
+  host,
+  pkgs,
+  ...
+}:
+let
+  onePasswordAgentSock =
+    if pkgs.stdenv.isDarwin then
+      "$HOME/Library/Group Containers/2BUA8C4S2C.com.1password/t/agent.sock"
+    else
+      "$HOME/.1password/agent.sock";
+in
 {
   programs.zsh = {
     enable = true;
@@ -31,12 +43,9 @@
     initContent = ''
       if [[ -n "$SSH_CONNECTION" ]]; then
           export OP_BIOMETRIC_UNLOCK_ENABLED=false
-          "$HOME/.local/bin/ssh-agent-bridge" remote >/dev/null 2>&1 || true
       else
-          "$HOME/.local/bin/ssh-agent-bridge" local >/dev/null 2>&1 || true
+          export SSH_AUTH_SOCK="${onePasswordAgentSock}"
       fi
-
-      export SSH_AUTH_SOCK="$HOME/.ssh/ssh_auth_sock"
 
       # Zellij 0.43.1+ natively manages terminal title with session name.
       # Shell-based title setting is disabled as zellij intercepts OSC sequences.
