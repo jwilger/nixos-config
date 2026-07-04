@@ -44,10 +44,10 @@
     };
 
     noctalia = {
-      # Pinned to pre-v5 release; v5 renamed programs.noctalia-shell → programs.noctalia
-      # and replaced the JSON settings schema with TOML. Migrate modules/home/desktop/niri/
-      # before bumping this pin.
-      url = "github:noctalia-dev/noctalia-shell/da95089dfe5148ee7fb33b3faa314e86de1e6f25";
+      # Use upstream's Cachix-backed branch and keep its own nixpkgs input.
+      # Following this flake's nixpkgs changes the derivation hash and misses
+      # the upstream binary cache.
+      url = "github:noctalia-dev/noctalia/cachix";
     };
   };
 

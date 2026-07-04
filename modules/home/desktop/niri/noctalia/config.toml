@@ -1,0 +1,178 @@
+# Noctalia v5 seed config.
+# This file is linked into ~/.config/noctalia/config.toml as an out-of-store
+# symlink so changes made through Noctalia's settings UI persist across
+# Home Manager and NixOS activations.
+
+[shell]
+font_family = "JetBrainsMono Nerd Font Mono"
+time_format = "{:%H:%M}"
+date_format = "%A, %x"
+telemetry_enabled = false
+polkit_agent = true
+settings_show_advanced = true
+
+[shell.panel]
+launcher_placement = "centered"
+clipboard_placement = "centered"
+control_center_placement = "attached"
+wallpaper_placement = "attached"
+session_placement = "attached"
+polkit_placement = "floating"
+polkit_position = "center"
+
+[wallpaper]
+enabled = true
+fill_mode = "crop"
+transition = ["fade", "wipe", "disc", "stripes", "zoom", "honeycomb"]
+transition_duration = 1500
+edge_smoothness = 0.05
+directory = "/etc/nixos/modules/home/desktop"
+
+[wallpaper.default]
+path = "/etc/nixos/modules/home/desktop/wallpaper.png"
+
+[theme]
+mode = "dark"
+source = "builtin"
+builtin = "Catppuccin"
+
+[notification]
+enable_daemon = true
+layer = "overlay"
+background_opacity = 0.8
+offset_x = 20
+offset_y = 8
+
+[osd]
+position = "top_right"
+position_vertical = "top_center"
+orientation = "horizontal"
+background_opacity = 1.0
+offset_x = 20
+offset_y = 8
+
+[lockscreen]
+enabled = true
+blurred_desktop = false
+blur_intensity = 0.1
+tint_intensity = 0.1
+
+[weather]
+enabled = true
+unit = "fahrenheit"
+effects = true
+
+[audio]
+enable_overdrive = false
+enable_sounds = true
+sound_volume = 1.0
+
+[brightness]
+enable_ddcutil = true
+
+[nightlight]
+enabled = true
+force = false
+temperature_day = 6500
+temperature_night = 4000
+
+[location]
+auto_locate = false
+address = "Forest Grove, OR, USA"
+sunrise = "06:30"
+sunset = "18:30"
+
+[idle]
+pre_action_fade_seconds = 5.0
+
+[idle.behavior.lock]
+timeout = 300
+command = "/home/jwilger/.local/bin/lock-screen"
+enabled = true
+
+[idle.behavior.screen-off]
+timeout = 360
+command = "noctalia:dpms-off"
+resume_command = "noctalia:dpms-on"
+enabled = true
+
+[bar.main]
+position = "top"
+thickness = 34
+background_opacity = 0.8
+radius = 12
+margin_h = 4
+margin_v = 4
+padding = 2
+widget_spacing = 6
+shadow = true
+auto_hide = false
+reserve_space = true
+capsule = false
+
+start = ["spacer", "launcher", "workspaces", "active-window"]
+center = ["clock", "media"]
+end = ["volume", "microphone", "notifications", "tray", "control-center", "spacer"]
+
+[dock]
+enabled = false
+position = "bottom"
+show_dots = false
+show_instance_count = true
+pinned = []
+
+[desktop_widgets]
+enabled = false
+
+[lockscreen_widgets]
+enabled = false
+
+[[control_center.shortcuts]]
+type = "wifi"
+
+[[control_center.shortcuts]]
+type = "bluetooth"
+
+[[control_center.shortcuts]]
+type = "wallpaper"
+
+[[control_center.shortcuts]]
+type = "notification"
+
+[[control_center.shortcuts]]
+type = "power_profile"
+
+[[control_center.shortcuts]]
+type = "session"
+
+[shell.launcher]
+terminal_command = "kitty -e"
+sort_by_usage = true
+session_search = true
+settings_search = true
+window_search = true
+
+[[shell.session.actions]]
+action = "lock"
+enabled = true
+countdown_seconds = 0
+
+[[shell.session.actions]]
+action = "suspend"
+enabled = false
+countdown_seconds = 10
+
+[[shell.session.actions]]
+action = "reboot"
+enabled = true
+countdown_seconds = 10
+
+[[shell.session.actions]]
+action = "logout"
+enabled = true
+countdown_seconds = 10
+
+[[shell.session.actions]]
+action = "shutdown"
+enabled = false
+countdown_seconds = 10

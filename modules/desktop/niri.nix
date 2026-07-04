@@ -42,27 +42,12 @@
     XCURSOR_THEME = "Vanilla-DMZ";
   };
 
-  # Required services for noctalia-shell
+  # Required services for Noctalia
   services.power-profiles-daemon.enable = true;
   services.upower.enable = true;
 
   # Polkit for privilege escalation
   security.polkit.enable = true;
-
-  # Use GNOME polkit agent - automatically uses GTK/Catppuccin theme
-  systemd.user.services.polkit-gnome-agent = {
-    description = "GNOME Polkit Agent";
-    wantedBy = [ "graphical-session.target" ];
-    wants = [ "graphical-session.target" ];
-    after = [ "graphical-session.target" ];
-    serviceConfig = {
-      Type = "simple";
-      ExecStart = "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1";
-      Restart = "on-failure";
-      RestartSec = 1;
-      TimeoutStopSec = 10;
-    };
-  };
 
   # Packages needed for niri desktop
   environment.systemPackages = with pkgs; [
@@ -75,6 +60,5 @@
     brightnessctl # Brightness control
     playerctl # Media control
     pamixer # Audio control
-    polkit_gnome # GTK polkit agent (uses Catppuccin theme)
   ];
 }
