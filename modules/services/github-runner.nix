@@ -5,7 +5,7 @@
   ...
 }:
 let
-  githubOrgUrl = "https://github.com/slipstream-eng";
+  githubOrgUrl = "https://github.com/jwilger";
 
   # Docker-in-Docker, mirroring forgejo-runner-release's pattern in
   # forgejo-runner.nix: job containers (including service containers like
@@ -156,7 +156,7 @@ in
     };
   };
 
-  services.github-runners.slipstream-eng = {
+  services.github-runners.jwilger = {
     enable = true;
     name = "gregor";
     url = githubOrgUrl;
@@ -200,7 +200,7 @@ in
   # generated unit. Also wait for the DinD socket to actually be usable
   # before the runner starts accepting jobs, same pattern as
   # forgejo-runner-release's preStartExtra.
-  systemd.services.github-runner-slipstream-eng = {
+  systemd.services.github-runner-jwilger = {
     after = [ "github-runner-dind.service" ];
     wants = [ "github-runner-dind.service" ];
     preStart = lib.mkAfter ''
@@ -213,7 +213,7 @@ in
         sleep 1
       done
       if [ "$i" -eq 60 ]; then
-        echo "ERROR: ${dindSocket} is not ready for github-runner-slipstream-eng." >&2
+        echo "ERROR: ${dindSocket} is not ready for github-runner-jwilger." >&2
         exit 1
       fi
     '';

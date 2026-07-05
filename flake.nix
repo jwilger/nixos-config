@@ -2,7 +2,7 @@
   description = "jwilger's nixos configuration";
 
   inputs = {
-    auto-review.url = "git+https://git.johnwilger.com/Slipstream/auto_review?ref=main";
+    auto-review.url = "git+https://github.com/jwilger/auto_review.git?ref=main";
 
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     nixpkgs-small.url = "github:NixOS/nixpkgs/nixos-unstable-small";

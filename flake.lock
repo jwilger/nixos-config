@@ -14,12 +14,12 @@
         "rev": "873898d084e41a4aaf7aa8685ed324044c96597e",
         "revCount": 490,
         "type": "git",
-        "url": "https://git.johnwilger.com/Slipstream/auto_review"
+        "url": "https://github.com/jwilger/auto_review.git"
       },
       "original": {
         "ref": "main",
         "type": "git",
-        "url": "https://git.johnwilger.com/Slipstream/auto_review"
+        "url": "https://github.com/jwilger/auto_review.git"
       }
     },
     "catppuccin": {
