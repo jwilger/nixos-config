@@ -3,61 +3,158 @@ let
   isX86_64Linux = pkgs.stdenv.hostPlatform.system == "x86_64-linux";
   browserPackage = if isX86_64Linux then pkgs.google-chrome else pkgs.chromium;
   browserExe = lib.getExe browserPackage;
-  nignite = pkgs.stdenvNoCC.mkDerivation {
-    pname = "nignite";
-    version = "unstable-2026-06-18";
-
-    src = pkgs.fetchFromGitHub {
-      owner = "Carunga";
-      repo = "nignite";
-      rev = "a3d90cbc433c683e8f472038f5e8453947eed8db";
-      hash = "sha256-AjNVBjIgLJjmUyK2D24/8PmeZsvOcutdYJxKT0gPzgE=";
-    };
-
-    nativeBuildInputs = [ pkgs.makeWrapper ];
-
-    installPhase = ''
-      runHook preInstall
-
-      install -Dm755 nignite $out/bin/nignite
-      install -Dm644 nignite.desktop $out/share/applications/nignite.desktop
-      substituteInPlace $out/bin/nignite \
-        --replace-fail "function get_firefox_window_id" "function get_chrome_window_id" \
-        --replace-fail 'test("firefox"; "i")' 'test("chrome|chromium"; "i")' \
-        --replace-fail 'WIN_ID="$(get_firefox_window_id "$WORKSPACE_ID")"' 'WIN_ID="$(get_chrome_window_id "$WORKSPACE_ID")"' \
-        --replace-fail 'firefox --new-tab "$@"' '${browserExe} --new-tab "$@"' \
-        --replace-fail 'firefox --new-window "$@"' '${browserExe} --new-window "$@"'
-      substituteInPlace $out/share/applications/nignite.desktop \
-        --replace-fail "Exec=nignite %u" "Exec=$out/bin/nignite %u"
-
-      runHook postInstall
+  chromePersonal = pkgs.writeShellApplication {
+    name = "chrome-personal";
+    runtimeInputs = [ browserPackage ];
+    text = ''
+      exec ${browserExe} --profile-directory=Default "$@"
     '';
-
-    postFixup = ''
-      wrapProgram $out/bin/nignite \
-        --prefix PATH : ${
-          lib.makeBinPath [
-            browserPackage
-            pkgs.jq
-            pkgs.niri
-          ]
-        }
+  };
+  chromeWork = pkgs.writeShellApplication {
+    name = "chrome-work";
+    runtimeInputs = [ browserPackage ];
+    text = ''
+      exec ${browserExe} --profile-directory="Profile 4" "$@"
     '';
+  };
+  chromePick = pkgs.writeShellApplication {
+    name = "chrome-pick";
+    runtimeInputs = [
+      chromePersonal
+      chromeWork
+      pkgs.fuzzel
+    ];
+    text = ''
+      choice="$(printf 'Personal\nWork\n' | fuzzel --dmenu --prompt='Chrome profile: ' --lines=2 --width=24)" || exit 0
 
-    meta = {
-      description = "Chrome launcher for niri that opens URLs in the current workspace";
-      homepage = "https://github.com/Carunga/nignite";
-      license = lib.licenses.mit;
-      mainProgram = "nignite";
-      platforms = lib.platforms.linux;
-    };
+      case "$choice" in
+        Personal)
+          exec chrome-personal --new-window "$@"
+          ;;
+        Work)
+          exec chrome-work --new-window "$@"
+          ;;
+        *)
+          exit 0
+          ;;
+      esac
+    '';
+  };
+  nignite = pkgs.writeShellApplication {
+    name = "nignite";
+    runtimeInputs = [
+      browserPackage
+      chromePick
+      pkgs.jq
+      pkgs.niri
+    ];
+    text = ''
+      focused_workspace_id="$(
+        niri msg -j focused-window 2>/dev/null \
+          | jq -er '.workspace_id // empty' 2>/dev/null \
+          || niri msg -j workspaces 2>/dev/null \
+          | jq -er '.[] | select(.is_focused == true) | .id' 2>/dev/null \
+          || true
+      )"
+
+      if [ -n "$focused_workspace_id" ]; then
+        chrome_window_id="$(
+          niri msg -j windows 2>/dev/null \
+            | jq -er --argjson workspace_id "$focused_workspace_id" '
+                [
+                  .[]
+                  | select(.workspace_id == $workspace_id)
+                  | select(
+                      ((.app_id // "") | test("chrome|chromium"; "i"))
+                      or ((.title // "") | test("chrome|chromium"; "i"))
+                    )
+                ][0].id
+              ' 2>/dev/null \
+            || true
+        )"
+
+        if [ -n "$chrome_window_id" ]; then
+          niri msg action focus-window --id "$chrome_window_id" >/dev/null 2>&1 || true
+
+          if [ "$#" -eq 0 ]; then
+            exit 0
+          fi
+
+          exec ${browserExe} --new-tab "$@"
+        fi
+      fi
+
+      exec chrome-pick "$@"
+    '';
   };
 in
 {
   home.packages = [
     browserPackage
+    chromePersonal
+    chromePick
+    chromeWork
     nignite
   ];
+
+  xdg.desktopEntries = {
+    chrome-personal = {
+      name = "Chrome Personal";
+      exec = "${lib.getExe chromePersonal} %U";
+      icon = "google-chrome";
+      categories = [
+        "Network"
+        "WebBrowser"
+      ];
+      genericName = "Web Browser";
+      mimeType = [
+        "text/html"
+        "x-scheme-handler/http"
+        "x-scheme-handler/https"
+      ];
+      noDisplay = false;
+      terminal = false;
+    };
+    chrome-work = {
+      name = "Chrome Work";
+      exec = "${lib.getExe chromeWork} %U";
+      icon = "google-chrome";
+      categories = [
+        "Network"
+        "WebBrowser"
+      ];
+      genericName = "Web Browser";
+      mimeType = [
+        "text/html"
+        "x-scheme-handler/http"
+        "x-scheme-handler/https"
+      ];
+      noDisplay = false;
+      terminal = false;
+    };
+    google-chrome = {
+      name = "Google Chrome";
+      noDisplay = true;
+    };
+    nignite = {
+      name = "Chrome Workspace Router";
+      exec = "${lib.getExe nignite} %U";
+      icon = "google-chrome";
+      categories = [
+        "Network"
+        "WebBrowser"
+      ];
+      mimeType = [
+        "text/html"
+        "x-scheme-handler/about"
+        "x-scheme-handler/http"
+        "x-scheme-handler/https"
+        "x-scheme-handler/unknown"
+      ];
+      noDisplay = true;
+      terminal = false;
+    };
+  };
 
   xdg.mimeApps = {
     enable = true;

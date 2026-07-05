@@ -163,6 +163,37 @@
                 in
                 assert hostsWithSshAlias == [ ];
                 pkgs.emptyDirectory;
+              chrome-profile-launching =
+                let
+                  hm = self.nixosConfigurations.gregor.config.home-manager.users.jwilger;
+                  hasPackage =
+                    expected:
+                    builtins.any (
+                      package:
+                      let
+                        name = package.pname or (pkgs.lib.getName package);
+                      in
+                      name == expected
+                    ) hm.home.packages;
+                  mimeDefaults = hm.xdg.mimeApps.defaultApplications;
+                in
+                assert hasPackage "nignite";
+                assert hasPackage "chrome-personal";
+                assert hasPackage "chrome-work";
+                assert hasPackage "chrome-pick";
+                assert hm.xdg.desktopEntries."chrome-personal".name == "Chrome Personal";
+                assert hm.xdg.desktopEntries."chrome-personal".noDisplay == false;
+                assert hm.xdg.desktopEntries."chrome-work".name == "Chrome Work";
+                assert hm.xdg.desktopEntries."chrome-work".noDisplay == false;
+                assert hm.xdg.desktopEntries."google-chrome".noDisplay == true;
+                assert mimeDefaults."text/html" == [ "nignite.desktop" ];
+                assert mimeDefaults."x-scheme-handler/http" == [ "nignite.desktop" ];
+                assert mimeDefaults."x-scheme-handler/https" == [ "nignite.desktop" ];
+                pkgs.runCommand "chrome-profile-launching" { } ''
+                  grep -F 'exec chrome-personal --new-window "$@"' ${hm.home.path}/bin/chrome-pick
+                  grep -F 'exec chrome-work --new-window "$@"' ${hm.home.path}/bin/chrome-pick
+                  touch $out
+                '';
             })
             // (nixpkgs.lib.optionalAttrs pkgs.stdenv.isDarwin {
               darwin-darwin = self.darwinConfigurations.darwin.system;
