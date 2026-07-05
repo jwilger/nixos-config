@@ -189,6 +189,7 @@
                 assert mimeDefaults."text/html" == [ "nignite.desktop" ];
                 assert mimeDefaults."x-scheme-handler/http" == [ "nignite.desktop" ];
                 assert mimeDefaults."x-scheme-handler/https" == [ "nignite.desktop" ];
+                assert hm.programs.kitty.settings.open_url_with == "nignite";
                 pkgs.runCommand "chrome-profile-launching" { } ''
                   grep -F 'exec chrome-personal --new-window "$@"' ${hm.home.path}/bin/chrome-pick
                   grep -F 'exec chrome-work --new-window "$@"' ${hm.home.path}/bin/chrome-pick

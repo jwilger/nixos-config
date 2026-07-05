@@ -18,6 +18,7 @@
       scrollback_lines = 10000;
       enable_audio_bell = false;
       mouse_hide_wait = 60;
+      open_url_with = "nignite";
       hide_window_decorations = "yes";
       window_border_width = 0;
       draw_minimal_borders = "yes";
