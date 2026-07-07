@@ -43,6 +43,13 @@ in
     initContent = ''
       if [[ -n "$SSH_CONNECTION" ]]; then
           export OP_BIOMETRIC_UNLOCK_ENABLED=false
+          "$HOME/.local/bin/ssh-agent-bridge" remote >/dev/null 2>&1 || true
+      else
+          "$HOME/.local/bin/ssh-agent-bridge" local >/dev/null 2>&1 || true
+      fi
+
+      if [[ -S "$HOME/.ssh/ssh_auth_sock" ]]; then
+          export SSH_AUTH_SOCK="$HOME/.ssh/ssh_auth_sock"
       else
           export SSH_AUTH_SOCK="${onePasswordAgentSock}"
       fi

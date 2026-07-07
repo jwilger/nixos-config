@@ -10,26 +10,26 @@ in
   programs.ssh = {
     enable = true;
     enableDefaultConfig = false;
+    extraConfig = ''
+      Match exec "$HOME/.local/bin/ssh-agent-bridge auto >/dev/null 2>&1"
+        IdentityAgent ~/.ssh/ssh_auth_sock
 
-    settings = {
-      "*" = {
-        ForwardAgent = true;
-        IdentityAgent = onePasswordAgentSock;
-      };
+      Host *
+        ForwardAgent yes
+        IdentityAgent ${onePasswordAgentSock}
 
-      "github.com" = {
-        User = "git";
-      };
+      Host github.com
+        User git
 
-      "ubuntu-2510-dev" = {
-        header = "Host 127.0.0.1";
-        Port = 60022;
-        User = "jwilger";
-        ForwardAgent = true;
-        IdentityAgent = "/Users/jwilger/.ssh/agent-local.sock";
-        PreferredAuthentications = "publickey";
-        StrictHostKeyChecking = "accept-new";
-      };
-    };
+      Host 127.0.0.1
+        Port 60022
+        User jwilger
+        ForwardAgent yes
+        IdentityAgent /Users/jwilger/.ssh/agent-local.sock
+        PreferredAuthentications publickey
+        StrictHostKeyChecking accept-new
+    '';
+
+    settings."*" = { };
   };
 }

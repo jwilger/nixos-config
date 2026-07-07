@@ -56,6 +56,8 @@
     };
   };
 
+  services.ssh-agent-switcher.enable = true;
+
   # Pre-create directories used as targets on /archive (cold-tier
   # snapshots, archived journals). /var/lib/docker is provisioned as a
   # dedicated btrfs subvolume on the home pool — see fileSystems entry
