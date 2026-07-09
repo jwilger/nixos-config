@@ -8,9 +8,6 @@ queue_rules:
       - "-conflict"
       - "#approved-reviews-by >= 1"
       - "#changes-requested-reviews-by = 0"
-      - "github-review-approved"
-      - "github-require-last-push-approval"
-      - "github-code-owner-review-satisfied"
     merge_conditions: *default_conditions
 
 merge_protections_settings:
