@@ -57,7 +57,15 @@ let
           || true
       )"
 
-      if [ -n "$focused_workspace_id" ]; then
+      # Chrome's own IPC for "open this URL" has no concept of "this specific
+      # window" - it always resolves to whatever window Chrome itself
+      # considers last-active, which can be on a different profile and a
+      # different workspace entirely, and it raises whatever it picks. So we
+      # don't ask Chrome to reuse a window for URLs: only a bare invocation
+      # (no URL) jumps to an existing window, since that has no wrong-window
+      # failure mode. Any URL always goes through chrome-pick, which only
+      # ever creates a new window on the current workspace.
+      if [ -n "$focused_workspace_id" ] && [ "$#" -eq 0 ]; then
         chrome_window_id="$(
           niri msg -j windows 2>/dev/null \
             | jq -er --argjson workspace_id "$focused_workspace_id" '
@@ -75,12 +83,7 @@ let
 
         if [ -n "$chrome_window_id" ]; then
           niri msg action focus-window --id "$chrome_window_id" >/dev/null 2>&1 || true
-
-          if [ "$#" -eq 0 ]; then
-            exit 0
-          fi
-
-          exec ${browserExe} --new-tab "$@"
+          exit 0
         fi
       fi
 

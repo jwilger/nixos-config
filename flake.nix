@@ -194,7 +194,6 @@
                   grep -F 'exec chrome-personal --new-window "$@"' ${hm.home.path}/bin/chrome-pick
                   grep -F 'exec chrome-work --new-window "$@"' ${hm.home.path}/bin/chrome-pick
                   grep -F 'niri msg action focus-window --id "$chrome_window_id"' ${hm.home.path}/bin/nignite
-                  grep -F -- '--new-tab "$@"' ${hm.home.path}/bin/nignite
                   grep -F 'exec chrome-pick "$@"' ${hm.home.path}/bin/nignite
                   touch $out
                 '';
