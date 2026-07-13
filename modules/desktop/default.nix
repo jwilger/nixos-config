@@ -6,6 +6,7 @@
 }:
 let
   isX86_64Linux = pkgs.stdenv.hostPlatform.system == "x86_64-linux";
+  isLinux = pkgs.stdenv.hostPlatform.isLinux;
 in
 {
   environment.systemPackages =
@@ -83,11 +84,11 @@ in
         HOLD: KEY_LEFTCTRL
   '';
 
-  programs._1password = lib.mkIf isX86_64Linux {
+  programs._1password = lib.mkIf isLinux {
     enable = true;
     package = pkgs._1password-cli;
   };
-  programs._1password-gui = lib.mkIf isX86_64Linux {
+  programs._1password-gui = lib.mkIf isLinux {
     enable = true;
     polkitPolicyOwners = [ "${username}" ];
   };

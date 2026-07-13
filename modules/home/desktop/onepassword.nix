@@ -1,8 +1,8 @@
 { lib, pkgs, ... }:
 let
-  isX86_64Linux = pkgs.stdenv.hostPlatform.system == "x86_64-linux";
+  isLinux = pkgs.stdenv.hostPlatform.isLinux;
 in
-lib.mkIf isX86_64Linux
+lib.mkIf isLinux
 {
   home.packages = [ pkgs._1password-gui ];
 

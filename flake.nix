@@ -92,8 +92,10 @@
         };
         sansa-vm = nixpkgs.lib.nixosSystem {
           modules = [
+            auto-review.nixosModules.default
             catppuccin.nixosModules.catppuccin
             niri.nixosModules.niri
+            sops-nix.nixosModules.sops
             (import ./hosts/sansa-vm)
           ];
           specialArgs = {
