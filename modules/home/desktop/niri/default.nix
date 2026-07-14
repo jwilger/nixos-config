@@ -98,6 +98,16 @@ in
     );
   };
 
+  # Noctalia v5 also overlays ~/.local/state/noctalia/settings.toml after the
+  # config dir. Manage that file too so GUI overrides are visible in this repo
+  # instead of silently taking precedence over config.toml.
+  home.file.".local/state/noctalia/settings.toml" = {
+    force = true;
+    source = lib.mkForce (
+      config.lib.file.mkOutOfStoreSymlink "${noctaliaConfigDir}/settings.toml"
+    );
+  };
+
   # Niri configuration via niri-flake home-manager module
   programs.niri = {
     settings = {
