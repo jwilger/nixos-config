@@ -125,10 +125,6 @@ in
 
   home-manager.users.${username}.imports = [ ./../../modules/home/desktop ];
 
-  systemd.tmpfiles.rules = [
-    "L+ /etc/nixos - - - - /home/${username}/nixos-config"
-  ];
-
   virtualisation = {
     docker = {
       enable = true;

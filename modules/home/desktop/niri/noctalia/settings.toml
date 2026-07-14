@@ -47,3 +47,9 @@ widget_order = [ "lockscreen-login-box@Virtual-1", "lockscreen-login-box@DP-3" ]
         show_keyboard_layout = true
         show_login_button = true
         show_password_hint = true
+
+[plugins]
+enabled = [ "noctalia/wallhaven", "noctalia/timer" ]
+
+[theme.templates]
+builtin_ids = [ "btop", "gtk3", "gtk4", "helix", "niri", "qt", "wezterm" ]
