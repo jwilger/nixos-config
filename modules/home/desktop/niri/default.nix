@@ -26,6 +26,42 @@ let
       --text="''${1:-Password required}" \
       --width=360
   '';
+  displayLaptop = pkgs.writeShellApplication {
+    name = "display-laptop";
+    runtimeInputs = [ pkgs.niri ];
+    text = ''
+      niri msg output Virtual-1 mode 1920x1200@59.885
+      niri msg output Virtual-1 scale 1.5
+    '';
+  };
+  displayStudio = pkgs.writeShellApplication {
+    name = "display-studio";
+    runtimeInputs = [ pkgs.niri ];
+    text = ''
+      niri msg output Virtual-1 mode 3840x2160@60
+      niri msg output Virtual-1 scale 2.0
+    '';
+  };
+  displayProfile = pkgs.writeShellApplication {
+    name = "display-profile";
+    runtimeInputs = [
+      displayLaptop
+      displayStudio
+      pkgs.fuzzel
+    ];
+    text = ''
+      choice="$(printf 'Laptop\nStudio Display\n' | fuzzel --dmenu --prompt='Display profile: ' --lines=2 --width=28)" || exit 0
+
+      case "$choice" in
+        Laptop)
+          exec display-laptop
+          ;;
+        "Studio Display")
+          exec display-studio
+          ;;
+      esac
+    '';
+  };
 
 in
 {
@@ -298,6 +334,9 @@ in
   # Idle/DPMS/lock are now driven by noctalia's native IdleService
   # (ext-idle-notify-v1 protocol) — no external idle daemon needed.
   home.packages = with pkgs; [
+    displayLaptop
+    displayProfile
+    displayStudio
     noctaliaPkg
     wl-clipboard
     grim
