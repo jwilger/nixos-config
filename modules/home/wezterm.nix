@@ -8,7 +8,7 @@
       font = lib.generators.mkLuaInline ''wezterm.font("JetBrainsMono Nerd Font Mono")'';
       font_size = 11.0;
       window_background_opacity = 0.85;
-      window_decorations = "RESIZE";
+      window_decorations = "NONE";
       window_padding = {
         bottom = 0;
         left = 0;
@@ -18,6 +18,7 @@
       scrollback_lines = 10000;
       audible_bell = "Disabled";
       enable_tab_bar = true;
+      hide_tab_bar_if_only_one_tab = true;
       use_fancy_tab_bar = false;
       tab_bar_at_bottom = false;
       colors = {
