@@ -38,9 +38,6 @@ order = [ "main" ]
     thickness = 34
     widget_spacing = 6
 
-[battery.device."/org/freedesktop/UPower/devices/ups_hiddev1"]
-warning_threshold = 20
-
 [brightness]
 enable_ddcutil = true
 
@@ -52,9 +49,6 @@ type = "bluetooth"
 
 [[control_center.shortcuts]]
 type = "notification"
-
-[[control_center.shortcuts]]
-type = "power_profile"
 
 [[control_center.shortcuts]]
 type = "session"
@@ -77,14 +71,14 @@ pre_action_fade_seconds = 5.0
 
     [idle.behavior.lock]
     command = "/home/jwilger/.local/bin/lock-screen"
-    enabled = true
-    timeout = 300
+    enabled = false
+    timeout = 0
 
     [idle.behavior.screen-off]
     command = "noctalia:dpms-off"
-    enabled = true
+    enabled = false
     resume_command = "noctalia:dpms-on"
-    timeout = 360
+    timeout = 0
 
 [location]
 address = "Forest Grove, OR, USA"

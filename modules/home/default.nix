@@ -15,6 +15,7 @@
   ++ [ (import ./ssh.nix) ] # SSH configuration
   ++ [ (import ./starship.nix) ] # shell prompt
   ++ [ (import ./tmux.nix) ] # terminal multiplexer (tmux)
+  ++ [ (import ./wezterm.nix) ] # terminal emulator
   ++ [ (import ./yazi) ] # terminal-based file explorer
   ++ [ (import ./zellij) ] # terminal multiplexer
   ++ [ (import ./voice-dictation.nix) ] # voice-to-text dictation

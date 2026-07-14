@@ -38,7 +38,7 @@
 
       # Utilities
       "iterm2" # Terminal emulator
-      "kitty" # Terminal emulator (matches gregor); Launchpad-visible alongside the nix-installed CLI
+      "wezterm" # Terminal emulator; Launchpad-visible alongside the nix-installed CLI
       "tuple" # Pair programming tool
 
       # Browsers

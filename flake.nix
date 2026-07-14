@@ -165,7 +165,7 @@
                 in
                 assert hostsWithSshAlias == [ ];
                 pkgs.emptyDirectory;
-              chrome-profile-launching =
+              browser-defaults =
                 let
                   hm = self.nixosConfigurations.gregor.config.home-manager.users.jwilger;
                   hasPackage =
@@ -179,24 +179,12 @@
                     ) hm.home.packages;
                   mimeDefaults = hm.xdg.mimeApps.defaultApplications;
                 in
-                assert hasPackage "nignite";
-                assert hasPackage "chrome-personal";
-                assert hasPackage "chrome-work";
-                assert hasPackage "chrome-pick";
-                assert hm.xdg.desktopEntries."chrome-personal".name == "Chrome Personal";
-                assert hm.xdg.desktopEntries."chrome-personal".noDisplay == false;
-                assert hm.xdg.desktopEntries."chrome-work".name == "Chrome Work";
-                assert hm.xdg.desktopEntries."chrome-work".noDisplay == false;
-                assert hm.xdg.desktopEntries."google-chrome".noDisplay == true;
-                assert mimeDefaults."text/html" == [ "nignite.desktop" ];
-                assert mimeDefaults."x-scheme-handler/http" == [ "nignite.desktop" ];
-                assert mimeDefaults."x-scheme-handler/https" == [ "nignite.desktop" ];
-                assert hm.programs.kitty.settings.open_url_with == "nignite";
-                pkgs.runCommand "chrome-profile-launching" { } ''
-                  grep -F 'exec chrome-personal --new-window "$@"' ${hm.home.path}/bin/chrome-pick
-                  grep -F 'exec chrome-work --new-window "$@"' ${hm.home.path}/bin/chrome-pick
-                  grep -F 'niri msg action focus-window --id "$chrome_window_id"' ${hm.home.path}/bin/nignite
-                  grep -F 'exec chrome-pick "$@"' ${hm.home.path}/bin/nignite
+                assert hasPackage "chromium";
+                assert hasPackage "firefox";
+                assert mimeDefaults."text/html" == [ "firefox.desktop" ];
+                assert mimeDefaults."x-scheme-handler/http" == [ "firefox.desktop" ];
+                assert mimeDefaults."x-scheme-handler/https" == [ "firefox.desktop" ];
+                pkgs.runCommand "browser-defaults" { } ''
                   touch $out
                 '';
             })

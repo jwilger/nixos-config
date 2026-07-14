@@ -112,6 +112,16 @@ in
   services.spice-vdagentd.enable = true;
   services.smartd.enable = lib.mkForce false;
   services.btrfs.autoScrub.enable = lib.mkForce false;
+  services.power-profiles-daemon.enable = lib.mkForce false;
+  services.upower.enable = lib.mkForce false;
+
+  powerManagement.enable = false;
+
+  # The macOS host owns power and physical-access policy for this VM.
+  services.greetd.settings.initial_session = {
+    command = "niri-session";
+    user = username;
+  };
 
   systemd.services.journal-archive.enable = lib.mkForce false;
   systemd.timers.journal-archive.enable = lib.mkForce false;
@@ -158,7 +168,6 @@ in
     mesa-demos
     vulkan-tools
     foot
-    wezterm
     ifuse
     zenity
   ];

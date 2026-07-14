@@ -8,7 +8,9 @@
 }:
 let
   noctaliaConfigDir = "/etc/nixos/modules/home/desktop/niri/noctalia";
+  noctaliaHostConfigDir = "${noctaliaConfigDir}/${host}";
   noctaliaPkg = inputs.noctalia.packages.${pkgs.stdenv.hostPlatform.system}.default;
+  terminal = "wezterm";
 
   # Manual & idle-driven lock command. Locks 1Password in addition to
   # activating noctalia's session lock — noctalia by itself blocks the
@@ -85,7 +87,9 @@ in
   # Home Manager/NixOS activations.
   xdg.configFile = {
     "noctalia/config.toml".source = lib.mkForce (
-      config.lib.file.mkOutOfStoreSymlink "${noctaliaConfigDir}/config.toml"
+      config.lib.file.mkOutOfStoreSymlink "${
+        if host == "sansa-vm" then noctaliaHostConfigDir else noctaliaConfigDir
+      }/config.toml"
     );
     "noctalia/settings.json".source = lib.mkForce (
       config.lib.file.mkOutOfStoreSymlink "${noctaliaConfigDir}/settings.json"
@@ -105,9 +109,7 @@ in
   # instead of silently taking precedence over config.toml.
   home.file.".local/state/noctalia/settings.toml" = {
     force = true;
-    source = lib.mkForce (
-      config.lib.file.mkOutOfStoreSymlink "${noctaliaConfigDir}/settings.toml"
-    );
+    source = lib.mkForce (config.lib.file.mkOutOfStoreSymlink "${noctaliaConfigDir}/settings.toml");
   };
 
   # Niri configuration via niri-flake home-manager module
@@ -224,7 +226,7 @@ in
         in
         {
           # Application launchers
-          "${mod}+Return".action.spawn = "kitty";
+          "${mod}+Return".action.spawn = terminal;
           "${mod}+Space".action.spawn-sh = "noctalia msg panel-toggle launcher";
           "${mod}+E".action.spawn = "nautilus";
           "${mod}+Shift+E".action.spawn-sh = "noctalia msg panel-toggle session";
