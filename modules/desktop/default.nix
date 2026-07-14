@@ -24,7 +24,21 @@ in
     ];
 
   fonts.fontconfig.enable = true;
+  fonts.fontconfig.antialias = true;
   fonts.fontconfig.defaultFonts.sansSerif = [ "JetBrainsMono Nerd Font" ];
+  fonts.fontconfig.hinting = {
+    enable = true;
+    style = "slight";
+  };
+  fonts.fontconfig.subpixel = {
+    rgba = "rgb";
+    lcdfilter = "default";
+  };
+  fonts.packages = with pkgs; [
+    nerd-fonts.jetbrains-mono
+    nerd-fonts.noto
+    twemoji-color-font
+  ];
 
   # System-wide cursor theme setting
   environment.etc."X11/Xresources".text = ''

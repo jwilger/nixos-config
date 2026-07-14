@@ -3,6 +3,13 @@ let
   isX86_64Linux = pkgs.stdenv.hostPlatform.system == "x86_64-linux";
   browserPackage = if isX86_64Linux then pkgs.google-chrome else pkgs.chromium;
   browserExe = lib.getExe browserPackage;
+  googleChromeCompat = pkgs.writeShellApplication {
+    name = "google-chrome";
+    runtimeInputs = [ browserPackage ];
+    text = ''
+      exec ${browserExe} "$@"
+    '';
+  };
   chromePersonal = pkgs.writeShellApplication {
     name = "chrome-personal";
     runtimeInputs = [ browserPackage ];
@@ -92,13 +99,17 @@ let
   };
 in
 {
-  home.packages = [
-    browserPackage
-    chromePersonal
-    chromePick
-    chromeWork
-    nignite
-  ];
+  home.packages =
+    [
+      browserPackage
+      chromePersonal
+      chromePick
+      chromeWork
+      nignite
+    ]
+    ++ lib.optionals (!isX86_64Linux) [
+      googleChromeCompat
+    ];
 
   xdg.desktopEntries = {
     chrome-personal = {
@@ -135,10 +146,30 @@ in
       noDisplay = false;
       terminal = false;
     };
-    google-chrome = {
-      name = "Google Chrome";
-      noDisplay = true;
-    };
+    google-chrome =
+      if isX86_64Linux then
+        {
+          name = "Google Chrome";
+          noDisplay = true;
+        }
+      else
+        {
+          name = "Google Chrome";
+          exec = "${lib.getExe googleChromeCompat} %U";
+          icon = "chromium";
+          categories = [
+            "Network"
+            "WebBrowser"
+          ];
+          genericName = "Web Browser";
+          mimeType = [
+            "text/html"
+            "x-scheme-handler/http"
+            "x-scheme-handler/https"
+          ];
+          noDisplay = false;
+          terminal = false;
+        };
     nignite = {
       name = "Chrome Workspace Router";
       exec = "${lib.getExe nignite} %U";

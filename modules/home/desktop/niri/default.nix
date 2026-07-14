@@ -1,11 +1,13 @@
 {
   config,
+  host,
   pkgs,
   lib,
   inputs,
   ...
 }:
 let
+  noctaliaConfigDir = "/etc/nixos/modules/home/desktop/niri/noctalia";
   noctaliaPkg = inputs.noctalia.packages.${pkgs.stdenv.hostPlatform.system}.default;
 
   # Manual & idle-driven lock command. Locks 1Password in addition to
@@ -42,13 +44,21 @@ in
     validateConfig = false;
   };
 
-  # Keep Noctalia's GUI-editable config outside the Nix store. The upstream
-  # Home Manager module normally renders config.toml into an immutable store
-  # path; this symlink lets v5's settings UI write changes that persist across
-  # future Home Manager/NixOS activations.
+  # Keep Noctalia's GUI-editable config outside the Nix store. These symlinks
+  # let v5's settings UI write changes that persist across future
+  # Home Manager/NixOS activations.
   xdg.configFile = {
     "noctalia/config.toml".source = lib.mkForce (
-      config.lib.file.mkOutOfStoreSymlink "/etc/nixos/modules/home/desktop/niri/noctalia/config.toml"
+      config.lib.file.mkOutOfStoreSymlink "${noctaliaConfigDir}/config.toml"
+    );
+    "noctalia/settings.json".source = lib.mkForce (
+      config.lib.file.mkOutOfStoreSymlink "${noctaliaConfigDir}/settings.json"
+    );
+    "noctalia/colors.json".source = lib.mkForce (
+      config.lib.file.mkOutOfStoreSymlink "${noctaliaConfigDir}/colors.json"
+    );
+    "noctalia/plugins.json".source = lib.mkForce (
+      config.lib.file.mkOutOfStoreSymlink "${noctaliaConfigDir}/plugins.json"
     );
   };
 
@@ -84,7 +94,16 @@ in
       };
 
       # Output/display configuration
-      outputs = { };
+      outputs = lib.optionalAttrs (host == "sansa-vm") {
+        "Virtual-1" = {
+          mode = {
+            width = 1920;
+            height = 1200;
+            refresh = 59.885;
+          };
+          scale = 1.5;
+        };
+      };
 
       # Prefer server-side decorations (niri draws window borders, not apps)
       prefer-no-csd = true;
