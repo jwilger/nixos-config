@@ -96,6 +96,8 @@ in
     "noctalia/plugins.json".source = lib.mkForce (
       config.lib.file.mkOutOfStoreSymlink "${noctaliaConfigDir}/plugins.json"
     );
+    "noctalia/assets/nixos.svg".source =
+      "${noctaliaPkg}/share/noctalia/assets/images/distros/nixos.svg";
   };
 
   # Noctalia v5 also overlays ~/.local/state/noctalia/settings.toml after the

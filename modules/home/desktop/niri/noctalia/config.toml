@@ -249,7 +249,7 @@ unit = "fahrenheit"
 max_length = 600
 
 [widget.control-center]
-custom_image = "/nix/store/6qfgggh9zzqqjvhz10s41h1s80pb0ysy-noctalia-5.0.0/share/noctalia/assets/images/distros/nixos.svg"
+custom_image = "/home/jwilger/.config/noctalia/assets/nixos.svg"
 custom_image_colorize = true
 glyph = "shutdown"
 
