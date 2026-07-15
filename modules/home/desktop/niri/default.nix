@@ -41,7 +41,7 @@ let
     runtimeInputs = [ pkgs.niri ];
     text = ''
       niri msg output Virtual-1 mode 3840x2160@60
-      niri msg output Virtual-1 scale 2.0
+      niri msg output Virtual-1 scale 1.5
     '';
   };
   displayProfile = pkgs.writeShellApplication {
