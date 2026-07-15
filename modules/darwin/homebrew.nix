@@ -1,4 +1,8 @@
-{ ... }:
+{
+  config,
+  pkgs,
+  ...
+}:
 {
   # Homebrew declarative configuration
   homebrew = {
@@ -42,7 +46,7 @@
       "tuple" # Pair programming tool
 
       # Browsers
-      "firefox"
+      "chromium"
 
       # Communication
       "slack"
@@ -66,4 +70,11 @@
       # Example: "Xcode" = 497799835;
     };
   };
+
+  system.activationScripts.postActivation.text = ''
+    primary_user=${config.system.primaryUser}
+    /bin/launchctl asuser "$(/usr/bin/id -u -- "$primary_user")" \
+      /usr/bin/sudo --user="$primary_user" --set-home \
+      ${pkgs.defaultbrowser}/bin/defaultbrowser chromium
+  '';
 }

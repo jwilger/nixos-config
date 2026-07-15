@@ -162,7 +162,7 @@
                 in
                 assert hostsWithSshAlias == [ ];
                 pkgs.emptyDirectory;
-              browser-defaults =
+              chromium-profile-routing =
                 let
                   hm = self.nixosConfigurations.sansa-vm.config.home-manager.users.jwilger;
                   hasPackage =
@@ -175,13 +175,32 @@
                       name == expected
                     ) hm.home.packages;
                   mimeDefaults = hm.xdg.mimeApps.defaultApplications;
+                  hasChromiumPictureInPictureRule = builtins.any (
+                    rule:
+                    builtins.any (match: match."app-id" == "^chromium$" && match.title == "^Picture-in-Picture$") (
+                      rule.matches or [ ]
+                    )
+                  ) hm.programs.niri.settings.window-rules;
                 in
                 assert hasPackage "chromium";
-                assert hasPackage "firefox";
-                assert mimeDefaults."text/html" == [ "firefox.desktop" ];
-                assert mimeDefaults."x-scheme-handler/http" == [ "firefox.desktop" ];
-                assert mimeDefaults."x-scheme-handler/https" == [ "firefox.desktop" ];
-                pkgs.runCommand "browser-defaults" { } ''
+                assert !(hasPackage "firefox");
+                assert hasPackage "chrome-personal";
+                assert hasPackage "chrome-work";
+                assert hasPackage "chrome-pick";
+                assert hasPackage "nignite";
+                assert hm.xdg.desktopEntries."chrome-personal".name == "Chromium Personal";
+                assert hm.xdg.desktopEntries."chrome-work".name == "Chromium Work";
+                assert mimeDefaults."text/html" == [ "nignite.desktop" ];
+                assert mimeDefaults."x-scheme-handler/http" == [ "nignite.desktop" ];
+                assert mimeDefaults."x-scheme-handler/https" == [ "nignite.desktop" ];
+                assert hasChromiumPictureInPictureRule;
+                pkgs.runCommand "chromium-profile-routing" { } ''
+                  grep -F -- '--profile-directory=Default' ${hm.home.path}/bin/chrome-personal
+                  grep -F -- '--profile-directory="Profile 4"' ${hm.home.path}/bin/chrome-work
+                  grep -F 'exec chrome-personal --new-window "$@"' ${hm.home.path}/bin/chrome-pick
+                  grep -F 'exec chrome-work --new-window "$@"' ${hm.home.path}/bin/chrome-pick
+                  grep -F 'niri msg action focus-window --id "$chrome_window_id"' ${hm.home.path}/bin/nignite
+                  grep -F 'exec chrome-pick "$@"' ${hm.home.path}/bin/nignite
                   touch $out
                 '';
               slack-client-by-architecture =
@@ -223,6 +242,17 @@
                   ) darwinHosts;
                 in
                 assert hostsWithSshAlias == [ ];
+                pkgs.emptyDirectory;
+              darwin-chromium-browser =
+                let
+                  casks = self.darwinConfigurations.darwin.config.homebrew.casks;
+                  hasCask = expected: builtins.any (cask: cask.name == expected) casks;
+                  activationScript = self.darwinConfigurations.darwin.config.system.activationScripts.script.text;
+                in
+                assert hasCask "chromium";
+                assert !(hasCask "firefox");
+                assert pkgs.lib.hasInfix "defaultbrowser chromium" activationScript;
+                assert pkgs.lib.hasInfix "--set-home" activationScript;
                 pkgs.emptyDirectory;
             })
           );
