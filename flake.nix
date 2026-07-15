@@ -199,7 +199,7 @@
                       name == expected
                     ) hm.home.packages;
                 in
-                assert hasPackage gregorHm "slack";
+                assert !(hasPackage gregorHm "slack");
                 assert !(hasPackage gregorHm "slacky");
                 assert hasPackage sansaVmHm "slacky";
                 assert !(hasPackage sansaVmHm "slack");
