@@ -184,6 +184,31 @@
                 pkgs.runCommand "browser-defaults" { } ''
                   touch $out
                 '';
+              slack-client-by-architecture =
+                let
+                  gregorHm = self.nixosConfigurations.gregor.config.home-manager.users.jwilger;
+                  sansaVmHm = self.nixosConfigurations.sansa-vm.config.home-manager.users.jwilger;
+                  sansaVmPkgs = self.nixosConfigurations.sansa-vm.pkgs;
+                  hasPackage =
+                    hm: expected:
+                    builtins.any (
+                      package:
+                      let
+                        name = package.pname or (pkgs.lib.getName package);
+                      in
+                      name == expected
+                    ) hm.home.packages;
+                in
+                assert hasPackage gregorHm "slack";
+                assert !(hasPackage gregorHm "slacky");
+                assert hasPackage sansaVmHm "slacky";
+                assert !(hasPackage sansaVmHm "slack");
+                assert
+                  sansaVmHm.xdg.desktopEntries.slacky.exec
+                  == "env NIXOS_OZONE_WL=1 ${sansaVmPkgs.slacky}/bin/slacky %U";
+                pkgs.runCommand "slack-client-by-architecture" { } ''
+                  touch $out
+                '';
             })
             // (nixpkgs.lib.optionalAttrs pkgs.stdenv.isDarwin {
               darwin-darwin = self.darwinConfigurations.darwin.system;
