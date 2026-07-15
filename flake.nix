@@ -67,10 +67,7 @@
       nixosConfigurations = {
         gregor = nixpkgs.lib.nixosSystem {
           modules = [
-            auto-review.nixosModules.default
             catppuccin.nixosModules.catppuccin
-            niri.nixosModules.niri
-            sops-nix.nixosModules.sops
             (import ./hosts/gregor)
           ];
           specialArgs = {
@@ -167,7 +164,7 @@
                 pkgs.emptyDirectory;
               browser-defaults =
                 let
-                  hm = self.nixosConfigurations.gregor.config.home-manager.users.jwilger;
+                  hm = self.nixosConfigurations.sansa-vm.config.home-manager.users.jwilger;
                   hasPackage =
                     expected:
                     builtins.any (
