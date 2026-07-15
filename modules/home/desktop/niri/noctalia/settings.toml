@@ -53,3 +53,6 @@ enabled = [ "noctalia/wallhaven", "noctalia/timer" ]
 
 [theme.templates]
 builtin_ids = [ "btop", "gtk3", "gtk4", "helix", "niri", "qt", "wezterm" ]
+
+[widget.tray]
+drawer = true
