@@ -239,6 +239,19 @@
                 assert portalConfig."org.freedesktop.impl.portal.Screenshot" == "gnome";
                 assert portalConfig."org.freedesktop.impl.portal.Secret" == "gnome-keyring";
                 pkgs.emptyDirectory;
+              tuple-pipewire-s16-compat =
+                let
+                  rule =
+                    self.nixosConfigurations.sansa-vm.config.services.pipewire.extraConfig.pipewire-pulse."90-tuple-s16"."pulse.rules";
+                in
+                assert
+                  rule == [
+                    {
+                      matches = [ { application.process.binary = "tuple"; } ];
+                      actions.quirks = [ "force-s16-info" ];
+                    }
+                  ];
+                pkgs.emptyDirectory;
             })
             // (nixpkgs.lib.optionalAttrs pkgs.stdenv.isDarwin {
               darwin-darwin = self.darwinConfigurations.darwin.system;
