@@ -30,7 +30,20 @@
     extraPortals = with pkgs; [
       xdg-desktop-portal-gnome
     ];
-    # Don't override config - let niri's niri-portals.conf handle it
+    # Explicitly select the GNOME backend for niri's Smithay ScreenCast API.
+    # This prevents the portal frontend from falling back to an implementation
+    # that does not provide ScreenCast when the niri config package is absent.
+    config.niri = {
+      default = [
+        "gnome"
+        "gtk"
+      ];
+      "org.freedesktop.impl.portal.Access" = "gtk";
+      "org.freedesktop.impl.portal.Notification" = "gtk";
+      "org.freedesktop.impl.portal.ScreenCast" = "gnome";
+      "org.freedesktop.impl.portal.Screenshot" = "gnome";
+      "org.freedesktop.impl.portal.Secret" = "gnome-keyring";
+    };
   };
 
   # Environment variables for Wayland

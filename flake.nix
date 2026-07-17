@@ -178,11 +178,8 @@
                   hasChromePictureInPictureRule = builtins.any (
                     rule:
                     builtins.any (
-                      match:
-                      match."app-id" == "^(chromium|google-chrome)$" && match.title == "^Picture-in-Picture$"
-                    ) (
-                      rule.matches or [ ]
-                    )
+                      match: match."app-id" == "^(chromium|google-chrome)$" && match.title == "^Picture-in-Picture$"
+                    ) (rule.matches or [ ])
                   ) hm.programs.niri.settings.window-rules;
                 in
                 assert hasPackage "google-chrome";
@@ -231,6 +228,17 @@
                 pkgs.runCommand "slack-client-by-architecture" { } ''
                   touch $out
                 '';
+              niri-screencast-portal =
+                let
+                  portalConfig = self.nixosConfigurations.sansa-vm.config.xdg.portal.config.niri;
+                in
+                assert portalConfig.default == "gnome;gtk";
+                assert portalConfig."org.freedesktop.impl.portal.Access" == "gtk";
+                assert portalConfig."org.freedesktop.impl.portal.Notification" == "gtk";
+                assert portalConfig."org.freedesktop.impl.portal.ScreenCast" == "gnome";
+                assert portalConfig."org.freedesktop.impl.portal.Screenshot" == "gnome";
+                assert portalConfig."org.freedesktop.impl.portal.Secret" == "gnome-keyring";
+                pkgs.emptyDirectory;
             })
             // (nixpkgs.lib.optionalAttrs pkgs.stdenv.isDarwin {
               darwin-darwin = self.darwinConfigurations.darwin.system;
