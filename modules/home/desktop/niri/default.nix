@@ -158,6 +158,11 @@ in
       # Prefer server-side decorations (niri draws window borders, not apps)
       prefer-no-csd = true;
 
+      # Tuple's bundled PipeWire client cannot negotiate Niri's DMA-BUF modifier.
+      # Keep screencasting on the Wayland portal while using the compatible
+      # invalid modifier path documented by Niri.
+      debug."force-pipewire-invalid-modifier" = true;
+
       # Layout configuration
       layout = {
         gaps = 4;

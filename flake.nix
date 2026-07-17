@@ -68,6 +68,8 @@
         gregor = nixpkgs.lib.nixosSystem {
           modules = [
             catppuccin.nixosModules.catppuccin
+            niri.nixosModules.niri
+            sops-nix.nixosModules.sops
             (import ./hosts/gregor)
           ];
           specialArgs = {
@@ -150,11 +152,17 @@
             in
             (nixpkgs.lib.optionalAttrs pkgs.stdenv.isLinux {
               nixos-gregor = self.nixosConfigurations.gregor.config.system.build.toplevel;
-              nixos-sansa-vm = self.nixosConfigurations.sansa-vm.config.system.build.toplevel;
-              nixos-vm = self.nixosConfigurations.vm.config.system.build.toplevel;
+              default-nixos-builds =
+                let
+                  builds = {
+                    gregor = self.nixosConfigurations.gregor.config.system.build.toplevel;
+                  };
+                in
+                assert builtins.attrNames builds == [ "gregor" ];
+                pkgs.emptyDirectory;
               no-kitten-ssh-alias-on-nixos =
                 let
-                  nixosHosts = builtins.attrNames self.nixosConfigurations;
+                  nixosHosts = [ "gregor" ];
                   hostsWithSshAlias = builtins.filter (
                     host:
                     self.nixosConfigurations.${host}.config.home-manager.users.jwilger.programs.zsh.shellAliases ? ssh
@@ -162,75 +170,9 @@
                 in
                 assert hostsWithSshAlias == [ ];
                 pkgs.emptyDirectory;
-              chromium-profile-routing =
-                let
-                  hm = self.nixosConfigurations.sansa-vm.config.home-manager.users.jwilger;
-                  hasPackage =
-                    expected:
-                    builtins.any (
-                      package:
-                      let
-                        name = package.pname or (pkgs.lib.getName package);
-                      in
-                      name == expected
-                    ) hm.home.packages;
-                  mimeDefaults = hm.xdg.mimeApps.defaultApplications;
-                  hasChromePictureInPictureRule = builtins.any (
-                    rule:
-                    builtins.any (
-                      match: match."app-id" == "^(chromium|google-chrome)$" && match.title == "^Picture-in-Picture$"
-                    ) (rule.matches or [ ])
-                  ) hm.programs.niri.settings.window-rules;
-                in
-                assert hasPackage "google-chrome";
-                assert !(hasPackage "firefox");
-                assert hasPackage "chrome-personal";
-                assert hasPackage "chrome-work";
-                assert hasPackage "chrome-pick";
-                assert hasPackage "nignite";
-                assert hm.xdg.desktopEntries."chrome-personal".name == "Chrome Personal";
-                assert hm.xdg.desktopEntries."chrome-work".name == "Chrome Work";
-                assert mimeDefaults."text/html" == [ "nignite.desktop" ];
-                assert mimeDefaults."x-scheme-handler/http" == [ "nignite.desktop" ];
-                assert mimeDefaults."x-scheme-handler/https" == [ "nignite.desktop" ];
-                assert hasChromePictureInPictureRule;
-                pkgs.runCommand "chrome-profile-routing" { } ''
-                  grep -F -- '--profile-directory=Default' ${hm.home.path}/bin/chrome-personal
-                  grep -F -- '--profile-directory="Profile 4"' ${hm.home.path}/bin/chrome-work
-                  grep -F 'exec chrome-personal --new-window "$@"' ${hm.home.path}/bin/chrome-pick
-                  grep -F 'exec chrome-work --new-window "$@"' ${hm.home.path}/bin/chrome-pick
-                  grep -F 'niri msg action focus-window --id "$chrome_window_id"' ${hm.home.path}/bin/nignite
-                  grep -F 'exec chrome-pick "$@"' ${hm.home.path}/bin/nignite
-                  touch $out
-                '';
-              slack-client-by-architecture =
-                let
-                  gregorHm = self.nixosConfigurations.gregor.config.home-manager.users.jwilger;
-                  sansaVmHm = self.nixosConfigurations.sansa-vm.config.home-manager.users.jwilger;
-                  sansaVmPkgs = self.nixosConfigurations.sansa-vm.pkgs;
-                  hasPackage =
-                    hm: expected:
-                    builtins.any (
-                      package:
-                      let
-                        name = package.pname or (pkgs.lib.getName package);
-                      in
-                      name == expected
-                    ) hm.home.packages;
-                in
-                assert !(hasPackage gregorHm "slack");
-                assert !(hasPackage gregorHm "slacky");
-                assert hasPackage sansaVmHm "slacky";
-                assert !(hasPackage sansaVmHm "slack");
-                assert
-                  sansaVmHm.xdg.desktopEntries.slacky.exec
-                  == "env NIXOS_OZONE_WL=1 ${sansaVmPkgs.slacky}/bin/slacky %U";
-                pkgs.runCommand "slack-client-by-architecture" { } ''
-                  touch $out
-                '';
               niri-screencast-portal =
                 let
-                  portalConfig = self.nixosConfigurations.sansa-vm.config.xdg.portal.config.niri;
+                  portalConfig = self.nixosConfigurations.gregor.config.xdg.portal.config.niri;
                 in
                 assert portalConfig.default == "gnome;gtk";
                 assert portalConfig."org.freedesktop.impl.portal.Access" == "gtk";
@@ -239,44 +181,20 @@
                 assert portalConfig."org.freedesktop.impl.portal.Screenshot" == "gnome";
                 assert portalConfig."org.freedesktop.impl.portal.Secret" == "gnome-keyring";
                 pkgs.emptyDirectory;
-              tuple-pipewire-s16-compat =
+              gregor-hindsight-sops =
                 let
-                  rule =
-                    self.nixosConfigurations.sansa-vm.config.services.pipewire.extraConfig.pipewire-pulse."90-tuple-s16"."pulse.rules";
+                  secret = self.nixosConfigurations.gregor.config.sops.secrets."hindsight/pg-password";
+                  niriEnabled = self.nixosConfigurations.gregor.config.programs.niri.enable;
                 in
-                assert
-                  rule == [
-                    {
-                      matches = [ { application.process.binary = "tuple"; } ];
-                      actions.quirks = [ "force-s16-info" ];
-                    }
-                  ];
+                assert niriEnabled;
+                assert secret.owner == "postgres";
                 pkgs.emptyDirectory;
-            })
-            // (nixpkgs.lib.optionalAttrs pkgs.stdenv.isDarwin {
-              darwin-darwin = self.darwinConfigurations.darwin.system;
-              darwin-sansa = self.darwinConfigurations.sansa.system;
-              darwin-bender = self.darwinConfigurations.bender.system;
-              no-kitten-ssh-alias-on-darwin =
+              gregor-tuple-screencast-modifier-compat =
                 let
-                  darwinHosts = builtins.attrNames self.darwinConfigurations;
-                  hostsWithSshAlias = builtins.filter (
-                    host:
-                    self.darwinConfigurations.${host}.config.home-manager.users.jwilger.programs.zsh.shellAliases ? ssh
-                  ) darwinHosts;
+                  niriSettings =
+                    self.nixosConfigurations.gregor.config.home-manager.users.jwilger.programs.niri.settings;
                 in
-                assert hostsWithSshAlias == [ ];
-                pkgs.emptyDirectory;
-              darwin-chromium-browser =
-                let
-                  casks = self.darwinConfigurations.darwin.config.homebrew.casks;
-                  hasCask = expected: builtins.any (cask: cask.name == expected) casks;
-                  activationScript = self.darwinConfigurations.darwin.config.system.activationScripts.script.text;
-                in
-                assert hasCask "chromium";
-                assert !(hasCask "firefox");
-                assert pkgs.lib.hasInfix "defaultbrowser chromium" activationScript;
-                assert pkgs.lib.hasInfix "--set-home" activationScript;
+                assert niriSettings.debug."force-pipewire-invalid-modifier";
                 pkgs.emptyDirectory;
             })
           );

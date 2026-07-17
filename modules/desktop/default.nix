@@ -80,16 +80,6 @@ in
     ];
   };
 
-  # Tuple's Linux alpha client uses PipeWire through the PulseAudio protocol.
-  # Force 16-bit sample-format information for it, avoiding the static caused
-  # when its audio stream negotiates the Studio Display's 24-bit format.
-  services.pipewire.extraConfig.pipewire-pulse."90-tuple-s16"."pulse.rules" = [
-    {
-      matches = [ { application.process.binary = "tuple"; } ];
-      actions.quirks = [ "force-s16-info" ];
-    }
-  ];
-
   # For interception-tools config
   environment.etc."dual-function-keys.yaml".text = ''
     TIMING:
