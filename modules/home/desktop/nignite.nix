@@ -4,7 +4,7 @@
   ...
 }:
 let
-  browserPackage = pkgs.chromium;
+  browserPackage = pkgs.google-chrome;
   browserExe = lib.getExe browserPackage;
   chromePersonal = pkgs.writeShellApplication {
     name = "chrome-personal";
@@ -28,7 +28,7 @@ let
       pkgs.fuzzel
     ];
     text = ''
-      choice="$(printf 'Personal\nWork\n' | fuzzel --dmenu --prompt='Chromium profile: ' --lines=2 --width=24)" || exit 0
+      choice="$(printf 'Personal\nWork\n' | fuzzel --dmenu --prompt='Chrome profile: ' --lines=2 --width=24)" || exit 0
 
       case "$choice" in
         Personal)
@@ -59,8 +59,8 @@ let
           || true
       )"
 
-      # Chromium cannot target a particular existing window when opening a URL.
-      # Only a bare invocation reuses the Chromium window on this workspace;
+      # Chrome cannot target a particular existing window when opening a URL.
+      # Only a bare invocation reuses the Chrome window on this workspace;
       # URLs always open a new profile-selected window on the focused workspace.
       if [ -n "$focused_workspace_id" ] && [ "$#" -eq 0 ]; then
         chrome_window_id="$(
@@ -99,9 +99,9 @@ in
 
   xdg.desktopEntries = {
     chrome-personal = {
-      name = "Chromium Personal";
+      name = "Chrome Personal";
       exec = "${lib.getExe chromePersonal} %U";
-      icon = "chromium";
+      icon = "google-chrome";
       categories = [
         "Network"
         "WebBrowser"
@@ -116,9 +116,9 @@ in
       terminal = false;
     };
     chrome-work = {
-      name = "Chromium Work";
+      name = "Chrome Work";
       exec = "${lib.getExe chromeWork} %U";
-      icon = "chromium";
+      icon = "google-chrome";
       categories = [
         "Network"
         "WebBrowser"
@@ -132,14 +132,14 @@ in
       noDisplay = false;
       terminal = false;
     };
-    chromium = {
-      name = "Chromium";
+    google-chrome = {
+      name = "Google Chrome";
       noDisplay = true;
     };
     nignite = {
-      name = "Chromium Workspace Router";
+      name = "Chrome Workspace Router";
       exec = "${lib.getExe nignite} %U";
-      icon = "chromium";
+      icon = "google-chrome";
       categories = [
         "Network"
         "WebBrowser"

@@ -175,26 +175,29 @@
                       name == expected
                     ) hm.home.packages;
                   mimeDefaults = hm.xdg.mimeApps.defaultApplications;
-                  hasChromiumPictureInPictureRule = builtins.any (
+                  hasChromePictureInPictureRule = builtins.any (
                     rule:
-                    builtins.any (match: match."app-id" == "^chromium$" && match.title == "^Picture-in-Picture$") (
+                    builtins.any (
+                      match:
+                      match."app-id" == "^(chromium|google-chrome)$" && match.title == "^Picture-in-Picture$"
+                    ) (
                       rule.matches or [ ]
                     )
                   ) hm.programs.niri.settings.window-rules;
                 in
-                assert hasPackage "chromium";
+                assert hasPackage "google-chrome";
                 assert !(hasPackage "firefox");
                 assert hasPackage "chrome-personal";
                 assert hasPackage "chrome-work";
                 assert hasPackage "chrome-pick";
                 assert hasPackage "nignite";
-                assert hm.xdg.desktopEntries."chrome-personal".name == "Chromium Personal";
-                assert hm.xdg.desktopEntries."chrome-work".name == "Chromium Work";
+                assert hm.xdg.desktopEntries."chrome-personal".name == "Chrome Personal";
+                assert hm.xdg.desktopEntries."chrome-work".name == "Chrome Work";
                 assert mimeDefaults."text/html" == [ "nignite.desktop" ];
                 assert mimeDefaults."x-scheme-handler/http" == [ "nignite.desktop" ];
                 assert mimeDefaults."x-scheme-handler/https" == [ "nignite.desktop" ];
-                assert hasChromiumPictureInPictureRule;
-                pkgs.runCommand "chromium-profile-routing" { } ''
+                assert hasChromePictureInPictureRule;
+                pkgs.runCommand "chrome-profile-routing" { } ''
                   grep -F -- '--profile-directory=Default' ${hm.home.path}/bin/chrome-personal
                   grep -F -- '--profile-directory="Profile 4"' ${hm.home.path}/bin/chrome-work
                   grep -F 'exec chrome-personal --new-window "$@"' ${hm.home.path}/bin/chrome-pick

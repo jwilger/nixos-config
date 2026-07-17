@@ -32,16 +32,16 @@ let
     name = "display-laptop";
     runtimeInputs = [ pkgs.niri ];
     text = ''
-      niri msg output Virtual-1 custom-mode 1800x1169@60
-      niri msg output Virtual-1 scale 1.0
+      niri msg output Virtual-1 mode 1920x1200@59.885
+      niri msg output Virtual-1 scale 1.5
     '';
   };
   displayStudio = pkgs.writeShellApplication {
     name = "display-studio";
     runtimeInputs = [ pkgs.niri ];
     text = ''
-      niri msg output Virtual-1 custom-mode 3200x1800@60
-      niri msg output Virtual-1 scale 1.0
+      niri msg output Virtual-1 mode 3840x2160@60
+      niri msg output Virtual-1 scale 1.5
     '';
   };
   displayProfile = pkgs.writeShellApplication {
@@ -64,6 +64,7 @@ let
       esac
     '';
   };
+
 in
 {
   # Import noctalia home-manager module
@@ -114,18 +115,8 @@ in
   # Niri configuration via niri-flake home-manager module
   programs.niri = {
     settings = {
-      # UTM exposes the VM's single display as Virtual-1. Match the host
-      # displays exactly with display-laptop, which runs after niri starts.
-      outputs = lib.optionalAttrs (host == "sansa-vm") {
-        "Virtual-1" = {
-          scale = 1.0;
-        };
-      };
-
       # Startup applications
-      spawn-at-startup = lib.optionals (host == "sansa-vm") [
-        { command = [ (lib.getExe displayLaptop) ]; }
-      ] ++ [
+      spawn-at-startup = [
         { command = [ "xwayland-satellite" ]; }
         {
           command = [
@@ -149,6 +140,18 @@ in
         };
         mouse = {
           natural-scroll = true;
+        };
+      };
+
+      # Output/display configuration
+      outputs = lib.optionalAttrs (host == "sansa-vm") {
+        "Virtual-1" = {
+          mode = {
+            width = 1920;
+            height = 1200;
+            refresh = 59.885;
+          };
+          scale = 1.5;
         };
       };
 
@@ -197,7 +200,7 @@ in
         {
           matches = [
             {
-              app-id = "^chromium$";
+              app-id = "^(chromium|google-chrome)$";
               title = "^Picture-in-Picture$";
             }
           ];
