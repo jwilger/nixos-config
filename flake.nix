@@ -196,6 +196,25 @@
                 in
                 assert niriSettings.debug."force-pipewire-invalid-modifier";
                 pkgs.emptyDirectory;
+              gregor-noctalia-wallpaper =
+                let
+                  activation =
+                    self.nixosConfigurations.gregor.config.home-manager.users.jwilger.home.activation.noctaliaWallpaperSeed.data;
+                  liveActivation =
+                    self.nixosConfigurations.gregor.config.home-manager.users.jwilger.home.activation.noctaliaWallpaperLive.data;
+                  wallpaperPath = "${self.nixosConfigurations.gregor.config.home-manager.users.jwilger.home.homeDirectory}/.local/share/wallpapers/wallpaper.png";
+                  niriSettings =
+                    self.nixosConfigurations.gregor.config.home-manager.users.jwilger.programs.niri.settings;
+                  hasWallpaperStartup = builtins.any (
+                    entry: builtins.match ".*/noctalia-wallpaper" (builtins.head entry.command) != null
+                  ) niriSettings.spawn-at-startup;
+                in
+                assert pkgs.lib.hasInfix ''"defaultWallpaper": "${wallpaperPath}"'' activation;
+                assert pkgs.lib.hasInfix ''"dark": "${wallpaperPath}"'' activation;
+                assert pkgs.lib.hasInfix ''"light": "${wallpaperPath}"'' activation;
+                assert hasWallpaperStartup;
+                assert pkgs.lib.hasInfix "systemctl --user start noctalia-wallpaper.service" liveActivation;
+                pkgs.emptyDirectory;
             })
           );
     };

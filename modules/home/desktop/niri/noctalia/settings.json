@@ -695,7 +695,7 @@
     },
     "wallpaper": {
         "automationEnabled": false,
-        "directory": "/etc/nixos/modules/home/desktop",
+        "directory": "~/.local/share/wallpapers",
         "enableMultiMonitorDirectories": false,
         "enabled": true,
         "favorites": [

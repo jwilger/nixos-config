@@ -10,6 +10,27 @@ let
   noctaliaConfigDir = "/etc/nixos/modules/home/desktop/niri/noctalia";
   noctaliaHostConfigDir = "${noctaliaConfigDir}/${host}";
   noctaliaPkg = inputs.noctalia.packages.${pkgs.stdenv.hostPlatform.system}.default;
+  wallpaperPath = "${config.home.homeDirectory}/.local/share/wallpapers/wallpaper.png";
+  noctaliaWallpaper = pkgs.writeShellApplication {
+    name = "noctalia-wallpaper";
+    runtimeInputs = [
+      noctaliaPkg
+      pkgs.coreutils
+    ];
+    text = ''
+      attempt=0
+      while [ "$attempt" -lt 100 ]; do
+        if noctalia msg wallpaper-set "${wallpaperPath}"; then
+          exit 0
+        fi
+
+        attempt=$((attempt + 1))
+        sleep 0.1
+      done
+
+      exit 1
+    '';
+  };
   terminal = "wezterm";
 
   # Manual & idle-driven lock command. Locks 1Password in addition to
@@ -82,6 +103,16 @@ in
     validateConfig = false;
   };
 
+  systemd.user.services.noctalia-wallpaper = {
+    Unit = {
+      Description = "Apply the managed Noctalia wallpaper";
+    };
+    Service = {
+      Type = "oneshot";
+      ExecStart = "${noctaliaWallpaper}/bin/noctalia-wallpaper";
+    };
+  };
+
   # Keep Noctalia's GUI-editable config outside the Nix store. These symlinks
   # let v5's settings UI write changes that persist across future
   # Home Manager/NixOS activations.
@@ -125,6 +156,7 @@ in
           ];
         }
         { command = [ "${noctaliaPkg}/bin/noctalia" ]; }
+        { command = [ "${noctaliaWallpaper}/bin/noctalia-wallpaper" ]; }
       ];
 
       # Input configuration
@@ -368,23 +400,29 @@ in
   home.file.".local/share/wallpapers/wallpaper.png".source = ../wallpaper.png;
 
   # Noctalia stores the active wallpaper per-monitor in ~/.cache/noctalia/
-  # wallpapers.json (writable, like the out-of-store config.toml symlink).
-  # If that cache file is wiped, noctalia falls back to its bundled logo
-  # wallpaper. Seed the file when absent so a cache wipe self-heals to our
-  # wallpaper instead. Only writes when missing, so GUI wallpaper picks (which
-  # noctalia writes back to this same file) are never clobbered.
+  # wallpapers.json. Its bundled image becomes the fallback whenever that state
+  # is reset, so replace it on every activation with our global dark/light entry.
   home.activation.noctaliaWallpaperSeed = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
     cacheFile="$HOME/.cache/noctalia/wallpapers.json"
-    if [ ! -e "$cacheFile" ]; then
-      mkdir -p "$HOME/.cache/noctalia"
-      cat > "$cacheFile" << 'EOF'
+    mkdir -p "$HOME/.cache/noctalia"
+    cacheTempFile="$(mktemp "$HOME/.cache/noctalia/wallpapers.json.XXXXXX")"
+    cat > "$cacheTempFile" << 'EOF'
     {
-      "defaultWallpaper": "/etc/nixos/modules/home/desktop/wallpaper.png",
+      "defaultWallpaper": "${wallpaperPath}",
       "usedRandomWallpapers": {},
-      "wallpapers": {}
+      "wallpapers": {
+        "": {
+          "dark": "${wallpaperPath}",
+          "light": "${wallpaperPath}"
+        }
+      }
     }
     EOF
-    fi
+    mv "$cacheTempFile" "$cacheFile"
+  '';
+
+  home.activation.noctaliaWallpaperLive = lib.hm.dag.entryAfter [ "reloadSystemd" ] ''
+    ${pkgs.systemd}/bin/systemctl --user start noctalia-wallpaper.service || true
   '';
 
   # GitHub feed plugin settings - token retrieved from 1Password at activation

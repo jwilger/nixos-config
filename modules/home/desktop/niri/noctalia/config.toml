@@ -224,7 +224,7 @@ wallpaper_scheme = "m3-content"
     community_ids = [ "pi-agent", "steam", "telegram", "yazi" ]
 
 [wallpaper]
-directory = "/etc/nixos/modules/home/desktop"
+directory = "~/.local/share/wallpapers"
 edge_smoothness = 0.050000000000000003
 enabled = true
 fill_mode = "crop"
@@ -232,13 +232,13 @@ transition = [ "fade", "wipe", "disc", "stripes", "zoom", "honeycomb" ]
 transition_duration = 1500
 
     [wallpaper.default]
-    path = "/etc/nixos/modules/home/desktop/wallpaper.png"
+    path = "~/.local/share/wallpapers/wallpaper.png"
 
     [wallpaper.last]
-    path = "/etc/nixos/modules/home/desktop/wallpaper.png"
+    path = "~/.local/share/wallpapers/wallpaper.png"
 
     [wallpaper.monitors.DP-3]
-    path = "/etc/nixos/modules/home/desktop/wallpaper.png"
+    path = "~/.local/share/wallpapers/wallpaper.png"
 
 [weather]
 effects = true
