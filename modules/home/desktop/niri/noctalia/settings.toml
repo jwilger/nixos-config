@@ -1,3 +1,5 @@
+config_version = 2
+
 [lockscreen_widgets]
 enabled = false
 schema_version = 2
@@ -53,6 +55,15 @@ enabled = [ "noctalia/wallhaven", "noctalia/timer" ]
 
 [theme.templates]
 builtin_ids = [ "btop", "gtk3", "gtk4", "helix", "niri", "qt", "wezterm" ]
+
+[wallpaper.default]
+    path = "~/.local/share/wallpapers/wallpaper.png"
+
+[wallpaper.last]
+    path = "~/.local/share/wallpapers/wallpaper.png"
+
+[wallpaper.monitors.DP-3]
+    path = "~/.local/share/wallpapers/wallpaper.png"
 
 [widget.tray]
 drawer = true
