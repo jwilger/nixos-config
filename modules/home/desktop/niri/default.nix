@@ -99,6 +99,15 @@ let
       esac
     '';
   };
+  restoreWindowFocus = pkgs.writeShellApplication {
+    name = "restore-window-focus";
+    runtimeInputs = [ pkgs.hyprland ];
+    text = ''
+      if [ -n "''${HYPRLAND_INSTANCE_SIGNATURE:-}" ]; then
+        hyprctl dispatch 'hl.dsp.focus({ window = hl.get_active_workspace().last_window })'
+      fi
+    '';
+  };
 
 in
 {
@@ -431,6 +440,7 @@ in
     displayProfile
     displayStudio
     noctaliaPkg
+    restoreWindowFocus
     wl-clipboard
     grim
     slurp

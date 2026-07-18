@@ -234,6 +234,18 @@
                 assert niriBinds."Mod+N".action.spawn-sh == "noctalia msg notification-clear-active";
                 assert niriBinds."Mod+Shift+N".action.spawn-sh == "noctalia msg notification-dnd-toggle";
                 pkgs.emptyDirectory;
+              gregor-noctalia-restores-focus-after-unlock =
+                let
+                  noctaliaConfig = builtins.fromTOML (
+                    builtins.readFile ./modules/home/desktop/niri/noctalia/config.toml
+                  );
+                  noctaliaState = builtins.fromTOML (
+                    builtins.readFile ./modules/home/desktop/niri/noctalia/settings.toml
+                  );
+                in
+                assert noctaliaConfig.hooks.session_unlocked == "restore-window-focus";
+                assert noctaliaState.hooks.session_unlocked == "restore-window-focus";
+                pkgs.emptyDirectory;
               no-kitten-ssh-alias-on-nixos =
                 let
                   nixosHosts = [ "gregor" ];

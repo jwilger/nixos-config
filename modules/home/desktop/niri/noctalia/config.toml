@@ -287,3 +287,5 @@ match_adjacent_spacing = true
 
 [widget.volume]
 show_label = false
+[hooks]
+session_unlocked = "restore-window-focus"

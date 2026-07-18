@@ -67,3 +67,5 @@ builtin_ids = [ "btop", "gtk3", "gtk4", "helix", "hyprland", "qt", "wezterm" ]
 
 [widget.tray]
 drawer = true
+[hooks]
+session_unlocked = "restore-window-focus"
