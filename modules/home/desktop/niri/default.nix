@@ -378,6 +378,8 @@ in
           "XF86AudioLowerVolume".action.spawn-sh = "pamixer -d 5";
           "XF86AudioMute".action.spawn-sh = "pamixer -t";
           "${mod}+M".action.spawn-sh = "pamixer --default-source -t"; # Toggle microphone mute
+          "${mod}+N".action.spawn-sh = "noctalia msg notification-clear-active";
+          "${mod}+Shift+N".action.spawn-sh = "noctalia msg notification-dnd-toggle";
           "XF86AudioPlay".action.spawn-sh = "playerctl play-pause";
           "XF86AudioNext".action.spawn-sh = "playerctl next";
           "XF86AudioPrev".action.spawn-sh = "playerctl previous";

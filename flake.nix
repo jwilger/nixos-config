@@ -215,6 +215,25 @@
                 assert userServices.onepassword-hyprland.Install.WantedBy == [ "hyprland-session.target" ];
                 assert builtins.elem "noctalia-hyprland.service" userServices.noctalia-wallpaper.Unit.After;
                 pkgs.emptyDirectory;
+              gregor-noctalia-notification-bindings =
+                let
+                  homeConfig = self.nixosConfigurations.gregor.config.home-manager.users.jwilger;
+                  hyprlandBinds = homeConfig.wayland.windowManager.hyprland.settings.bind;
+                  hyprlandCommand =
+                    key:
+                    ((builtins.elemAt
+                      (builtins.head (builtins.filter (bind: builtins.elemAt bind._args 0 == key) hyprlandBinds))._args
+                      1
+                    ).expr
+                    );
+                  niriBinds = homeConfig.programs.niri.settings.binds;
+                in
+                assert hyprlandCommand "SUPER + N" == ''hl.dsp.exec_cmd("noctalia msg notification-clear-active")'';
+                assert
+                  hyprlandCommand "SUPER + SHIFT + N" == ''hl.dsp.exec_cmd("noctalia msg notification-dnd-toggle")'';
+                assert niriBinds."Mod+N".action.spawn-sh == "noctalia msg notification-clear-active";
+                assert niriBinds."Mod+Shift+N".action.spawn-sh == "noctalia msg notification-dnd-toggle";
+                pkgs.emptyDirectory;
               no-kitten-ssh-alias-on-nixos =
                 let
                   nixosHosts = [ "gregor" ];

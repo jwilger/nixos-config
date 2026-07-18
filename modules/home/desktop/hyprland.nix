@@ -241,6 +241,8 @@ in
         (exec "XF86AudioLowerVolume" "pamixer -d 5")
         (exec "XF86AudioMute" "pamixer -t")
         (exec "SUPER + M" "pamixer --default-source -t")
+        (exec "SUPER + N" "noctalia msg notification-clear-active")
+        (exec "SUPER + SHIFT + N" "noctalia msg notification-dnd-toggle")
         (exec "XF86AudioPlay" "playerctl play-pause")
         (exec "XF86AudioNext" "playerctl next")
         (exec "XF86AudioPrev" "playerctl previous")
