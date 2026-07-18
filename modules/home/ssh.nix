@@ -19,6 +19,9 @@ in
 
       "github.com" = {
         User = "git";
+        IdentityAgent = "none";
+        IdentitiesOnly = true;
+        IdentityFile = "~/.ssh/id_ed25519";
       };
 
       "ubuntu-2510-dev" = {
