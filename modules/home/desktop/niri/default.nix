@@ -51,18 +51,32 @@ let
   '';
   displayLaptop = pkgs.writeShellApplication {
     name = "display-laptop";
-    runtimeInputs = [ pkgs.niri ];
+    runtimeInputs = [
+      pkgs.hyprland
+      pkgs.niri
+    ];
     text = ''
-      niri msg output Virtual-1 mode 1920x1200@59.885
-      niri msg output Virtual-1 scale 1.5
+      if [ -n "''${HYPRLAND_INSTANCE_SIGNATURE:-}" ]; then
+        hyprctl keyword monitor Virtual-1,1920x1200@59.885,auto,1.5
+      else
+        niri msg output Virtual-1 mode 1920x1200@59.885
+        niri msg output Virtual-1 scale 1.5
+      fi
     '';
   };
   displayStudio = pkgs.writeShellApplication {
     name = "display-studio";
-    runtimeInputs = [ pkgs.niri ];
+    runtimeInputs = [
+      pkgs.hyprland
+      pkgs.niri
+    ];
     text = ''
-      niri msg output Virtual-1 mode 3840x2160@60
-      niri msg output Virtual-1 scale 1.5
+      if [ -n "''${HYPRLAND_INSTANCE_SIGNATURE:-}" ]; then
+        hyprctl keyword monitor Virtual-1,3840x2160@60,auto,1.5
+      else
+        niri msg output Virtual-1 mode 3840x2160@60
+        niri msg output Virtual-1 scale 1.5
+      fi
     '';
   };
   displayProfile = pkgs.writeShellApplication {

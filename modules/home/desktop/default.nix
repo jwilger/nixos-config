@@ -2,6 +2,7 @@
 {
   imports = [
     (import ./../default.nix)
+    (import ./hyprland.nix)
     (import ./niri)
     (import ./insync)
     (import ./nignite.nix)

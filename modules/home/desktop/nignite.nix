@@ -47,10 +47,39 @@ let
     name = "nignite";
     runtimeInputs = [
       chromePick
+      pkgs.hyprland
       pkgs.jq
       pkgs.niri
     ];
     text = ''
+      if [ -n "''${HYPRLAND_INSTANCE_SIGNATURE:-}" ]; then
+        focused_workspace_id="$(hyprctl -j activeworkspace | jq -er '.id' 2>/dev/null || true)"
+
+        if [ -n "$focused_workspace_id" ] && [ "$#" -eq 0 ]; then
+          chrome_window_address="$(
+            hyprctl -j clients \
+              | jq -er --argjson workspace_id "$focused_workspace_id" '
+                  [
+                    .[]
+                    | select(.workspace.id == $workspace_id)
+                    | select(
+                        ((.class // "") | test("chrome|chromium"; "i"))
+                        or ((.title // "") | test("chrome|chromium"; "i"))
+                      )
+                  ][0].address
+                ' 2>/dev/null \
+              || true
+          )"
+
+          if [ -n "$chrome_window_address" ]; then
+            hyprctl dispatch focuswindow "address:$chrome_window_address" >/dev/null 2>&1 || true
+            exit 0
+          fi
+        fi
+
+        exec chrome-pick "$@"
+      fi
+
       focused_workspace_id="$(
         niri msg -j focused-window 2>/dev/null \
           | jq -er '.workspace_id // empty' 2>/dev/null \

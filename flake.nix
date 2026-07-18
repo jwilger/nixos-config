@@ -146,6 +146,65 @@
                 in
                 assert builtins.attrNames builds == [ "gregor" ];
                 pkgs.emptyDirectory;
+              gregor-dual-compositors-enabled =
+                let
+                  gregorConfig = self.nixosConfigurations.gregor.config;
+                in
+                assert gregorConfig.programs.hyprland.enable;
+                assert gregorConfig.programs.niri.enable;
+                pkgs.emptyDirectory;
+              hyprland-default-session =
+                let
+                  gregorConfig = self.nixosConfigurations.gregor.config;
+                in
+                assert builtins.elem "hyprland" gregorConfig.services.displayManager.sessionData.sessionNames;
+                assert builtins.elem "niri" gregorConfig.services.displayManager.sessionData.sessionNames;
+                assert pkgs.lib.hasInfix "--cmd start-hyprland"
+                  gregorConfig.services.greetd.settings.default_session.command;
+                assert
+                  !pkgs.lib.hasInfix "--remember-user-session" gregorConfig.services.greetd.settings.default_session.command;
+                pkgs.emptyDirectory;
+              hyprland-screencast-portal =
+                let
+                  portalConfig = self.nixosConfigurations.gregor.config.xdg.portal.config.hyprland;
+                in
+                assert portalConfig.default == "hyprland;gtk";
+                assert portalConfig."org.freedesktop.impl.portal.Access" == "gtk";
+                assert portalConfig."org.freedesktop.impl.portal.Notification" == "gtk";
+                assert portalConfig."org.freedesktop.impl.portal.ScreenCast" == "hyprland";
+                assert portalConfig."org.freedesktop.impl.portal.Screenshot" == "hyprland";
+                assert portalConfig."org.freedesktop.impl.portal.Secret" == "gnome-keyring";
+                pkgs.emptyDirectory;
+              gregor-hyprland-scrolling-workflow =
+                let
+                  hyprlandConfig =
+                    self.nixosConfigurations.gregor.config.home-manager.users.jwilger.wayland.windowManager.hyprland;
+                  bindKeys = map (bind: builtins.elemAt bind._args 0) hyprlandConfig.settings.bind;
+                  workspaceNames = map (
+                    rule: (builtins.elemAt rule._args 0).workspace
+                  ) hyprlandConfig.settings.workspace_rule;
+                in
+                assert hyprlandConfig.enable;
+                assert hyprlandConfig.configType == "lua";
+                assert hyprlandConfig.settings.config.general.layout == "scrolling";
+                assert hyprlandConfig.settings.config.scrolling.column_width == 0.5;
+                assert hyprlandConfig.settings.config.scrolling.explicit_column_widths == "0.333, 0.5, 0.667";
+                assert hyprlandConfig.settings.config.scrolling.focus_fit_method == 1;
+                assert !hyprlandConfig.settings.config.scrolling.wrap_focus;
+                assert !hyprlandConfig.settings.config.scrolling.wrap_swapcol;
+                assert builtins.all (key: builtins.elem key bindKeys) [
+                  "SUPER + RETURN"
+                  "SUPER + SPACE"
+                  "SUPER + H"
+                  "SUPER + SHIFT + H"
+                  "SUPER + 1"
+                  "SUPER + SHIFT + 1"
+                  "SUPER + PRINT"
+                  "SUPER + V"
+                  "SUPER + SHIFT + V"
+                ];
+                assert workspaceNames == map builtins.toString (pkgs.lib.range 1 9);
+                pkgs.emptyDirectory;
               no-kitten-ssh-alias-on-nixos =
                 let
                   nixosHosts = [ "gregor" ];

@@ -54,7 +54,7 @@ widget_order = [ "lockscreen-login-box@Virtual-1", "lockscreen-login-box@DP-3" ]
 enabled = [ "noctalia/wallhaven", "noctalia/timer" ]
 
 [theme.templates]
-builtin_ids = [ "btop", "gtk3", "gtk4", "helix", "niri", "qt", "wezterm" ]
+builtin_ids = [ "btop", "gtk3", "gtk4", "helix", "hyprland", "qt", "wezterm" ]
 
 [wallpaper.default]
     path = "~/.local/share/wallpapers/wallpaper.png"
