@@ -76,6 +76,7 @@ in
         input = {
           kb_layout = "us";
           follow_mouse = 1;
+          natural_scroll = true;
           touchpad = {
             natural_scroll = true;
             tap_to_click = true;

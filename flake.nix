@@ -187,6 +187,7 @@
                 assert hyprlandConfig.enable;
                 assert hyprlandConfig.configType == "lua";
                 assert hyprlandConfig.settings.config.general.layout == "scrolling";
+                assert hyprlandConfig.settings.config.input.natural_scroll;
                 assert hyprlandConfig.settings.config.scrolling.column_width == 0.5;
                 assert hyprlandConfig.settings.config.scrolling.explicit_column_widths == "0.333, 0.5, 0.667";
                 assert hyprlandConfig.settings.config.scrolling.focus_fit_method == 1;
