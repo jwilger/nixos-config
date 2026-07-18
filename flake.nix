@@ -205,6 +205,16 @@
                 ];
                 assert workspaceNames == map builtins.toString (pkgs.lib.range 1 9);
                 pkgs.emptyDirectory;
+              gregor-hyprland-noctalia-session =
+                let
+                  userServices =
+                    self.nixosConfigurations.gregor.config.home-manager.users.jwilger.systemd.user.services;
+                in
+                assert userServices.noctalia-hyprland.Install.WantedBy == [ "hyprland-session.target" ];
+                assert userServices.noctalia-wallpaper.Install.WantedBy == [ "hyprland-session.target" ];
+                assert userServices.onepassword-hyprland.Install.WantedBy == [ "hyprland-session.target" ];
+                assert builtins.elem "noctalia-hyprland.service" userServices.noctalia-wallpaper.Unit.After;
+                pkgs.emptyDirectory;
               no-kitten-ssh-alias-on-nixos =
                 let
                   nixosHosts = [ "gregor" ];

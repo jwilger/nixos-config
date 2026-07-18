@@ -1,13 +1,11 @@
 {
   config,
-  inputs,
   lib,
   pkgs,
   ...
 }:
 let
   lua = lib.generators.mkLuaInline;
-  noctaliaPkg = inputs.noctalia.packages.${pkgs.stdenv.hostPlatform.system}.default;
   lockScreen = "${config.home.homeDirectory}/.local/bin/lock-screen";
   bind = keys: action: {
     _args = [
@@ -203,20 +201,6 @@ in
           "XCURSOR_THEME"
           "Vanilla-DMZ"
         ]
-      ];
-
-      on = [
-        {
-          _args = [
-            "hyprland.start"
-            (lua ''
-              function()
-                        hl.dsp.exec_cmd(${builtins.toJSON "${pkgs._1password-gui}/bin/1password --silent"})
-                        hl.dsp.exec_cmd(${builtins.toJSON "${noctaliaPkg}/bin/noctalia"})
-                        hl.dsp.exec_cmd(${builtins.toJSON "${lib.getExe' pkgs.systemd "systemctl"} --user start noctalia-wallpaper.service"})
-                      end'')
-          ];
-        }
       ];
 
       bind = [

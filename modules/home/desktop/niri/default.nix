@@ -120,11 +120,37 @@ in
   systemd.user.services.noctalia-wallpaper = {
     Unit = {
       Description = "Apply the managed Noctalia wallpaper";
+      After = [ "noctalia-hyprland.service" ];
+      Wants = [ "noctalia-hyprland.service" ];
     };
     Service = {
       Type = "oneshot";
       ExecStart = "${noctaliaWallpaper}/bin/noctalia-wallpaper";
     };
+    Install.WantedBy = [ "hyprland-session.target" ];
+  };
+
+  systemd.user.services.noctalia-hyprland = {
+    Unit = {
+      Description = "Noctalia shell for the Hyprland session";
+      After = [ "hyprland-session.target" ];
+      PartOf = [ "hyprland-session.target" ];
+    };
+    Service = {
+      ExecStart = lib.getExe noctaliaPkg;
+      Restart = "on-failure";
+    };
+    Install.WantedBy = [ "hyprland-session.target" ];
+  };
+
+  systemd.user.services.onepassword-hyprland = {
+    Unit = {
+      Description = "1Password for the Hyprland session";
+      After = [ "hyprland-session.target" ];
+      PartOf = [ "hyprland-session.target" ];
+    };
+    Service.ExecStart = "${pkgs._1password-gui}/bin/1password --silent";
+    Install.WantedBy = [ "hyprland-session.target" ];
   };
 
   # Keep Noctalia's GUI-editable config outside the Nix store. These symlinks
