@@ -22,12 +22,10 @@ lib.mkIf isX86_64Linux {
   # browser, which then uses the zoom:// protocol handler to redirect back.
   #
   # Note on screen sharing:
-  # Screen sharing on Wayland/niri requires:
+  # Screen sharing on Wayland requires:
   # - pipewire and wireplumber (configured at system level)
-  # - xdg-desktop-portal-gtk (system level) plus the niri portal that
-  #   niri-flake installs automatically via configPackages
-  # - Proper portal configuration (see modules/desktop/default.nix and
-  #   modules/desktop/niri.nix)
+  # - xdg-desktop-portal-hyprland and xdg-desktop-portal-gtk
+  # - Proper portal configuration (see modules/desktop/hyprland.nix)
   #
   # If screen sharing still doesn't work after rebuild:
   # 1. Check Zoom settings -> Share Screen -> Advanced -> Screen Capture Mode

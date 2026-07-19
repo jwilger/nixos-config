@@ -1,5 +1,4 @@
 {
-  config,
   lib,
   pkgs,
   ...
@@ -14,7 +13,7 @@
   services.greetd.settings.default_session.command = lib.mkForce (
     "${pkgs.tuigreet}/bin/tuigreet --time --remember "
     + "--cmd start-hyprland "
-    + "--sessions ${config.services.displayManager.sessionData.desktops}/share/wayland-sessions"
+    + "--sessions ${pkgs.hyprland}/share/wayland-sessions"
   );
 
   xdg.portal.config.hyprland = {

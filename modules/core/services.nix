@@ -11,8 +11,7 @@
     dbus.enable = true;
     fstrim.enable = true;
 
-    # Explicitly disable gnome-keyring to prevent SSH agent interference
-    # Use mkForce to override niri-flake defaults
+    # Explicitly disable gnome-keyring to prevent SSH agent interference.
     gnome.gnome-keyring.enable = lib.mkForce false;
 
     logind.settings = {

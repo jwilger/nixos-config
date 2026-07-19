@@ -119,7 +119,7 @@ in
 
   # The macOS host owns power and physical-access policy for this VM.
   services.greetd.settings.initial_session = {
-    command = "niri-session";
+    command = "start-hyprland";
     user = username;
   };
 

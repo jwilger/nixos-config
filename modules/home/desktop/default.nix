@@ -3,9 +3,9 @@
   imports = [
     (import ./../default.nix)
     (import ./hyprland.nix)
-    (import ./niri)
     (import ./insync)
     (import ./nignite.nix)
+    (import ./noctalia.nix)
     (import ./onepassword.nix)
     (import ./spotify.nix)
     (import ./slack.nix)

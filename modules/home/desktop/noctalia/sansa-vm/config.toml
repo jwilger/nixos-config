@@ -214,7 +214,7 @@ source = "builtin"
 wallpaper_scheme = "m3-content"
 
     [theme.templates]
-    builtin_ids = [ "btop", "gtk3", "gtk4", "helix", "niri", "qt", "wezterm" ]
+    builtin_ids = [ "btop", "gtk3", "gtk4", "helix", "hyprland", "qt", "wezterm" ]
     community_ids = [ "pi-agent", "steam", "telegram", "yazi" ]
 
 [wallpaper]

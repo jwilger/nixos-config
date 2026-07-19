@@ -29,11 +29,6 @@
       url = "github:catppuccin/nix";
     };
 
-    niri = {
-      url = "github:sodiboo/niri-flake";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
     sops-nix = {
       url = "github:Mic92/sops-nix";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -55,7 +50,6 @@
     {
       auto-review,
       catppuccin,
-      niri,
       noctalia,
       nix-darwin,
       nixpkgs,
@@ -68,7 +62,6 @@
         gregor = nixpkgs.lib.nixosSystem {
           modules = [
             catppuccin.nixosModules.catppuccin
-            niri.nixosModules.niri
             sops-nix.nixosModules.sops
             (import ./hosts/gregor)
           ];
@@ -146,19 +139,20 @@
                 in
                 assert builtins.attrNames builds == [ "gregor" ];
                 pkgs.emptyDirectory;
-              gregor-dual-compositors-enabled =
+              gregor-hyprland-only =
                 let
                   gregorConfig = self.nixosConfigurations.gregor.config;
+                  sessionNames = map (
+                    package: package.pname or package.name
+                  ) gregorConfig.services.displayManager.sessionPackages;
                 in
                 assert gregorConfig.programs.hyprland.enable;
-                assert gregorConfig.programs.niri.enable;
+                assert sessionNames == [ "hyprland" ];
                 pkgs.emptyDirectory;
               hyprland-default-session =
                 let
                   gregorConfig = self.nixosConfigurations.gregor.config;
                 in
-                assert builtins.elem "hyprland" gregorConfig.services.displayManager.sessionData.sessionNames;
-                assert builtins.elem "niri" gregorConfig.services.displayManager.sessionData.sessionNames;
                 assert pkgs.lib.hasInfix "--cmd start-hyprland"
                   gregorConfig.services.greetd.settings.default_session.command;
                 assert
@@ -227,22 +221,15 @@
                       1
                     ).expr
                     );
-                  niriBinds = homeConfig.programs.niri.settings.binds;
                 in
                 assert hyprlandCommand "SUPER + N" == ''hl.dsp.exec_cmd("noctalia msg notification-clear-active")'';
                 assert
                   hyprlandCommand "SUPER + SHIFT + N" == ''hl.dsp.exec_cmd("noctalia msg notification-dnd-toggle")'';
-                assert niriBinds."Mod+N".action.spawn-sh == "noctalia msg notification-clear-active";
-                assert niriBinds."Mod+Shift+N".action.spawn-sh == "noctalia msg notification-dnd-toggle";
                 pkgs.emptyDirectory;
               gregor-noctalia-restores-focus-after-unlock =
                 let
-                  noctaliaConfig = builtins.fromTOML (
-                    builtins.readFile ./modules/home/desktop/niri/noctalia/config.toml
-                  );
-                  noctaliaState = builtins.fromTOML (
-                    builtins.readFile ./modules/home/desktop/niri/noctalia/settings.toml
-                  );
+                  noctaliaConfig = builtins.fromTOML (builtins.readFile ./modules/home/desktop/noctalia/config.toml);
+                  noctaliaState = builtins.fromTOML (builtins.readFile ./modules/home/desktop/noctalia/settings.toml);
                 in
                 assert noctaliaConfig.hooks.session_unlocked == "restore-window-focus";
                 assert noctaliaState.hooks.session_unlocked == "restore-window-focus";
@@ -257,31 +244,11 @@
                 in
                 assert hostsWithSshAlias == [ ];
                 pkgs.emptyDirectory;
-              niri-screencast-portal =
-                let
-                  portalConfig = self.nixosConfigurations.gregor.config.xdg.portal.config.niri;
-                in
-                assert portalConfig.default == "gnome;gtk";
-                assert portalConfig."org.freedesktop.impl.portal.Access" == "gtk";
-                assert portalConfig."org.freedesktop.impl.portal.Notification" == "gtk";
-                assert portalConfig."org.freedesktop.impl.portal.ScreenCast" == "gnome";
-                assert portalConfig."org.freedesktop.impl.portal.Screenshot" == "gnome";
-                assert portalConfig."org.freedesktop.impl.portal.Secret" == "gnome-keyring";
-                pkgs.emptyDirectory;
               gregor-hindsight-sops =
                 let
                   secret = self.nixosConfigurations.gregor.config.sops.secrets."hindsight/pg-password";
-                  niriEnabled = self.nixosConfigurations.gregor.config.programs.niri.enable;
                 in
-                assert niriEnabled;
                 assert secret.owner == "postgres";
-                pkgs.emptyDirectory;
-              gregor-tuple-screencast-modifier-compat =
-                let
-                  niriSettings =
-                    self.nixosConfigurations.gregor.config.home-manager.users.jwilger.programs.niri.settings;
-                in
-                assert niriSettings.debug."force-pipewire-invalid-modifier";
                 pkgs.emptyDirectory;
               gregor-noctalia-wallpaper =
                 let
@@ -290,16 +257,13 @@
                   liveActivation =
                     self.nixosConfigurations.gregor.config.home-manager.users.jwilger.home.activation.noctaliaWallpaperLive.data;
                   wallpaperPath = "${self.nixosConfigurations.gregor.config.home-manager.users.jwilger.home.homeDirectory}/.local/share/wallpapers/wallpaper.png";
-                  niriSettings =
-                    self.nixosConfigurations.gregor.config.home-manager.users.jwilger.programs.niri.settings;
-                  hasWallpaperStartup = builtins.any (
-                    entry: builtins.match ".*/noctalia-wallpaper" (builtins.head entry.command) != null
-                  ) niriSettings.spawn-at-startup;
+                  userServices =
+                    self.nixosConfigurations.gregor.config.home-manager.users.jwilger.systemd.user.services;
                 in
                 assert pkgs.lib.hasInfix ''"defaultWallpaper": "${wallpaperPath}"'' activation;
                 assert pkgs.lib.hasInfix ''"dark": "${wallpaperPath}"'' activation;
                 assert pkgs.lib.hasInfix ''"light": "${wallpaperPath}"'' activation;
-                assert hasWallpaperStartup;
+                assert userServices.noctalia-wallpaper.Install.WantedBy == [ "hyprland-session.target" ];
                 assert pkgs.lib.hasInfix "systemctl --user start noctalia-wallpaper.service" liveActivation;
                 pkgs.emptyDirectory;
             })

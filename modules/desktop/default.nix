@@ -110,6 +110,5 @@ in
   imports = [
     (import ./gaming.nix)
     (import ./hyprland.nix)
-    (import ./niri.nix)
   ];
 }
