@@ -10,11 +10,17 @@
     xwayland.enable = true;
   };
 
-  services.greetd.settings.default_session.command = lib.mkForce (
-    "${pkgs.tuigreet}/bin/tuigreet --time --remember "
-    + "--cmd start-hyprland "
-    + "--sessions ${pkgs.hyprland}/share/wayland-sessions"
-  );
+  services.greetd = {
+    enable = true;
+    settings.default_session = {
+      command = lib.mkForce (
+        "${pkgs.tuigreet}/bin/tuigreet --time --remember "
+        + "--cmd start-hyprland "
+        + "--sessions ${pkgs.hyprland}/share/wayland-sessions"
+      );
+      user = "greeter";
+    };
+  };
 
   xdg.portal.config.hyprland = {
     default = [

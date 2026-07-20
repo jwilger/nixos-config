@@ -158,6 +158,7 @@
                 let
                   gregorConfig = self.nixosConfigurations.gregor.config;
                 in
+                assert gregorConfig.services.greetd.enable;
                 assert pkgs.lib.hasInfix "--cmd start-hyprland"
                   gregorConfig.services.greetd.settings.default_session.command;
                 assert
