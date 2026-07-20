@@ -17,6 +17,11 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    lanyard = {
+      url = "github:jwilger/lanyard-ssh-agent/v0.1.0";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     catppuccin-bat = {
       url = "github:catppuccin/bat";
       flake = false;
@@ -243,6 +248,19 @@
                   ) nixosHosts;
                 in
                 assert hostsWithSshAlias == [ ];
+                pkgs.emptyDirectory;
+              gregor-lanyard-ssh-agent =
+                let
+                  homeConfig = self.nixosConfigurations.gregor.config.home-manager.users.jwilger;
+                  service = homeConfig.systemd.user.services.lanyard-ssh-agent.Service;
+                in
+                assert homeConfig.programs.lanyard-ssh-agent.enable;
+                assert homeConfig.programs.ssh.settings."*".data.IdentityAgent == "SSH_AUTH_SOCK";
+                assert builtins.any (
+                  command: pkgs.lib.hasInfix ''"serve" "--upstream" "/home/jwilger/.1password/agent.sock"'' command
+                ) service.ExecStart;
+                assert pkgs.lib.hasSuffix "export SSH_AUTH_SOCK=\"$XDG_RUNTIME_DIR/lanyard-ssh-agent/agent.sock\"\n"
+                  homeConfig.programs.zsh.initContent;
                 pkgs.emptyDirectory;
               gregor-hindsight-sops =
                 let

@@ -1,4 +1,5 @@
 {
+  inputs,
   pkgs,
   username,
   lib,
@@ -100,7 +101,18 @@ in
 
   boot.initrd.luks.devices = { };
 
-  home-manager.users.${username}.imports = [ ./../../modules/home/desktop ];
+  home-manager.users.${username} = {
+    imports = [
+      inputs.lanyard.homeManagerModules.default
+      ./../../modules/home/desktop
+    ];
+
+    programs.lanyard-ssh-agent.enable = true;
+    programs.ssh.settings."*".IdentityAgent = lib.mkForce "SSH_AUTH_SOCK";
+    programs.zsh.initContent = lib.mkAfter ''
+      export SSH_AUTH_SOCK="$XDG_RUNTIME_DIR/lanyard-ssh-agent/agent.sock"
+    '';
+  };
 
   # Add user to groups for Docker and shared Steam library access
   users.users.${username}.extraGroups = [
