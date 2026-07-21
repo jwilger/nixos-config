@@ -209,6 +209,8 @@
                     self.nixosConfigurations.gregor.config.home-manager.users.jwilger.systemd.user.services;
                 in
                 assert userServices.noctalia-hyprland.Install.WantedBy == [ "hyprland-session.target" ];
+                assert
+                  !(builtins.elem "hyprland-session.target" (userServices.noctalia-hyprland.Unit.After or [ ]));
                 assert userServices.noctalia-wallpaper.Install.WantedBy == [ "hyprland-session.target" ];
                 assert userServices.onepassword-hyprland.Install.WantedBy == [ "hyprland-session.target" ];
                 assert builtins.elem "noctalia-hyprland.service" userServices.noctalia-wallpaper.Unit.After;

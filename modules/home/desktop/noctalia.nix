@@ -102,7 +102,6 @@ in
     noctalia-hyprland = {
       Unit = {
         Description = "Noctalia shell for the Hyprland session";
-        After = [ "hyprland-session.target" ];
         PartOf = [ "hyprland-session.target" ];
       };
       Service = {
