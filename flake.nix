@@ -18,7 +18,7 @@
     };
 
     lanyard = {
-      url = "github:jwilger/lanyard-ssh-agent/v0.1.0";
+      url = "github:jwilger/lanyard-ssh-agent/v0.1.1";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
