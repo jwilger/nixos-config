@@ -231,6 +231,9 @@
                 assert hyprlandCommand "SUPER + N" == ''hl.dsp.exec_cmd("noctalia msg notification-clear-active")'';
                 assert
                   hyprlandCommand "SUPER + SHIFT + N" == ''hl.dsp.exec_cmd("noctalia msg notification-dnd-toggle")'';
+                assert
+                  hyprlandCommand "SUPER + F"
+                  == ''hl.dsp.window.fullscreen({ mode = "maximized", action = "toggle" })'';
                 pkgs.emptyDirectory;
               gregor-noctalia-restores-focus-after-unlock =
                 let
