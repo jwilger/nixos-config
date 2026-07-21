@@ -229,16 +229,16 @@
         ]
       },
       "locked": {
-        "lastModified": 1784592905,
-        "narHash": "sha256-CKQdvVibV/AS1UDSoO8Qy+SOLDvHGbqxQrYpXc6FV1o=",
+        "lastModified": 1784647213,
+        "narHash": "sha256-wF0SUwXu7RY9Jh2vsqlaLDDE/tJOB35Q3D28vst31p8=",
         "owner": "jwilger",
         "repo": "lanyard-ssh-agent",
-        "rev": "3051192f7c7190bdc6127953bf28861c7295c328",
+        "rev": "0ecfa05fa38c36f26a9f7983f17323d4f311d510",
         "type": "github"
       },
       "original": {
         "owner": "jwilger",
-        "ref": "v0.1.1",
+        "ref": "v0.1.2",
         "repo": "lanyard-ssh-agent",
         "type": "github"
       }
@@ -374,11 +374,11 @@
         "nixpkgs": "nixpkgs_5"
       },
       "locked": {
-        "lastModified": 1784635834,
-        "narHash": "sha256-n1BN4db20v+m3Fk/W13D2qDV9MEl9+x1BkHQ68wn1mc=",
+        "lastModified": 1784647159,
+        "narHash": "sha256-ARDgUBXUemgrRKXs1uz04BhUqphX1L/16E1JpEFdyMs=",
         "owner": "noctalia-dev",
         "repo": "noctalia",
-        "rev": "6d7677827ca1d5f09df2abc48c382c93f6b5909c",
+        "rev": "e0b7310aaa65627632479c0cfa18bae9d25b7a6b",
         "type": "github"
       },
       "original": {
