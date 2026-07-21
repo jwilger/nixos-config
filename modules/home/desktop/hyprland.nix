@@ -211,7 +211,7 @@ in
         (exec "SUPER + SHIFT + E" "noctalia msg panel-toggle session")
         (exec "SUPER + ESCAPE" lockScreen)
         (bind "SUPER + Q" "hl.dsp.window.close()")
-        (bind "SUPER + F" ''hl.dsp.window.fullscreen({ mode = "maximized", action = "toggle" })'')
+        (bind "SUPER + F" ''hl.dsp.window.fullscreen({ mode = "maximized" })'')
         (bind "SUPER + SHIFT + F" ''hl.dsp.window.fullscreen({ mode = "fullscreen" })'')
         (bind "SUPER + C" ''hl.dsp.layout("fit active")'')
         (bind "SUPER + H" ''hl.dsp.layout("focus l")'')
