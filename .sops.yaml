@@ -7,17 +7,7 @@ keys:
   - &gregor age1qfmu0r2qsklxr4y49e983ksyhcusuet26dxe5qghfzfsetvhefhqk2995d
   - &jwilger age13ysynz63h2aekwqzdvn55qqk44sddpqh6qndq8rx7rx4xhc9d9fqa6kjyf
 creation_rules:
-  - path_regex: secrets/auto-review\.yaml$
-    key_groups:
-      - age:
-          - *gregor
-          - *jwilger
   - path_regex: secrets/hindsight\.yaml$
-    key_groups:
-      - age:
-          - *gregor
-          - *jwilger
-  - path_regex: secrets/forgejo\.yaml$
     key_groups:
       - age:
           - *gregor

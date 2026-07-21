@@ -30,7 +30,6 @@ in
         22
         80
         443
-        2222 # Forgejo SSH
         3000 # Development server
         3001 # Development server
         4070 # Spotify Connect TCP port

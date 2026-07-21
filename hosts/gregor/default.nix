@@ -34,7 +34,6 @@ in
         22
         80
         443
-        2222 # Forgejo SSH
         3000 # Development server
         3001 # Development server
         4070 # Spotify Connect TCP port
@@ -108,10 +107,6 @@ in
     ];
 
     programs.lanyard-ssh-agent.enable = true;
-    programs.ssh.settings."*".IdentityAgent = lib.mkForce "SSH_AUTH_SOCK";
-    programs.zsh.initContent = lib.mkAfter ''
-      export SSH_AUTH_SOCK="$XDG_RUNTIME_DIR/lanyard-ssh-agent/agent.sock"
-    '';
   };
 
   # Add user to groups for Docker and shared Steam library access

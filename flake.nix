@@ -2,8 +2,6 @@
   description = "jwilger's nixos configuration";
 
   inputs = {
-    auto-review.url = "git+https://github.com/jwilger/auto_review.git?ref=main";
-
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     nixpkgs-small.url = "github:NixOS/nixpkgs/nixos-unstable-small";
 
@@ -53,7 +51,6 @@
 
   outputs =
     {
-      auto-review,
       catppuccin,
       noctalia,
       nix-darwin,
@@ -254,14 +251,18 @@
                 let
                   homeConfig = self.nixosConfigurations.gregor.config.home-manager.users.jwilger;
                   service = homeConfig.systemd.user.services.lanyard-ssh-agent.Service;
+                  sshSettings = homeConfig.programs.ssh.settings;
                 in
                 assert homeConfig.programs.lanyard-ssh-agent.enable;
-                assert homeConfig.programs.ssh.settings."*".data.IdentityAgent == "SSH_AUTH_SOCK";
+                assert builtins.attrNames sshSettings == [ "*" ];
+                assert sshSettings."*".data.ForwardAgent;
+                assert sshSettings."*".data.IdentityAgent == "SSH_AUTH_SOCK";
                 assert builtins.any (
                   command: pkgs.lib.hasInfix ''"serve" "--upstream" "/home/jwilger/.1password/agent.sock"'' command
                 ) service.ExecStart;
-                assert pkgs.lib.hasSuffix "export SSH_AUTH_SOCK=\"$XDG_RUNTIME_DIR/lanyard-ssh-agent/agent.sock\"\n"
-                  homeConfig.programs.zsh.initContent;
+                assert !pkgs.lib.hasInfix ".1password/agent.sock" homeConfig.programs.zsh.initContent;
+                assert pkgs.lib.hasInfix ''export SSH_AUTH_SOCK="$XDG_RUNTIME_DIR/lanyard-ssh-agent/agent.sock"''
+                  homeConfig.programs.zsh.envExtra;
                 pkgs.emptyDirectory;
               gregor-hindsight-sops =
                 let

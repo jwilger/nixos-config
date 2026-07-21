@@ -7,15 +7,14 @@
 let
   githubOrgUrl = "https://github.com/jwilger";
 
-  # Docker-in-Docker, mirroring forgejo-runner-release's pattern in
-  # forgejo-runner.nix: job containers (including service containers like
+  # Docker-in-Docker: job containers (including service containers like
   # `services: postgres:`) run inside an isolated nested Docker daemon on
   # its own bridge network, rather than talking to gregor's host Docker
   # daemon directly. This avoids one problem at the root instead of via
   # per-job patches: a job's `services: postgres: ports: ["5432:5432"]`
   # publishes on the DinD container's own bridge-network interface, not
   # gregor's real host interface, so it can never collide with gregor's
-  # actual system Postgres (used by live Forgejo + Hindsight) on the real
+  # actual system Postgres (used by Hindsight) on the real
   # 5432. NOTE: this does NOT remove the need for the systemd sandboxing
   # loosening below -- confirmed empirically (a job still hit "Could not
   # find a part of the path '/proc/1/cgroup'" after DinD was live). The
@@ -58,8 +57,8 @@ in
   };
   users.groups.github-runner = { };
 
-  # forgejo-runner.nix's cacheDir turned out not to be a real shared Nix
-  # store -- forgejo-runner's jobs run inside Docker-in-Docker, isolated
+  # A runner cache directory is not a real shared Nix store when jobs run
+  # inside Docker-in-Docker, isolated
   # from the host Nix installation entirely, so that directory's
   # `var/nix/db` is root-owned 0700 and was never meant to be written by
   # an unprivileged user directly. Pointing NIX_REMOTE at it (an earlier
@@ -176,7 +175,7 @@ in
       curl
     ];
     # No ephemeral mode: gregor's whole point is the warm, persistent Nix
-    # store across runs (same rationale as forgejo-runner.nix). Ephemeral
+    # store across runs. Ephemeral
     # would wipe the state directory after every single job.
     ephemeral = false;
     extraEnvironment = {
@@ -198,8 +197,7 @@ in
 
   # The module has no after/wants option, so these are set directly on the
   # generated unit. Also wait for the DinD socket to actually be usable
-  # before the runner starts accepting jobs, same pattern as
-  # forgejo-runner-release's preStartExtra.
+  # before the runner starts accepting jobs.
   systemd.services.github-runner-jwilger = {
     after = [ "github-runner-dind.service" ];
     wants = [ "github-runner-dind.service" ];

@@ -3,7 +3,6 @@
   imports = [
     ./../../modules/darwin
     ./../../modules/darwin/ollama.nix
-    ./../../modules/darwin/forgejo-runner.nix
   ];
 
   # macOS system settings
