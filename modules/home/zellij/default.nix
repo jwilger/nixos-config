@@ -1,5 +1,6 @@
 {
   inputs,
+  lib,
   pkgs,
   ...
 }:
@@ -11,7 +12,10 @@ in
     zellij
   ];
 
-  xdg.configFile."zellij/config.kdl".source = ./config.kdl;
+  xdg.configFile."zellij/config.kdl".source = pkgs.replaceVars ./config.kdl {
+    copy_command =
+      if pkgs.stdenv.isDarwin then "/usr/bin/pbcopy" else lib.getExe' pkgs.wl-clipboard "wl-copy";
+  };
   xdg.configFile."zellij/layouts/compact-with-datetime.kdl".source = pkgs.replaceVars ./layout.kdl {
     zjstatus_wasm = "file:${zjstatus}/bin/zjstatus.wasm";
   };
