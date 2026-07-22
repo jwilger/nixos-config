@@ -6,14 +6,15 @@
 keys:
   - &gregor age1qfmu0r2qsklxr4y49e983ksyhcusuet26dxe5qghfzfsetvhefhqk2995d
   - &jwilger age13ysynz63h2aekwqzdvn55qqk44sddpqh6qndq8rx7rx4xhc9d9fqa6kjyf
+  - &gregor_backup_recovery age120gnsx9zpzqjhzxxg5zj06m08re5q99dy58he5wv4jydd6uck9tq64m348
 creation_rules:
   - path_regex: secrets/hindsight\.yaml$
     key_groups:
       - age:
           - *gregor
           - *jwilger
-  - path_regex: secrets/github-runner\.yaml$
+  - path_regex: secrets/backblaze\.yaml$
     key_groups:
       - age:
           - *gregor
-          - *jwilger
+          - *gregor_backup_recovery

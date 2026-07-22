@@ -1,8 +1,9 @@
-{ inputs
-, pkgs
-, username
-, lib
-, ...
+{
+  inputs,
+  pkgs,
+  username,
+  lib,
+  ...
 }:
 let
   run0Bin = lib.getExe' pkgs.systemd "run0";
@@ -17,11 +18,12 @@ in
   imports = [
     ./hardware-configuration.nix
     ./../../modules/core
+    ./../../modules/core/backblaze-backup.nix
     ./../../modules/desktop
     ./../../modules/hardware/edid-apple-studio-display.nix
-    ./../../modules/services/postgres.nix
     ./../../modules/services/caddy.nix
     ./../../modules/services/hindsight.nix
+    ./../../modules/services/postgres.nix
   ];
 
   powerManagement.cpuFreqGovernor = "performance";
