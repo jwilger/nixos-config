@@ -45,7 +45,7 @@ This is a NixOS flake-based configuration supporting multiple hosts with a modul
 
 ### Host Configuration
 
-- **gregor**: Performance-optimized desktop with AMD graphics, Docker, BcacheFS scrubbing
+- **gregor**: Performance-optimized desktop with AMD graphics, rootless Podman, BcacheFS scrubbing
 - **vm**: Minimal configuration for virtual machine testing
 - Both use username "jwilger" and x86_64-linux architecture
 

@@ -1,9 +1,8 @@
-{
-  inputs,
-  pkgs,
-  username,
-  lib,
-  ...
+{ inputs
+, pkgs
+, username
+, lib
+, ...
 }:
 let
   run0Bin = lib.getExe' pkgs.systemd "run0";
@@ -88,8 +87,8 @@ in
   environment.systemPackages = with pkgs; [
     fuse-overlayfs
     linux-firmware
-    docker-compose
     libimobiledevice
+    podman-compose
     ifuse
     zenity
   ];
@@ -109,23 +108,18 @@ in
     programs.lanyard-ssh-agent.enable = true;
   };
 
-  # Add user to groups for Docker and shared Steam library access
-  users.users.${username}.extraGroups = [
-    "docker"
-  ];
-
-  # Manage the virtualisation services
-  virtualisation = {
-    docker = {
-      enable = true;
-      daemon.settings = {
-        storage-driver = "btrfs";
-      };
-      rootless = {
-        enable = false;
-      };
-    };
+  # Rootless Podman gives development tools Docker-compatible commands without
+  # granting the login user control of a root daemon. Do not enable the system
+  # Docker-compatible socket: membership in its access group is root-equivalent.
+  virtualisation.podman = {
+    enable = true;
+    dockerCompat = true;
+    dockerSocket.enable = false;
+    defaultNetwork.settings.dns_enabled = true;
   };
+  systemd.sockets.podman.enable = false;
+
+  sops.age.sshKeyPaths = [ "/etc/ssh/ssh_host_ed25519_key" ];
 
   services.usbmuxd.enable = true;
 
