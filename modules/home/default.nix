@@ -1,6 +1,7 @@
 { ... }:
 {
   imports = [
+    (import ./abduco.nix) # lightweight terminal session manager
     (import ./aws.nix)
   ]
   ++ [ (import ./ai-bot) ] # zero-seat bot automation profile
