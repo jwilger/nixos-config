@@ -56,6 +56,7 @@ in
         # nodejs + agentPython stay global — Claude Code/Codex hooks and
         # skill validators need them.
         _1password-cli
+        abduco
         agentPython
         man-pages
         cbonsai # terminal screensaver
