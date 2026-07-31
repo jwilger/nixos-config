@@ -266,6 +266,18 @@
                 assert pkgs.lib.hasInfix ''export SSH_AUTH_SOCK="$XDG_RUNTIME_DIR/lanyard-ssh-agent/agent.sock"''
                   homeConfig.programs.zsh.envExtra;
                 pkgs.emptyDirectory;
+              gregor-tmux-popout-window =
+                let
+                  tmuxConfig =
+                    self.nixosConfigurations.gregor.config.home-manager.users.jwilger.programs.tmux.extraConfig;
+                in
+                assert pkgs.lib.hasInfix "bind-key P run-shell -b" tmuxConfig;
+                assert pkgs.lib.hasInfix "new-session -d -t \"$source\" -s \"$view\"" tmuxConfig;
+                assert pkgs.lib.hasInfix "select-window -t \"$view:$window\"" tmuxConfig;
+                assert pkgs.lib.hasInfix "cli spawn --new-window --" tmuxConfig;
+                assert pkgs.lib.hasInfix "env -u TMUX" tmuxConfig;
+                assert pkgs.lib.hasInfix "attach-session -t \"$view\"" tmuxConfig;
+                pkgs.emptyDirectory;
               gregor-hindsight-sops =
                 let
                   secret = self.nixosConfigurations.gregor.config.sops.secrets."hindsight/pg-password";

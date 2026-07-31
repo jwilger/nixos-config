@@ -1,6 +1,7 @@
 { ... }:
 {
   imports = [
+    (import ./archive-git-backup.nix)
     (import ./bootloader.nix)
   ]
   ++ [ (import ./btrfs-snapshots.nix) ]

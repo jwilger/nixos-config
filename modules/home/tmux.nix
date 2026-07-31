@@ -104,6 +104,18 @@
       # Reload tmux configuration
       bind r source-file ~/.config/tmux/tmux.conf \; display-message "tmux config reloaded"
 
+      # Open the current window in a separate WezTerm GUI window.
+      bind-key P run-shell -b '
+        source="#{session_name}"
+        window="#{window_id}"
+        view="''${source}-view-$(${lib.getExe' pkgs.coreutils "date"} +%s%N)"
+
+        ${lib.getExe pkgs.tmux} new-session -d -t "$source" -s "$view" &&
+        ${lib.getExe pkgs.tmux} select-window -t "$view:$window" &&
+        ${lib.getExe pkgs.wezterm} cli spawn --new-window -- \
+          ${lib.getExe' pkgs.coreutils "env"} -u TMUX ${lib.getExe pkgs.tmux} attach-session -t "$view"
+      '
+
       # Keep automatic names until a window is renamed manually.
       setw -g automatic-rename on
       set -g allow-rename off

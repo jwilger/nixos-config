@@ -1,4 +1,4 @@
-{ lib, ... }:
+{ lib, pkgs, ... }:
 {
   # Daily btrbk run takes read-only snapshots of /home and replicates them
   # incrementally to /archive (the HDD pool). /home is the only thing
@@ -69,7 +69,202 @@
     "d /home/.snapshots 0700 root root -"
     "v /home/jwilger/.cache 0755 jwilger jwilger -"
     "v /home/jwilger/.build 0755 jwilger jwilger -"
+    "v /home/jwilger/projects 0755 jwilger jwilger -"
+    "v /home/jwilger/.local/share/containers 0755 jwilger jwilger -"
+    "v /home/jwilger/.npm 0755 jwilger jwilger -"
+    "v /home/jwilger/.m2/repository 0755 jwilger jwilger -"
+    "v /home/jwilger/.gradle/caches 0755 jwilger jwilger -"
+    "v /home/jwilger/.gradle/daemon 0755 jwilger jwilger -"
+    "v /home/jwilger/.cargo/registry 0755 jwilger jwilger -"
+    "v /home/jwilger/.cargo/git 0755 jwilger jwilger -"
+    "v /home/jwilger/.cargo/advisory-db 0755 jwilger jwilger -"
+    "v /home/jwilger/.cargo/advisory-dbs 0755 jwilger jwilger -"
+    "v /home/jwilger/.rustup/toolchains 0755 jwilger jwilger -"
+    "v /home/jwilger/go/pkg 0755 jwilger jwilger -"
+    "v /home/jwilger/.local/share/pnpm/store 0755 jwilger jwilger -"
+    "v /home/jwilger/.local/share/uv/python 0755 jwilger jwilger -"
+    "v /home/jwilger/.local/share/uv/tools 0755 jwilger jwilger -"
   ];
+
+  # This service is deliberately not enabled by a target: it moves project
+  # data and discards disposable rootless-container and package-cache state.
+  # Run it once during a maintenance window, after closing project tools:
+  #   sudo systemctl start home-development-state-migration.service
+  systemd.services.home-development-state-migration = {
+    description = "Move development state out of home snapshots";
+    after = [ "home.mount" ];
+    requires = [ "home.mount" ];
+    path = [
+      pkgs.btrfs-progs
+      pkgs.coreutils
+      pkgs.podman
+      pkgs.util-linux
+    ];
+    unitConfig = {
+      ConditionPathExists = "!/var/lib/home-development-state-migration.done";
+      RequiresMountsFor = [ "/home" ];
+    };
+    serviceConfig = {
+      RemainAfterExit = true;
+      Type = "oneshot";
+      UMask = "0077";
+    };
+    script = ''
+      set -euo pipefail
+
+      owner=jwilger
+      projects=/home/$owner/projects
+      stage=/home/$owner/.projects-subvolume-migration
+      previous=/home/$owner/.projects-pre-subvolume
+
+      is_subvolume() {
+        btrfs subvolume show "$1" >/dev/null 2>&1
+      }
+
+      recreate_disposable_subvolume() {
+        path="$1"
+        if is_subvolume "$path"; then
+          return
+        fi
+
+        rm -rf "$path"
+        parent="$(dirname "$path")"
+        install -d -m 0755 "$parent"
+        chown $owner:$owner "$parent"
+        btrfs subvolume create "$path"
+        chown $owner:$owner "$path"
+      }
+
+      if ! is_subvolume "$projects"; then
+        if [ -e "$stage" ] || [ -e "$previous" ]; then
+          echo "Project migration staging path already exists; refusing to overwrite it" >&2
+          exit 1
+        fi
+
+        btrfs subvolume create "$stage"
+        chown $owner:$owner "$stage"
+        cp --archive --reflink=auto "$projects/." "$stage/"
+
+        mv "$projects" "$previous"
+        if ! mv "$stage" "$projects"; then
+          mv "$previous" "$projects"
+          exit 1
+        fi
+        rm -rf "$previous"
+      fi
+
+      # Rootless Podman storage, including development database volumes, is
+      # disposable. Refuse to proceed unless the user's runtime is available
+      # so Podman can tear down its own state before the storage is recreated.
+      containers=/home/$owner/.local/share/containers
+      if ! is_subvolume "$containers"; then
+        if [ ! -d /run/user/1000 ]; then
+          echo "The jwilger user runtime is unavailable; log in before migrating Podman storage" >&2
+          exit 1
+        fi
+        runuser -u $owner -- env XDG_RUNTIME_DIR=/run/user/1000 podman system reset --force
+        recreate_disposable_subvolume "$containers"
+      fi
+
+      for path in \
+        /home/$owner/.npm \
+        /home/$owner/.m2/repository \
+        /home/$owner/.gradle/caches \
+        /home/$owner/.gradle/daemon \
+        /home/$owner/.cargo/registry \
+        /home/$owner/.cargo/git \
+        /home/$owner/.cargo/advisory-db \
+        /home/$owner/.cargo/advisory-dbs \
+        /home/$owner/.rustup/toolchains \
+        /home/$owner/go/pkg \
+        /home/$owner/.local/share/pnpm/store \
+        /home/$owner/.local/share/uv/python \
+        /home/$owner/.local/share/uv/tools; do
+        recreate_disposable_subvolume "$path"
+      done
+
+      install -d -m 0700 /var/lib
+      date +%s > /var/lib/home-development-state-migration.done
+    '';
+  };
+
+  # This is the explicit final step of the one-time migration. It removes only
+  # pre-migration source snapshots after btrbk has sent a newer, read-only
+  # snapshot to /archive. The archive copy is verified before any local
+  # snapshot is deleted.
+  systemd.services.home-post-migration-snapshot-prune = {
+    description = "Prune pre-migration home snapshots after archive verification";
+    after = [
+      "archive.mount"
+      "home.mount"
+      "btrbk-gregor.service"
+    ];
+    requires = [
+      "archive.mount"
+      "home.mount"
+    ];
+    path = [
+      pkgs.btrfs-progs
+      pkgs.coreutils
+      pkgs.findutils
+      pkgs.gnused
+    ];
+    unitConfig = {
+      ConditionPathExists = "/var/lib/home-development-state-migration.done";
+      RequiresMountsFor = [
+        "/archive"
+        "/home"
+      ];
+    };
+    serviceConfig = {
+      Type = "oneshot";
+      UMask = "0077";
+    };
+    script = ''
+      set -euo pipefail
+
+      marker=/var/lib/home-development-state-migration.done
+      snapshots=/home/.snapshots
+      archive_snapshots=/archive/snapshots/home
+      migration_epoch="$(cat "$marker")"
+      latest="$(${pkgs.findutils}/bin/find "$snapshots" \
+        -mindepth 1 -maxdepth 1 -type d -name 'home.*' -printf '%f\n' \
+        | ${pkgs.coreutils}/bin/sort | ${pkgs.coreutils}/bin/tail -n 1)"
+
+      if [ -z "$latest" ]; then
+        echo "No local home snapshot exists" >&2
+        exit 1
+      fi
+
+      stamp="''${latest#home.}"
+      snapshot_epoch="$(${pkgs.coreutils}/bin/date \
+        --date="''${stamp:0:4}-''${stamp:4:2}-''${stamp:6:2} ''${stamp:9:2}:''${stamp:11:2}" \
+        +%s)"
+      if [ "$snapshot_epoch" -le "$migration_epoch" ]; then
+        echo "Newest local snapshot predates the migration; run btrbk first" >&2
+        exit 1
+      fi
+
+      archive_snapshot="$archive_snapshots/$latest"
+      if [ ! -d "$archive_snapshot" ] \
+        || [ "$(btrfs property get -ts "$archive_snapshot" ro)" != "ro=true" ]; then
+        echo "Newest local snapshot is not a verified read-only archive replica" >&2
+        exit 1
+      fi
+
+      received_uuid="$(btrfs subvolume show "$archive_snapshot" \
+        | sed -n 's/^[[:space:]]*Received UUID:[[:space:]]*//p')"
+      if [ -z "$received_uuid" ] || [ "$received_uuid" = "-" ]; then
+        echo "Newest archive snapshot is not a completed btrfs receive" >&2
+        exit 1
+      fi
+
+      while IFS= read -r -d $'\0' snapshot; do
+        [ "$snapshot" = "$snapshots/$latest" ] || btrfs subvolume delete "$snapshot"
+      done < <(${pkgs.findutils}/bin/find "$snapshots" \
+        -mindepth 1 -maxdepth 1 -type d -name 'home.*' -print0)
+    '';
+  };
 
   # Make the backup yield to interactive work. `idle` I/O class only
   # gets disk time when nothing else wants it; `Nice=19` does the same
