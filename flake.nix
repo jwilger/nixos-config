@@ -278,6 +278,14 @@
                 assert pkgs.lib.hasInfix "env -u TMUX" tmuxConfig;
                 assert pkgs.lib.hasInfix "attach-session -t \"$view\"" tmuxConfig;
                 pkgs.emptyDirectory;
+              gregor-tmux-agent-sidebar =
+                let
+                  tmuxPlugins =
+                    self.nixosConfigurations.gregor.config.home-manager.users.jwilger.programs.tmux.plugins;
+                  pluginPaths = map (entry: toString (if entry ? plugin then entry.plugin else entry)) tmuxPlugins;
+                in
+                assert builtins.any (pkgs.lib.hasInfix "tmuxplugin-agent-sidebar") pluginPaths;
+                pkgs.emptyDirectory;
               gregor-hindsight-sops =
                 let
                   secret = self.nixosConfigurations.gregor.config.sops.secrets."hindsight/pg-password";

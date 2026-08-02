@@ -1,4 +1,41 @@
 { lib, pkgs, ... }:
+let
+  tmuxAgentSidebarVersion = "0.13.0";
+  tmuxAgentSidebarBinary = pkgs.fetchurl {
+    url = "https://github.com/hiroppy/tmux-agent-sidebar/releases/download/v${tmuxAgentSidebarVersion}/tmux-agent-sidebar-${
+      {
+        aarch64-darwin = "darwin-aarch64";
+        aarch64-linux = "linux-aarch64";
+        x86_64-darwin = "darwin-x86_64";
+        x86_64-linux = "linux-x86_64";
+      }
+      .${pkgs.stdenv.hostPlatform.system}
+    }";
+    hash =
+      {
+        aarch64-darwin = "sha256-Ycf68bN65yYUiJkUzgFjeLDkhGHXTW+vNgGT7WSMI6M=";
+        aarch64-linux = "sha256-Pjk3Royicltff6Yyrkxxw760U8vEKXRdiHjwhVCYoJo=";
+        x86_64-darwin = "sha256-peOjS+FZZzIrCiF8rqut2gdZqbCAkHcyeKrq8RtT8q8=";
+        x86_64-linux = "sha256-4GSVoyegdMbjjD12l/BhvbbRnwS2fZ/DATfTTZMY40Q=";
+      }
+      .${pkgs.stdenv.hostPlatform.system};
+  };
+  tmuxAgentSidebar = pkgs.tmuxPlugins.mkTmuxPlugin {
+    pluginName = "agent-sidebar";
+    version = tmuxAgentSidebarVersion;
+    src = pkgs.fetchFromGitHub {
+      owner = "hiroppy";
+      repo = "tmux-agent-sidebar";
+      rev = "v${tmuxAgentSidebarVersion}";
+      hash = "sha256-NiqLgMvWbSW3M80ZUWdmmm2VkVqy8eTGcPkrOCsaasI=";
+    };
+    path = "tmux-agent-sidebar";
+    rtpFilePath = "tmux-agent-sidebar.tmux";
+    postInstall = ''
+      install -Dm755 ${tmuxAgentSidebarBinary} "$target/bin/tmux-agent-sidebar"
+    '';
+  };
+in
 {
   catppuccin.tmux.enable = false;
 
@@ -62,6 +99,7 @@
     tmuxinator.enable = true;
 
     plugins = with pkgs.tmuxPlugins; [
+      tmuxAgentSidebar
       yank
       pain-control
       sessionist
