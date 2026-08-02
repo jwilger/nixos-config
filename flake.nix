@@ -15,11 +15,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    herdr = {
-      url = "github:herdrdev/herdr";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
     lanyard = {
       url = "github:jwilger/lanyard-ssh-agent/v0.1.2";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -291,29 +286,6 @@
                 in
                 assert builtins.any (pkgs.lib.hasInfix "tmuxplugin-agent-sidebar") pluginPaths;
                 pkgs.emptyDirectory;
-              gregor-herdr-tmux-bindings =
-                let
-                  homeConfig = self.nixosConfigurations.gregor.config.home-manager.users.jwilger;
-                  herdrConfig = homeConfig.xdg.configFile."herdr/config.toml".text;
-                  packageNames = map (package: package.pname or package.name) homeConfig.home.packages;
-                in
-                assert builtins.elem "herdr" packageNames;
-                assert pkgs.lib.hasInfix ''name = "catppuccin-mocha"'' herdrConfig;
-                assert pkgs.lib.hasInfix ''prefix = "ctrl+a"'' herdrConfig;
-                assert pkgs.lib.hasInfix ''split_vertical = "prefix+backslash"'' herdrConfig;
-                assert pkgs.lib.hasInfix ''split_horizontal = "prefix+minus"'' herdrConfig;
-                assert pkgs.lib.hasInfix ''rename_tab = "prefix+comma"'' herdrConfig;
-                assert pkgs.lib.hasInfix ''last_pane = "prefix+i"'' herdrConfig;
-                assert pkgs.lib.hasInfix ''detach = "prefix+d"'' herdrConfig;
-                pkgs.runCommand "gregor-herdr-tmux-bindings"
-                  {
-                    nativeBuildInputs = [ inputs.herdr.packages.${system}.default ];
-                  }
-                  ''
-                    install -D ${builtins.toFile "herdr-config.toml" herdrConfig} "$TMPDIR/herdr/config.toml"
-                    XDG_CONFIG_HOME="$TMPDIR" herdr config check
-                    touch "$out"
-                  '';
               gregor-hindsight-sops =
                 let
                   secret = self.nixosConfigurations.gregor.config.sops.secrets."hindsight/pg-password";

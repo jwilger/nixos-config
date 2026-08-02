@@ -12,7 +12,6 @@
   ++ [ (import ./lazygit.nix) ] # git terminal UI
   ++ [ (import ./theme.nix) ] # general theme settings
   ++ [ (import ./helix) ] # helix editor
-  ++ [ (import ./herdr.nix) ] # agent-aware terminal multiplexer
   ++ [ (import ./packages.nix) ] # other packages
   ++ [ (import ./ssh.nix) ] # SSH configuration
   ++ [ (import ./starship.nix) ] # shell prompt
