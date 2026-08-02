@@ -102,13 +102,17 @@ in
     terminal = "tmux-256color";
     aggressiveResize = true;
     focusEvents = true;
-    newSession = true;
     sensibleOnTop = true;
     shell = "${pkgs.zsh}/bin/zsh";
     tmuxinator.enable = true;
 
     plugins = with pkgs.tmuxPlugins; [
-      tmuxAgentSidebar
+      {
+        plugin = tmuxAgentSidebar;
+        extraConfig = ''
+          set -g @sidebar_width '25%'
+        '';
+      }
       {
         plugin = tmuxFloax;
         extraConfig = ''
