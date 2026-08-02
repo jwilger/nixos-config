@@ -35,6 +35,15 @@ let
       install -Dm755 ${tmuxAgentSidebarBinary} "$target/bin/tmux-agent-sidebar"
     '';
   };
+  tmuxFloax = pkgs.tmuxPlugins.tmux-floax.overrideAttrs (old: {
+    postPatch = (old.postPatch or "") + ''
+      substituteInPlace floax.tmux scripts/*.sh \
+        --replace-fail '#!/usr/bin/env bash' '#!${pkgs.bash}/bin/bash'
+      substituteInPlace scripts/utils.sh \
+        --replace-fail 'tmux send-keys -R -t scratch "cd $current_dir" C-m' \
+        $'printf -v quoted_dir \'%q\' "$current_dir"\n        tmux send-keys -R -t scratch "cd -- $quoted_dir" C-m'
+    '';
+  });
 in
 {
   catppuccin.tmux.enable = false;
@@ -100,6 +109,15 @@ in
 
     plugins = with pkgs.tmuxPlugins; [
       tmuxAgentSidebar
+      {
+        plugin = tmuxFloax;
+        extraConfig = ''
+          set -g @floax-bind 'f'
+          set -g @floax-width '80%'
+          set -g @floax-height '80%'
+          set -g @floax-change-path 'true'
+        '';
+      }
       yank
       pain-control
       sessionist
