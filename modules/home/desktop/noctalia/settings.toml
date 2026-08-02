@@ -1,4 +1,4 @@
-config_version = 2
+config_version = 11
 
 [hooks]
 session_unlocked = "restore-window-focus"
@@ -31,7 +31,6 @@ widget_order = [ "lockscreen-login-box@Virtual-1", "lockscreen-login-box@DP-3" ]
         show_caps_lock = true
         show_keyboard_layout = true
         show_login_button = true
-        show_password_hint = true
 
     [lockscreen_widgets.widget."lockscreen-login-box@Virtual-1"]
     box_height = 70.0
@@ -51,7 +50,6 @@ widget_order = [ "lockscreen-login-box@Virtual-1", "lockscreen-login-box@DP-3" ]
         show_caps_lock = true
         show_keyboard_layout = true
         show_login_button = true
-        show_password_hint = true
 
 [plugin_settings."noctalia/screen_recorder"]
 audio_source = "both"
