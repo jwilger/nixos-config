@@ -70,3 +70,6 @@ path = "~/.local/share/wallpapers/wallpaper.png"
 
 [wallpaper.monitors.DP-3]
 path = "~/.local/share/wallpapers/wallpaper.png"
+
+[widget.control-center]
+custom_image = ""
