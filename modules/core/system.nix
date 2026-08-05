@@ -125,19 +125,6 @@
 
   i18n.defaultLocale = "en_US.UTF-8";
   nixpkgs.config.allowUnfree = true;
-  # pipx 1.14.0 uses trailing commas in single-argument pytest parameter
-  # declarations, which pytest 9.1 rejects during test collection.
-  nixpkgs.overlays = [
-    (_: prev: {
-      pipx = prev.pipx.overridePythonAttrs (old: {
-        postPatch = (old.postPatch or "") + ''
-          substituteInPlace tests/test_inject.py \
-            --replace-fail '"pkg_spec,"' '"pkg_spec"' \
-            --replace-fail '"with_packages,"' '"with_packages"'
-        '';
-      });
-    })
-  ];
   system.stateVersion = "24.11";
   system.autoUpgrade.enable = true;
 
