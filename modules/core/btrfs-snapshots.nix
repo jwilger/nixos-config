@@ -20,19 +20,17 @@
         # 2026-04-29T03:30 style timestamps — sortable, human-readable.
         timestamp_format = "long";
 
-        # Always keep the two most recent snapshots regardless of any
-        # ladder rule, so an immediate "oh no I rm'd that" is always
-        # recoverable.
-        snapshot_preserve_min = "2d";
+        # Keep only the newest source snapshot on the performance pool.
+        # The archive target carries the actual recovery history; retaining
+        # additional source snapshots would pin deleted development data.
+        snapshot_preserve_min = "latest";
         target_preserve_min = "2d";
 
         # Retention ladder: 14 dailies, 8 weeklies, 12 monthlies on the
         # /archive target — that's where the real backup history lives.
-        # The /home source only keeps 3 dailies: btrbk just needs a
-        # recent snapshot as the base for incremental sends, and keeping
-        # a long ladder on /home pins deleted data (e.g. build artifacts)
-        # on the smaller SSD pool. History stays safe on /archive.
-        snapshot_preserve = "3d";
+        # The /home source keeps no retention ladder beyond its latest
+        # snapshot. History stays safe on /archive.
+        snapshot_preserve = "no";
         target_preserve = "14d 8w 12m";
 
         # /archive is already mounted with compress=zstd:15, so don't
@@ -61,10 +59,10 @@
   # we deliberately keep OUT of the snapshots: a btrfs snapshot does not
   # recurse into child subvolumes, so anything living under one of these
   # is excluded from the daily backup to /archive. ~/.cache is XDG cache
-  # data; ~/.build holds all Rust build output (CARGO_TARGET_DIR points
-  # at ~/.build/cargo — see modules/home/environment.nix). tmpfiles only
-  # creates the subvolume when the path is missing; existing ones are
-  # left as-is.
+  # data; ~/.build holds the retired shared Cargo target until its cleanup
+  # timer removes it. Workspace-local Rust targets live under the projects
+  # subvolume. tmpfiles only creates a subvolume when the path is missing;
+  # existing ones are left as-is.
   systemd.tmpfiles.rules = [
     "d /home/.snapshots 0700 root root -"
     "v /home/jwilger/.cache 0755 jwilger jwilger -"
@@ -194,6 +192,7 @@
   # snapshot is deleted.
   systemd.services.home-post-migration-snapshot-prune = {
     description = "Prune pre-migration home snapshots after archive verification";
+    wantedBy = [ "btrbk-gregor.service" ];
     after = [
       "archive.mount"
       "home.mount"
@@ -252,10 +251,15 @@
         exit 1
       fi
 
+      local_uuid="$(btrfs subvolume show "$snapshots/$latest" \
+        | sed -n 's/^[[:space:]]*UUID:[[:space:]]*//p')"
       received_uuid="$(btrfs subvolume show "$archive_snapshot" \
         | sed -n 's/^[[:space:]]*Received UUID:[[:space:]]*//p')"
-      if [ -z "$received_uuid" ] || [ "$received_uuid" = "-" ]; then
-        echo "Newest archive snapshot is not a completed btrfs receive" >&2
+      if [ -z "$local_uuid" ] \
+        || [ -z "$received_uuid" ] \
+        || [ "$received_uuid" = "-" ] \
+        || [ "$received_uuid" != "$local_uuid" ]; then
+        echo "Newest archive snapshot is not a verified replica of the local snapshot" >&2
         exit 1
       fi
 

@@ -24,6 +24,7 @@ in
     ./../../modules/services/caddy.nix
     ./../../modules/services/hindsight.nix
     ./../../modules/services/postgres.nix
+    ./../../modules/home/codex-session-retention.nix
   ];
 
   powerManagement.cpuFreqGovernor = "performance";

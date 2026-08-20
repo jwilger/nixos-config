@@ -19,11 +19,9 @@ in
     NODE_PATH = "${npmPrefix}/lib/node_modules";
     PYTHONUSERBASE = "${config.home.homeDirectory}/.local";
 
-    # All Rust build output goes into the ~/.build subvolume, which is
-    # excluded from the btrbk snapshots (see modules/core/btrfs-snapshots.nix).
-    # Cargo namespaces builds per-package under here, so a single shared
-    # target dir works across every project.
-    CARGO_TARGET_DIR = "${config.home.homeDirectory}/.build/cargo";
+    # Keep Cargo's default workspace-local target directory. The projects
+    # tree is a nested btrfs subvolume excluded from home snapshots, and
+    # workspace-local artifacts disappear naturally with retired worktrees.
   };
 
   home.sessionPath = [

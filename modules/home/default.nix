@@ -7,6 +7,7 @@
   ++ [ (import ./ai-bot) ] # zero-seat bot automation profile
   ++ [ (import ./bat.nix) ] # better cat command
   ++ [ (import ./btop.nix) ] # resouces monitor
+  ++ [ (import ./development-storage.nix) ] # bounded project build and worktree storage
   ++ [ (import ./environment.nix) ] # global environment variables
   ++ [ (import ./git.nix) ] # version control
   ++ [ (import ./lazygit.nix) ] # git terminal UI
