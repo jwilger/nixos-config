@@ -13,29 +13,40 @@ let
       exec ${browserExe} --profile-directory=Default "$@"
     '';
   };
-  chromeWork = pkgs.writeShellApplication {
-    name = "chrome-work";
+  chromeArtium = pkgs.writeShellApplication {
+    name = "chrome-artium";
     runtimeInputs = [ browserPackage ];
     text = ''
       exec ${browserExe} --profile-directory="Profile 4" "$@"
     '';
   };
+  chrome10kr = pkgs.writeShellApplication {
+    name = "chrome-10kr";
+    runtimeInputs = [ browserPackage ];
+    text = ''
+      exec ${browserExe} --profile-directory="Profile 5" "$@"
+    '';
+  };
   chromePick = pkgs.writeShellApplication {
     name = "chrome-pick";
     runtimeInputs = [
+      chrome10kr
+      chromeArtium
       chromePersonal
-      chromeWork
       pkgs.fuzzel
     ];
     text = ''
-      choice="$(printf 'Personal\nWork\n' | fuzzel --dmenu --prompt='Chrome profile: ' --lines=2 --width=24)" || exit 0
+      choice="$(printf 'Personal\nArtium\n10KR\n' | fuzzel --dmenu --prompt='Chrome profile: ' --lines=3 --width=24)" || exit 0
 
       case "$choice" in
         Personal)
           exec chrome-personal --new-window "$@"
           ;;
-        Work)
-          exec chrome-work --new-window "$@"
+        Artium)
+          exec chrome-artium --new-window "$@"
+          ;;
+        10KR)
+          exec chrome-10kr --new-window "$@"
           ;;
         *)
           exit 0
@@ -82,9 +93,10 @@ in
 {
   home.packages = [
     browserPackage
+    chrome10kr
+    chromeArtium
     chromePersonal
     chromePick
-    chromeWork
     nignite
   ];
 
@@ -106,9 +118,26 @@ in
       noDisplay = false;
       terminal = false;
     };
-    chrome-work = {
-      name = "Chrome Work";
-      exec = "${lib.getExe chromeWork} %U";
+    chrome-artium = {
+      name = "Chrome Artium";
+      exec = "${lib.getExe chromeArtium} %U";
+      icon = "google-chrome";
+      categories = [
+        "Network"
+        "WebBrowser"
+      ];
+      genericName = "Web Browser";
+      mimeType = [
+        "text/html"
+        "x-scheme-handler/http"
+        "x-scheme-handler/https"
+      ];
+      noDisplay = false;
+      terminal = false;
+    };
+    chrome-10kr = {
+      name = "Chrome 10KR";
+      exec = "${lib.getExe chrome10kr} %U";
       icon = "google-chrome";
       categories = [
         "Network"
