@@ -78,13 +78,6 @@ let
   };
 in
 {
-  imports = [ inputs.noctalia.homeModules.default ];
-
-  programs.noctalia = {
-    enable = true;
-    systemd.enable = false;
-    validateConfig = false;
-  };
 
   systemd.user.services = {
     noctalia-wallpaper = {
