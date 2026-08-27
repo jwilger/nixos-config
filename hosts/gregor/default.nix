@@ -33,7 +33,6 @@ in
     hostName = "gregor";
     firewall = {
       allowedTCPPorts = [
-        22
         80
         443
         3000 # Development server
@@ -46,7 +45,13 @@ in
         5353 # mDNS (multicast DNS) - required for Spotify Connect discovery
         57621 # Spotify Connect
       ];
+      interfaces.tailscale0.allowedTCPPorts = [ 22 ];
     };
+  };
+
+  services.tailscale = {
+    enable = true;
+    openFirewall = true;
   };
   # Ensure filesystem checks (fsck) occur at boot for root
   fileSystems."/".noCheck = false;
