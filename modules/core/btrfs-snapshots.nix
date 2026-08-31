@@ -65,10 +65,9 @@
   # existing ones are left as-is.
   systemd.tmpfiles.rules = [
     "d /home/.snapshots 0700 root root -"
-    "v /home/projects 2770 jwilger codex -"
-    "L /home/jwilger/projects - - - - /home/projects"
     "v /home/jwilger/.cache 0755 jwilger jwilger -"
     "v /home/jwilger/.build 0755 jwilger jwilger -"
+    "v /home/jwilger/projects 0755 jwilger jwilger -"
     "v /home/jwilger/.local/share/containers 0755 jwilger jwilger -"
     "v /home/jwilger/.npm 0755 jwilger jwilger -"
     "v /home/jwilger/.m2/repository 0755 jwilger jwilger -"
@@ -112,6 +111,10 @@
       set -euo pipefail
 
       owner=jwilger
+      projects=/home/$owner/projects
+      stage=/home/$owner/.projects-subvolume-migration
+      previous=/home/$owner/.projects-pre-subvolume
+
       is_subvolume() {
         btrfs subvolume show "$1" >/dev/null 2>&1
       }
@@ -129,6 +132,24 @@
         btrfs subvolume create "$path"
         chown $owner:$owner "$path"
       }
+
+      if ! is_subvolume "$projects"; then
+        if [ -e "$stage" ] || [ -e "$previous" ]; then
+          echo "Project migration staging path already exists; refusing to overwrite it" >&2
+          exit 1
+        fi
+
+        btrfs subvolume create "$stage"
+        chown $owner:$owner "$stage"
+        cp --archive --reflink=auto "$projects/." "$stage/"
+
+        mv "$projects" "$previous"
+        if ! mv "$stage" "$projects"; then
+          mv "$previous" "$projects"
+          exit 1
+        fi
+        rm -rf "$previous"
+      fi
 
       # Rootless Podman storage, including development database volumes, is
       # disposable. Refuse to proceed unless the user's runtime is available
@@ -162,6 +183,69 @@
 
       install -d -m 0700 /var/lib
       date +%s > /var/lib/home-development-state-migration.done
+    '';
+  };
+
+  # Return the project subvolume to the user's home after removing the
+  # dedicated Codex account. Run once after a rebuild, with project tools
+  # closed:
+  #   sudo systemctl start restore-projects-home-location.service
+  systemd.services.restore-projects-home-location = {
+    description = "Move the project subvolume back into the user home";
+    after = [ "home.mount" ];
+    requires = [ "home.mount" ];
+    path = [
+      pkgs.acl
+      pkgs.btrfs-progs
+      pkgs.coreutils
+      pkgs.findutils
+    ];
+    unitConfig.RequiresMountsFor = [ "/home" ];
+    serviceConfig = {
+      Type = "oneshot";
+      UMask = "0022";
+    };
+    script = ''
+      set -euo pipefail
+
+      source=/home/projects
+      target=/home/jwilger/projects
+
+      if [ -L "$target" ]; then
+        if [ "$(readlink --canonicalize "$target")" != "$source" ]; then
+          echo "$target is a symlink to another location" >&2
+          exit 1
+        fi
+      elif btrfs subvolume show "$target" >/dev/null 2>&1; then
+        if [ ! -e "$source" ]; then
+          exit 0
+        fi
+        echo "$target is already a Btrfs subvolume while $source still exists" >&2
+        exit 1
+      elif [ -e "$target" ]; then
+        echo "$target exists and is not the expected compatibility symlink" >&2
+        exit 1
+      fi
+
+      if ! btrfs subvolume show "$source" >/dev/null 2>&1; then
+        echo "$source is not an existing Btrfs subvolume" >&2
+        exit 1
+      fi
+
+      if [ -L "$target" ]; then
+        unlink "$target"
+      fi
+
+      codex_gid="$(stat --format=%g "$source")"
+      mv "$source" "$target"
+
+      while IFS= read -r -d $'\0' path; do
+        setfacl --remove "group:$codex_gid" "$path" 2>/dev/null || true
+      done < <(find "$target" -xdev \( -type d -o -type f \) -print0)
+      find "$target" -xdev -type d -exec setfacl --remove-default {} +
+      find "$target" -xdev \( -type d -o -type f \) -exec chgrp jwilger {} +
+      find "$target" -xdev -type d -exec chmod g-s {} +
+      chmod 0755 "$target"
     '';
   };
 

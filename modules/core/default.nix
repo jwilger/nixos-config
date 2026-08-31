@@ -3,7 +3,6 @@
   imports = [
     (import ./archive-git-backup.nix)
     (import ./bootloader.nix)
-    (import ./codex-user.nix)
   ]
   ++ [ (import ./btrfs-snapshots.nix) ]
   ++ [ (import ./network.nix) ]
