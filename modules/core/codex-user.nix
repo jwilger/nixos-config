@@ -15,7 +15,8 @@ in
     (pkgs.writeShellApplication {
       name = "codex-as-user";
       text = ''
-        exec ${config.security.wrapperDir}/sudo --login --user=${codexUser} -- codex "$@"
+        exec ${config.security.wrapperDir}/sudo --set-home --user=${codexUser} -- \
+          ${lib.getExe pkgs.bashInteractive} --login -c 'exec codex "$@"' codex "$@"
       '';
     })
     (pkgs.writeShellApplication {
