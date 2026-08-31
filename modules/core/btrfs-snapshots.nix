@@ -67,7 +67,7 @@
     "d /home/.snapshots 0700 root root -"
     "v /home/jwilger/.cache 0755 jwilger jwilger -"
     "v /home/jwilger/.build 0755 jwilger jwilger -"
-    "v /home/jwilger/projects 0755 jwilger jwilger -"
+    "v /home/jwilger/projects 2770 jwilger codex -"
     "v /home/jwilger/.local/share/containers 0755 jwilger jwilger -"
     "v /home/jwilger/.npm 0755 jwilger jwilger -"
     "v /home/jwilger/.m2/repository 0755 jwilger jwilger -"
