@@ -1,4 +1,5 @@
 {
+  config,
   lib,
   pkgs,
   username,
@@ -13,16 +14,14 @@ in
     pkgs.acl
     (pkgs.writeShellApplication {
       name = "codex-as-user";
-      runtimeInputs = [ pkgs.sudo ];
       text = ''
-        exec sudo --login --user=${codexUser} -- codex "$@"
+        exec ${config.security.wrapperDir}/sudo --login --user=${codexUser} -- codex "$@"
       '';
     })
     (pkgs.writeShellApplication {
       name = "codex-shell";
-      runtimeInputs = [ pkgs.sudo ];
       text = ''
-        exec sudo --login --user=${codexUser}
+        exec ${config.security.wrapperDir}/sudo --login --user=${codexUser}
       '';
     })
   ];
