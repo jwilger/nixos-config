@@ -39,11 +39,33 @@ in
         packages = [
           pkgs.gh
           pkgs.nodejs_22
+          pkgs.python3
         ];
         sessionPath = [ "${npmPrefix}/bin" ];
         sessionVariables.NPM_CONFIG_PREFIX = npmPrefix;
         stateVersion = "24.11";
         username = codexUser;
+      };
+
+      home.file.".hindsight/codex.json".text = builtins.toJSON {
+        autoRecall = false;
+        autoRetain = true;
+        bankId = "codex";
+        debug = false;
+        dynamicBankGranularity = [
+          "agent"
+          "project"
+        ];
+        dynamicBankId = true;
+        hindsightApiUrl = "http://localhost:8888";
+        recallBudget = "mid";
+        recallMaxTokens = 800;
+        recallMinScores = { };
+        retainContext = "OpenAI Codex coding session transcript containing user requests, assistant responses, technical decisions, code changes, tool calls, errors, and outcomes.";
+        retainEveryNTurns = 3;
+        retainMode = "full-session";
+        retainTags = [ "session:{session_id}" ];
+        retainToolCalls = true;
       };
 
       programs.bash.enable = true;
