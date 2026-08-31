@@ -36,7 +36,10 @@ in
     {
       home = {
         homeDirectory = "/home/${codexUser}";
-        packages = [ pkgs.nodejs_22 ];
+        packages = [
+          pkgs.gh
+          pkgs.nodejs_22
+        ];
         sessionPath = [ "${npmPrefix}/bin" ];
         sessionVariables.NPM_CONFIG_PREFIX = npmPrefix;
         stateVersion = "24.11";
