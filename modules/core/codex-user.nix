@@ -43,6 +43,8 @@ in
         username = codexUser;
       };
 
+      programs.bash.enable = true;
+
       programs.git = {
         enable = true;
         settings = {
