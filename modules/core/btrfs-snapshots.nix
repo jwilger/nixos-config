@@ -186,69 +186,6 @@
     '';
   };
 
-  # Return the project subvolume to the user's home after removing the
-  # dedicated Codex account. Run once after a rebuild, with project tools
-  # closed:
-  #   sudo systemctl start restore-projects-home-location.service
-  systemd.services.restore-projects-home-location = {
-    description = "Move the project subvolume back into the user home";
-    after = [ "home.mount" ];
-    requires = [ "home.mount" ];
-    path = [
-      pkgs.acl
-      pkgs.btrfs-progs
-      pkgs.coreutils
-      pkgs.findutils
-    ];
-    unitConfig.RequiresMountsFor = [ "/home" ];
-    serviceConfig = {
-      Type = "oneshot";
-      UMask = "0022";
-    };
-    script = ''
-      set -euo pipefail
-
-      source=/home/projects
-      target=/home/jwilger/projects
-
-      if [ -L "$target" ]; then
-        if [ "$(readlink --canonicalize "$target")" != "$source" ]; then
-          echo "$target is a symlink to another location" >&2
-          exit 1
-        fi
-      elif btrfs subvolume show "$target" >/dev/null 2>&1; then
-        if [ ! -e "$source" ]; then
-          exit 0
-        fi
-        echo "$target is already a Btrfs subvolume while $source still exists" >&2
-        exit 1
-      elif [ -e "$target" ]; then
-        echo "$target exists and is not the expected compatibility symlink" >&2
-        exit 1
-      fi
-
-      if ! btrfs subvolume show "$source" >/dev/null 2>&1; then
-        echo "$source is not an existing Btrfs subvolume" >&2
-        exit 1
-      fi
-
-      if [ -L "$target" ]; then
-        unlink "$target"
-      fi
-
-      codex_gid="$(stat --format=%g "$source")"
-      mv "$source" "$target"
-
-      while IFS= read -r -d $'\0' path; do
-        setfacl --remove "group:$codex_gid" "$path" 2>/dev/null || true
-      done < <(find "$target" -xdev \( -type d -o -type f \) -print0)
-      find "$target" -xdev -type d -exec setfacl --remove-default {} +
-      find "$target" -xdev \( -type d -o -type f \) -exec chgrp jwilger {} +
-      find "$target" -xdev -type d -exec chmod g-s {} +
-      chmod 0755 "$target"
-    '';
-  };
-
   # This is the explicit final step of the one-time migration. It removes only
   # pre-migration source snapshots after btrbk has sent a newer, read-only
   # snapshot to /archive. The archive copy is verified before any local
