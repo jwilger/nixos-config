@@ -110,6 +110,7 @@ in
     text = ''
       if [[ -d ${lib.escapeShellArg projectsDirectory} ]]; then
         ${lib.getExe' pkgs.findutils "find"} ${lib.escapeShellArg projectsDirectory} -xdev \
+          \( -type d -o -type f \) \
           -exec ${lib.getExe' pkgs.coreutils "chgrp"} ${codexUser} {} +
         ${lib.getExe' pkgs.findutils "find"} ${lib.escapeShellArg projectsDirectory} -xdev \
           -type f -exec ${lib.getExe' pkgs.coreutils "chmod"} g+rw {} +
