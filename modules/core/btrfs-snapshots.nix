@@ -65,9 +65,10 @@
   # existing ones are left as-is.
   systemd.tmpfiles.rules = [
     "d /home/.snapshots 0700 root root -"
+    "v /home/projects 2770 jwilger codex -"
+    "L /home/jwilger/projects - - - - /home/projects"
     "v /home/jwilger/.cache 0755 jwilger jwilger -"
     "v /home/jwilger/.build 0755 jwilger jwilger -"
-    "v /home/projects 2770 jwilger codex -"
     "v /home/jwilger/.local/share/containers 0755 jwilger jwilger -"
     "v /home/jwilger/.npm 0755 jwilger jwilger -"
     "v /home/jwilger/.m2/repository 0755 jwilger jwilger -"
@@ -161,66 +162,6 @@
 
       install -d -m 0700 /var/lib
       date +%s > /var/lib/home-development-state-migration.done
-    '';
-  };
-
-  # Move the existing project subvolume beside user homes, keeping it on the
-  # home pool and outside recursive home snapshot contents. Run once after a
-  # rebuild, with project tools closed:
-  #   sudo systemctl start shared-projects-migration.service
-  systemd.services.shared-projects-migration = {
-    description = "Move the shared project subvolume outside the user home";
-    after = [ "home.mount" ];
-    requires = [ "home.mount" ];
-    path = [
-      pkgs.acl
-      pkgs.btrfs-progs
-      pkgs.coreutils
-      pkgs.findutils
-    ];
-    unitConfig.RequiresMountsFor = [ "/home" ];
-    serviceConfig = {
-      Type = "oneshot";
-      UMask = "0007";
-    };
-    script = ''
-      set -euo pipefail
-
-      source=/home/jwilger/projects
-      target=/home/projects
-
-      if [ -L "$source" ]; then
-        if [ "$(readlink --canonicalize "$source")" = "$target" ]; then
-          exit 0
-        fi
-        echo "$source is already a symlink to another location" >&2
-        exit 1
-      fi
-
-      if ! btrfs subvolume show "$source" >/dev/null 2>&1; then
-        echo "$source is not an existing Btrfs subvolume" >&2
-        exit 1
-      fi
-
-      if btrfs subvolume show "$target" >/dev/null 2>&1; then
-        if [ -n "$(find "$target" -mindepth 1 -maxdepth 1 -print -quit)" ]; then
-          echo "$target is not empty; refusing to overwrite it" >&2
-          exit 1
-        fi
-        btrfs subvolume delete "$target"
-      elif [ -e "$target" ]; then
-        echo "$target exists but is not a Btrfs subvolume" >&2
-        exit 1
-      fi
-
-      mv "$source" "$target"
-      ln --symbolic "$target" "$source"
-
-      find "$target" -xdev \( -type d -o -type f \) -exec chgrp codex {} +
-      find "$target" -xdev -type f -exec chmod g+rw {} +
-      find "$target" -xdev -type d -exec chmod g+rws {} +
-      find "$target" -xdev -type d -exec setfacl \
-        --default --modify group:codex:rwx,mask::rwx {} +
     '';
   };
 
