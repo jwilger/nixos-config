@@ -7,7 +7,7 @@
 }:
 let
   codexUser = "codex";
-  projectsDirectory = "/home/${username}/projects";
+  projectsDirectory = "/home/projects";
 in
 {
   environment.systemPackages = [

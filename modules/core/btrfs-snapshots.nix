@@ -67,7 +67,7 @@
     "d /home/.snapshots 0700 root root -"
     "v /home/jwilger/.cache 0755 jwilger jwilger -"
     "v /home/jwilger/.build 0755 jwilger jwilger -"
-    "v /home/jwilger/projects 2770 jwilger codex -"
+    "v /home/projects 2770 jwilger codex -"
     "v /home/jwilger/.local/share/containers 0755 jwilger jwilger -"
     "v /home/jwilger/.npm 0755 jwilger jwilger -"
     "v /home/jwilger/.m2/repository 0755 jwilger jwilger -"
@@ -111,10 +111,6 @@
       set -euo pipefail
 
       owner=jwilger
-      projects=/home/$owner/projects
-      stage=/home/$owner/.projects-subvolume-migration
-      previous=/home/$owner/.projects-pre-subvolume
-
       is_subvolume() {
         btrfs subvolume show "$1" >/dev/null 2>&1
       }
@@ -132,24 +128,6 @@
         btrfs subvolume create "$path"
         chown $owner:$owner "$path"
       }
-
-      if ! is_subvolume "$projects"; then
-        if [ -e "$stage" ] || [ -e "$previous" ]; then
-          echo "Project migration staging path already exists; refusing to overwrite it" >&2
-          exit 1
-        fi
-
-        btrfs subvolume create "$stage"
-        chown $owner:$owner "$stage"
-        cp --archive --reflink=auto "$projects/." "$stage/"
-
-        mv "$projects" "$previous"
-        if ! mv "$stage" "$projects"; then
-          mv "$previous" "$projects"
-          exit 1
-        fi
-        rm -rf "$previous"
-      fi
 
       # Rootless Podman storage, including development database volumes, is
       # disposable. Refuse to proceed unless the user's runtime is available
@@ -183,6 +161,66 @@
 
       install -d -m 0700 /var/lib
       date +%s > /var/lib/home-development-state-migration.done
+    '';
+  };
+
+  # Move the existing project subvolume beside user homes, keeping it on the
+  # home pool and outside recursive home snapshot contents. Run once after a
+  # rebuild, with project tools closed:
+  #   sudo systemctl start shared-projects-migration.service
+  systemd.services.shared-projects-migration = {
+    description = "Move the shared project subvolume outside the user home";
+    after = [ "home.mount" ];
+    requires = [ "home.mount" ];
+    path = [
+      pkgs.acl
+      pkgs.btrfs-progs
+      pkgs.coreutils
+      pkgs.findutils
+    ];
+    unitConfig.RequiresMountsFor = [ "/home" ];
+    serviceConfig = {
+      Type = "oneshot";
+      UMask = "0007";
+    };
+    script = ''
+      set -euo pipefail
+
+      source=/home/jwilger/projects
+      target=/home/projects
+
+      if [ -L "$source" ]; then
+        if [ "$(readlink --canonicalize "$source")" = "$target" ]; then
+          exit 0
+        fi
+        echo "$source is already a symlink to another location" >&2
+        exit 1
+      fi
+
+      if ! btrfs subvolume show "$source" >/dev/null 2>&1; then
+        echo "$source is not an existing Btrfs subvolume" >&2
+        exit 1
+      fi
+
+      if btrfs subvolume show "$target" >/dev/null 2>&1; then
+        if [ -n "$(find "$target" -mindepth 1 -maxdepth 1 -print -quit)" ]; then
+          echo "$target is not empty; refusing to overwrite it" >&2
+          exit 1
+        fi
+        btrfs subvolume delete "$target"
+      elif [ -e "$target" ]; then
+        echo "$target exists but is not a Btrfs subvolume" >&2
+        exit 1
+      fi
+
+      mv "$source" "$target"
+      ln --symbolic "$target" "$source"
+
+      find "$target" -xdev \( -type d -o -type f \) -exec chgrp codex {} +
+      find "$target" -xdev -type f -exec chmod g+rw {} +
+      find "$target" -xdev -type d -exec chmod g+rws {} +
+      find "$target" -xdev -type d -exec setfacl \
+        --default --modify group:codex:rwx,mask::rwx {} +
     '';
   };
 

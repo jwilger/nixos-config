@@ -1,6 +1,6 @@
 { pkgs, ... }:
 let
-  source = "/home/jwilger/projects";
+  source = "/home/projects";
   target = "/archive/git-mirrors/jwilger/projects";
 in
 {
@@ -9,7 +9,7 @@ in
   # the archive pool instead. Bare mirrors contain all current local refs, but
   # never uncommitted edits or generated working-tree files.
   systemd.services.archive-project-git-mirrors = {
-    description = "Archive committed Git history from ~/projects";
+    description = "Archive committed Git history from /home/projects";
     after = [
       "archive.mount"
       "home.mount"
