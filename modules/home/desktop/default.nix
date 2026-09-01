@@ -2,6 +2,7 @@
 {
   imports = [
     (import ./../default.nix)
+    (import ./chatgpt.nix)
     (import ./hyprland.nix)
     (import ./insync)
     (import ./nignite.nix)
