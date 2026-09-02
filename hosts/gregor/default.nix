@@ -53,6 +53,11 @@ in
     enable = true;
     openFirewall = true;
   };
+
+  # Codex is launched through SSH and can briefly use more than systemd's
+  # default 1,024 descriptors while hooks and local MCP servers are active.
+  systemd.services.sshd.serviceConfig.LimitNOFILE = 65536;
+
   # Ensure filesystem checks (fsck) occur at boot for root
   fileSystems."/".noCheck = false;
 
