@@ -2,14 +2,15 @@
 let
   chatgpt = pkgs.stdenv.mkDerivation rec {
     pname = "chatgpt";
-    version = "26.831.20005";
+    version = "26.831.21537";
 
     src = pkgs.fetchurl {
       url = "https://persistent.oaistatic.com/codex-app-prod/linux/deb/latest/chatgpt_amd64.deb";
-      hash = "sha256-HO8+hAX2lbfwP9GwckYNEYW31T4ktyfjviVhPminUao=";
+      hash = "sha256-XBVu8qLgKRWW0HuuhmDvTwt0jfO6+Rv8ko97XjxhCxE=";
     };
 
     nativeBuildInputs = with pkgs; [
+      asar
       autoPatchelfHook
       dpkg
       makeWrapper
@@ -60,6 +61,7 @@ let
       libGL
       libva
       pipewire
+      stdenv.cc.cc.lib
       wayland
     ];
 
@@ -75,6 +77,12 @@ let
       mkdir -p "$out/bin" "$out/lib" "$out/share"
       cp -r usr/lib/chatgpt "$out/lib/"
       cp -r usr/share/* "$out/share/"
+
+      asar extract "$out/lib/chatgpt/resources/app.asar" app
+      substituteInPlace app/.vite/build/worker.js \
+        --replace-fail 'async start(){if(this.logger.info(`Starting git repo watcher`),' \
+        'async start(){return;if(this.logger.info(`Starting git repo watcher`),'
+      asar pack app "$out/lib/chatgpt/resources/app.asar"
 
       makeWrapper "$out/lib/chatgpt/ChatGPT" "$out/bin/chatgpt" \
         --prefix LD_LIBRARY_PATH : "${lib.makeLibraryPath runtimeDependencies}" \
