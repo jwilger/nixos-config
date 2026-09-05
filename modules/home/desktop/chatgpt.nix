@@ -2,11 +2,11 @@
 let
   chatgpt = pkgs.stdenv.mkDerivation rec {
     pname = "chatgpt";
-    version = "26.831.21537";
+    version = "26.901.41600";
 
     src = pkgs.fetchurl {
       url = "https://persistent.oaistatic.com/codex-app-prod/linux/deb/latest/chatgpt_amd64.deb";
-      hash = "sha256-XBVu8qLgKRWW0HuuhmDvTwt0jfO6+Rv8ko97XjxhCxE=";
+      hash = "sha256-Fc9CKnfo8op1U9MYC4xyeEqZRDihQXhMgtcs3pPvync=";
     };
 
     nativeBuildInputs = with pkgs; [
@@ -80,8 +80,8 @@ let
 
       asar extract "$out/lib/chatgpt/resources/app.asar" app
       substituteInPlace app/.vite/build/worker.js \
-        --replace-fail 'async start(){if(this.logger.info(`Starting git repo watcher`),' \
-        'async start(){return;if(this.logger.info(`Starting git repo watcher`),'
+        --replace-fail 'async start(){if(this.disposed)return;if(this.logger.info(`Starting git repo watcher`),' \
+        'async start(){return;if(this.disposed)return;if(this.logger.info(`Starting git repo watcher`),'
       asar pack app "$out/lib/chatgpt/resources/app.asar"
 
       makeWrapper "$out/lib/chatgpt/ChatGPT" "$out/bin/chatgpt" \
