@@ -6,6 +6,11 @@
       <img src="https://raw.githubusercontent.com/catppuccin/catppuccin/main/assets/palette/macchiato.png" width="600px" /> <br>
 </h1>
 
+This repository now contains only Gregor's personal NixOS system
+configuration. The reusable user environment is published separately at
+[`jwilger/home`](https://github.com/jwilger/home) and pinned here by immutable
+commit.
+
 > *"Though this be madness, yet there is method in't."*
 > — Hamlet, Act 2, Scene 2
 

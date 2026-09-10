@@ -10,7 +10,6 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 - `sudo nixos-rebuild switch --flake .` - Apply configuration changes and switch to new generation (user must run)
 - `sudo nixos-rebuild switch --flake .#gregor` - Apply configuration for specific host (gregor) (user must run)
-- `sudo nixos-rebuild switch --flake .#vm` - Apply configuration for VM host (user must run)
 - `nix flake check` - Validate flake configuration syntax and structure (Claude can run this)
 - `nix flake update` - Update all flake inputs to latest versions
 - `nix flake show` - Show available configurations and outputs
@@ -22,32 +21,29 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Architecture Overview
 
-This is a NixOS flake-based configuration supporting multiple hosts with a modular structure.
+This is a NixOS flake-based configuration for Gregor with a modular system structure.
 
 ### Flake Structure
 
-- **flake.nix**: Main flake definition with inputs (nixpkgs, home-manager, hyprland, catppuccin)
+- **flake.nix**: Main flake definition with inputs, including the immutable shared Home Manager pin
 - **hosts/**: Host-specific configurations
   - `gregor/`: Primary desktop machine with full desktop environment
-  - `vm/`: Virtual machine configuration
 - **modules/**: Reusable configuration modules
   - `core/`: Essential system components (bootloader, network, security, etc.)
   - `desktop/`: Desktop environment setup (Hyprland, fonts, theming)
-  - `home/`: Home Manager configurations for user-specific settings
 
 ### Key Design Patterns
 
 - All hosts inherit from `modules/core` for base system functionality
 - Desktop hosts additionally import `modules/desktop` for GUI components
-- Home Manager configurations are host-specific via `home-manager.users.${username}.imports`
+- Home Manager configuration is imported from the pinned public `jwilger/home` flake with the Gregor profile
 - Catppuccin theme system is used consistently across system and user configs
 - Each module is focused on a single concern (git, nvim, zsh, etc.)
 
 ### Host Configuration
 
 - **gregor**: Performance-optimized desktop with AMD graphics, rootless Podman, BcacheFS scrubbing
-- **vm**: Minimal configuration for virtual machine testing
-- Both use username "jwilger" and x86_64-linux architecture
+- Gregor uses username "jwilger" and x86_64-linux architecture
 
 ### Theme System
 
@@ -57,10 +53,7 @@ This is a NixOS flake-based configuration supporting multiple hosts with a modul
 
 ### Development Environment
 
-- Neovim with LazyVim configuration in `modules/home/nvim/`
-- Shell setup with zsh, starship prompt, and zellij multiplexer
-- Git configuration with user-specific settings
-- Terminal applications: yazi (file manager), btop (system monitor), bat (cat replacement)
+- The user development environment is maintained in the pinned `jwilger/home` flake.
 
 # context-mode — MANDATORY routing rules
 

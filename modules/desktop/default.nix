@@ -58,6 +58,9 @@ in
     autoEnable = true;
     flavor = "mocha";
     accent = "lavender";
+    # Upstream's TTY module imports palette JSON at evaluation time. Keep the
+    # desktop theming while avoiding a stale store-path dependency there.
+    tty.enable = false;
   };
 
   services = {

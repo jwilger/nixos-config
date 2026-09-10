@@ -1,5 +1,4 @@
 {
-  inputs,
   pkgs,
   username,
   lib,
@@ -24,7 +23,6 @@ in
     ./../../modules/services/caddy.nix
     ./../../modules/services/hindsight.nix
     ./../../modules/services/postgres.nix
-    ./../../modules/home/codex-session-retention.nix
   ];
 
   powerManagement.cpuFreqGovernor = "performance";
@@ -111,15 +109,6 @@ in
   time.timeZone = "America/Los_Angeles";
 
   boot.initrd.luks.devices = { };
-
-  home-manager.users.${username} = {
-    imports = [
-      inputs.lanyard.homeManagerModules.default
-      ./../../modules/home/desktop
-    ];
-
-    programs.lanyard-ssh-agent.enable = true;
-  };
 
   # Rootless Podman gives development tools Docker-compatible commands without
   # granting the login user control of a root daemon. Do not enable the system

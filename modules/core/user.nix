@@ -24,8 +24,9 @@
       home.stateVersion = "24.11";
       programs.home-manager.enable = true;
       imports = [
-        inputs.catppuccin.homeModules.catppuccin
+        inputs.jwilger-home.homeModules.jwilger
       ];
+      jwilger.hostProfile = "gregor";
     };
   };
 

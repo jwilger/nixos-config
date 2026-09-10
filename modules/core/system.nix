@@ -71,11 +71,11 @@
   # Cap the live journal so /var/log doesn't accumulate on the NVMe, and
   # rotate aggressively (daily) so the archive timer below has fresh
   # sealed files to copy off before the cap purges them.
-  services.journald.extraConfig = ''
-    SystemMaxUse=1G
-    MaxRetentionSec=2week
-    MaxFileSec=1day
-  '';
+  services.journald.settings.Journal = {
+    SystemMaxUse = "1G";
+    MaxRetentionSec = "2week";
+    MaxFileSec = "1day";
+  };
 
   # Cold-tier journal retention: copy sealed (rotated) journal files
   # from /var/log/journal -> /archive/journal-archive once a day. Sealed
