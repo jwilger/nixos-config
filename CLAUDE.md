@@ -102,7 +102,11 @@ Grep results can flood context. Use `ctx_execute(language: "shell", code: "grep 
 
 ## Subagent routing
 
-When spawning subagents (Agent/Task tool), the routing block is automatically injected into their prompt. Bash-type subagents are upgraded to general-purpose so they have access to MCP tools. You do NOT need to manually instruct subagents about context-mode.
+Before choosing a subagent model or reasoning effort, read
+`.agents/skills/agent-routing/SKILL.md`. Apply its task-category defaults,
+progressive-escalation boundaries, delegation contract, and review-return
+classification. Automatic context-mode prompt injection does not supply or
+replace the required model-and-effort selection rationale.
 
 ## Output constraints
 
